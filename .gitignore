@@ -1,8 +1,27 @@
-target/
+# Local secrets and credentials
+.env
+.env.*
+*.key
+*.pem
+
+# Local credentials
+group15-credentials/
+group-15-credentials/target/
 ca.key
 .env*
 *.log*
 auth/
-config/
 .direnv/
 result
+
+# Local assignment implementation and credentials
+group15-credentials/
+group-15-credentials/
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+!.env.example
+!monitoring.env.example
+test-results/

@@ -1,0 +1,14 @@
+**
+!requirements.lock
+!temperature_observability/
+!temperature_observability/**
+!loadtests/
+!loadtests/**
+!deploy/
+!deploy/Dockerfile
+!deploy/Caddyfile
+!deploy/docs.html
+!experiment-producer/
+!experiment-producer/schemas/
+!experiment-producer/schemas/**
+**/__pycache__/

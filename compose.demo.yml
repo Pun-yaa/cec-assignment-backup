@@ -1,0 +1,22 @@
+services:
+  scheduler:
+    user: "${TO_CREDENTIAL_UID:-1000}:${TO_CREDENTIAL_GID:-1000}"
+    environment:
+      TO_KAFKA_BROKERS: ${TO_KAFKA_BROKERS:-kafka.cec.dlandau.nl:19092,kafka.cec.dlandau.nl:29092,kafka.cec.dlandau.nl:39092}
+      TO_KAFKA_TOPIC: ${TO_KAFKA_TOPIC:-experiment}
+      TO_KAFKA_GROUP: ${TO_KAFKA_GROUP:-group15-temperature-demo-v1}
+      TO_KAFKA_SECURITY_PROTOCOL: SSL
+      TO_KAFKA_CA_FILE: /run/credentials/ca.crt
+      TO_KAFKA_KEYSTORE_FILE: /run/credentials/kafka.keystore.pkcs12
+      TO_KAFKA_KEYSTORE_PASSWORD_FILE: /run/credentials/keystore-password
+    volumes:
+      - ${TO_CREDENTIALS_DIR:-./group15-credentials}/ca.crt:/run/credentials/ca.crt:ro
+      - ${TO_CREDENTIALS_DIR:-./group15-credentials}/kafka.keystore.pkcs12:/run/credentials/kafka.keystore.pkcs12:ro
+      - ${TO_CREDENTIALS_DIR:-./group15-credentials}/keystore-password:/run/credentials/keystore-password:ro
+  notification:
+    user: "${TO_CREDENTIAL_UID:-1000}:${TO_CREDENTIAL_GID:-1000}"
+    environment:
+      TO_NOTIFICATION_URL: https://notifications.cec.dlandau.nl/api/notify
+      TO_NOTIFICATION_TOKEN_FILE: /run/credentials/token
+    volumes:
+      - ${TO_CREDENTIALS_DIR:-./group15-credentials}/token:/run/credentials/token:ro

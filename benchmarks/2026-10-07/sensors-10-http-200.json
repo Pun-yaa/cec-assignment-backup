@@ -1,0 +1,49 @@
+{
+  "run_id": "stress-fd305e6233ef",
+  "configuration": {
+    "experiments": 100,
+    "sensors": 10,
+    "duration": 30.0,
+    "period": 1,
+    "http_rps": 200,
+    "brokers": "localhost:19092",
+    "topic": "experiment",
+    "api": "http://localhost:3003",
+    "sink": "http://localhost:18080",
+    "scheduler": "http://localhost:8001",
+    "output": "test-results/final-boundaries/sensors-10-http-200.json"
+  },
+  "duration_seconds": 30.621646418934688,
+  "sensor_events_per_second": 1000.0,
+  "actual_sensor_events_per_second": 979.6991183808361,
+  "actual_samples_per_second_per_experiment": 0.9796991183808361,
+  "samples_per_experiment": 30,
+  "kafka_messages": 32400,
+  "http_requests_per_second": 169.7030474672999,
+  "http_attempts_per_second": 169.7030474672999,
+  "http_elapsed_seconds": 35.27927217190154,
+  "http_latency_seconds": {
+    "count": 5987,
+    "p50": 6.125667390879244,
+    "p95": 9.387036727042869,
+    "p99": 9.755914893001318,
+    "max": 10.038633269025013
+  },
+  "http_errors": 0,
+  "http_error_types": {},
+  "notification_latency_seconds": {
+    "count": 875,
+    "p50": 1.786618709564209,
+    "p95": 3.871023178100586,
+    "p99": 4.447415351867676,
+    "max": 5.186243295669556
+  },
+  "notifications_expected": 875,
+  "notifications_received": 875,
+  "missing_notifications": 0,
+  "unexpected_notifications": 0,
+  "duplicate_delivery_attempts": 0,
+  "data_mismatches": [],
+  "peak_scheduler_queue": 3282,
+  "passed": false
+}

@@ -1,0 +1,115 @@
+{
+  "api_health": {
+    "status": "ok"
+  },
+  "scheduler": {
+    "queued_events": 0,
+    "assigned_partitions": 16,
+    "executors": 1,
+    "active_tasks": 0,
+    "capacity": 8
+  },
+  "prometheus_targets": [
+    {
+      "job": "api",
+      "health": "up",
+      "error": ""
+    },
+    {
+      "job": "data",
+      "health": "up",
+      "error": ""
+    },
+    {
+      "job": "executor",
+      "health": "up",
+      "error": ""
+    },
+    {
+      "job": "node",
+      "health": "up",
+      "error": ""
+    },
+    {
+      "job": "notification",
+      "health": "up",
+      "error": ""
+    },
+    {
+      "job": "scheduler",
+      "health": "up",
+      "error": ""
+    }
+  ],
+  "grafana_dashboard": {
+    "title": "XYZ Lab \u2014 Temperature Observability",
+    "panels": 16
+  },
+  "dashboard_queries": [
+    {
+      "panel": "Kafka events processed / second",
+      "series": 1
+    },
+    {
+      "panel": "Scheduler queue",
+      "series": 1
+    },
+    {
+      "panel": "Notification latency p99",
+      "series": 1
+    },
+    {
+      "panel": "Oldest pending notification",
+      "series": 1
+    },
+    {
+      "panel": "HTTP requests / second",
+      "series": 1
+    },
+    {
+      "panel": "HTTP latency p95",
+      "series": 1
+    },
+    {
+      "panel": "Notification jobs",
+      "series": 3
+    },
+    {
+      "panel": "Executor tasks and replicas",
+      "series": 1
+    },
+    {
+      "panel": "Process resident memory",
+      "series": 5
+    },
+    {
+      "panel": "VM CPU utilization",
+      "series": 1
+    },
+    {
+      "panel": "Database size",
+      "series": 1
+    },
+    {
+      "panel": "Cache hit rate",
+      "series": 1
+    },
+    {
+      "panel": "Estimated infrastructure cost / hour (configure rates)",
+      "series": 1
+    },
+    {
+      "panel": "Estimated cost over the last 24h",
+      "series": 1
+    },
+    {
+      "panel": "Cost rate configured (1 = yes)",
+      "series": 1
+    },
+    {
+      "panel": "Rejected input events",
+      "series": 1
+    }
+  ],
+  "cost_configured": "0"
+}

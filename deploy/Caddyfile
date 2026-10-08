@@ -1,0 +1,48 @@
+{
+	admin off
+	auto_https off
+	servers {
+		metrics
+	}
+}
+
+:8000 {
+	handle /metrics {
+		metrics
+	}
+	@queries path /temperature /temperature/out-of-range /temperature/out-of-range/intervals /experiments/* /health
+	handle @queries {
+		reverse_proxy data:8000 {
+			transport http {
+				dial_timeout 2s
+				response_header_timeout 10s
+			}
+		}
+	}
+	handle /experiments {
+		rewrite * /configure
+		reverse_proxy executor:8000 {
+			transport http {
+				dial_timeout 2s
+				response_header_timeout 10s
+			}
+		}
+	}
+	handle /docs {
+		root * /srv
+		rewrite * /docs.html
+		file_server
+	}
+	handle /openapi.json {
+		root * /srv
+		file_server
+	}
+	handle {
+		header Content-Type application/json
+		respond `{"detail":"not found"}` 404
+	}
+	handle_errors {
+		header Content-Type application/json
+		respond `{"detail":"monitoring service temporarily unavailable"}` 503
+	}
+}

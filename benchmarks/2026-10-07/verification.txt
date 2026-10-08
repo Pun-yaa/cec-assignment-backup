@@ -1,0 +1,26 @@
+...................................................                      [100%]
+51 passed in 5.46s
+
+All checks passed!
+28 files already formatted
+
+{"level":"info","ts":1791369452.2184632,"msg":"using config from file","file":"/etc/caddy/Caddyfile"}
+{"level":"warn","ts":1791369452.218782,"msg":"The nested 'metrics' option inside `servers` is deprecated and will be removed in the next major version. Use the global 'metrics' option instead."}
+{"level":"info","ts":1791369452.221419,"msg":"adapted config to JSON","adapter":"caddyfile"}
+{"level":"info","ts":1791369452.222466,"logger":"http.auto_https","msg":"automatic HTTPS is completely disabled for server","server_name":"srv0"}
+{"level":"info","ts":1791369452.2227259,"logger":"tls.cache.maintenance","msg":"started background certificate maintenance","cache":"0xc0004a4f00"}
+{"level":"info","ts":1791369452.2240644,"logger":"http","msg":"servers shutting down with eternal grace period"}
+{"level":"info","ts":1791369452.224156,"logger":"tls.cache.maintenance","msg":"stopped background certificate maintenance","cache":"0xc0004a4f00"}
+Valid configuration
+
+Checking /etc/prometheus/prometheus.yml
+  SUCCESS: 1 rule files found
+ SUCCESS: /etc/prometheus/prometheus.yml is valid prometheus config file syntax
+
+Checking /etc/prometheus/alerts.yml
+  SUCCESS: 5 rules found
+
+
+Local + demo Compose overlays: configuration valid.
+Git whitespace check: passed.
+Credential files: ignored by Git and excluded from Docker context.

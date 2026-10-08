@@ -1,0 +1,114 @@
+name: cec-temperature
+
+x-python: &python
+  image: cec-temperature:local
+  build:
+    context: .
+    dockerfile: deploy/Dockerfile
+    target: runtime
+  init: true
+  restart: unless-stopped
+  stop_grace_period: 30s
+  logging:
+    driver: json-file
+    options: {max-size: 5m, max-file: "3"}
+  healthcheck:
+    test: [CMD, python, -m, temperature_observability.healthcheck]
+    interval: 30s
+    timeout: 4s
+    retries: 12
+    start_period: 15s
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: observability
+      POSTGRES_USER: observability
+      POSTGRES_PASSWORD: ${TO_POSTGRES_PASSWORD:-observability}
+    volumes: [postgres-data:/var/lib/postgresql/data]
+    healthcheck:
+      test: [CMD-SHELL, pg_isready -U observability -d observability]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+  redis:
+    image: redis:7.4-alpine
+    restart: unless-stopped
+    command: [redis-server, --maxmemory, 128mb, --maxmemory-policy, allkeys-lru, --save, ""]
+    healthcheck:
+      test: [CMD, redis-cli, ping]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+  data:
+    <<: *python
+    command: [uvicorn, temperature_observability.data:app, --host, 0.0.0.0, --port, "8000", --no-access-log]
+    environment:
+      TO_DATABASE_URL: postgresql://observability:${TO_POSTGRES_PASSWORD:-observability}@postgres:5432/observability
+      TO_REDIS_URL: redis://redis:6379/0
+      TO_VM_HOURLY_COST_USD: ${TO_VM_HOURLY_COST_USD:-0}
+      TO_STORAGE_GB_MONTHLY_COST_USD: ${TO_STORAGE_GB_MONTHLY_COST_USD:-0}
+    depends_on:
+      postgres: {condition: service_healthy}
+      redis: {condition: service_healthy}
+  executor:
+    <<: *python
+    command: [uvicorn, temperature_observability.executor:app, --host, 0.0.0.0, --port, "8000", --no-access-log]
+    environment:
+      TO_DATA_URL: http://data:8000
+      TO_EXECUTOR_CAPACITY: ${TO_EXECUTOR_CAPACITY:-8}
+      TO_MAX_PENDING_MEASUREMENTS: ${TO_MAX_PENDING_MEASUREMENTS:-256}
+    deploy:
+      replicas: ${TO_EXECUTOR_REPLICAS:-1}
+    depends_on:
+      data: {condition: service_healthy}
+  scheduler:
+    <<: *python
+    command: [uvicorn, temperature_observability.scheduler:app, --host, 0.0.0.0, --port, "8000", --no-access-log]
+    ports: [127.0.0.1:8001:8000]
+    environment:
+      TO_KAFKA_BROKERS: ${TO_KAFKA_BROKERS:-kafka:9092}
+      TO_KAFKA_TOPIC: ${TO_KAFKA_TOPIC:-experiment}
+      TO_KAFKA_GROUP: ${TO_KAFKA_GROUP:-group15-temperature-v1}
+      TO_KAFKA_SECURITY_PROTOCOL: ${TO_KAFKA_SECURITY_PROTOCOL:-PLAINTEXT}
+      TO_KAFKA_CA_FILE: ${TO_KAFKA_CA_FILE:-}
+      TO_KAFKA_KEYSTORE_FILE: ${TO_KAFKA_KEYSTORE_FILE:-}
+      TO_KAFKA_KEYSTORE_PASSWORD_FILE: ${TO_KAFKA_KEYSTORE_PASSWORD_FILE:-}
+      TO_KAFKA_ENDPOINT_IDENTIFICATION: ${TO_KAFKA_ENDPOINT_IDENTIFICATION:-https}
+      TO_BATCH_SIZE: ${TO_BATCH_SIZE:-256}
+      TO_QUEUE_CAPACITY: ${TO_QUEUE_CAPACITY:-8192}
+    depends_on:
+      executor: {condition: service_healthy}
+  api:
+    image: cec-temperature-gateway:local
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile
+      target: gateway
+    restart: unless-stopped
+    ports: ["3003:8000"]
+    healthcheck:
+      test: [CMD, wget, -q, -O, /dev/null, http://127.0.0.1:8000/health]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+    depends_on:
+      data: {condition: service_healthy}
+      executor: {condition: service_healthy}
+  notification:
+    <<: *python
+    command: [uvicorn, temperature_observability.notification:app, --host, 0.0.0.0, --port, "8000", --no-access-log]
+    environment:
+      TO_NOTIFICATION_URL: ${TO_NOTIFICATION_URL:-http://notification-sink:8000/api/notify}
+      TO_NOTIFICATION_TOKEN_FILE: ${TO_NOTIFICATION_TOKEN_FILE:-}
+      TO_NOTIFICATION_INTERVAL: ${TO_NOTIFICATION_INTERVAL:-0.1}
+      TO_NOTIFICATION_CONCURRENCY: ${TO_NOTIFICATION_CONCURRENCY:-32}
+      TO_NOTIFICATION_TIMEOUT: ${TO_NOTIFICATION_TIMEOUT:-2}
+      TO_NOTIFICATION_LEASE: ${TO_NOTIFICATION_LEASE:-15}
+    depends_on:
+      data: {condition: service_healthy}
+
+volumes:
+  postgres-data:

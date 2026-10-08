@@ -1,0 +1,76 @@
+services:
+  kafka-init:
+    image: apache/kafka:3.9.1
+    user: root
+    entrypoint: [sh, -c, "chown -R 1000:1000 /tmp/kraft-combined-logs"]
+    volumes: [kafka-data:/tmp/kraft-combined-logs]
+  kafka:
+    image: apache/kafka:3.9.1
+    restart: unless-stopped
+    ports: [127.0.0.1:19092:19092]
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093,HOST://:19092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,HOST://localhost:19092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,HOST:PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_NUM_PARTITIONS: 16
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_LOG_RETENTION_HOURS: 24
+      KAFKA_LOG_DIRS: /tmp/kraft-combined-logs
+      KAFKA_HEAP_OPTS: -Xms256m -Xmx384m
+      CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk
+    volumes: [kafka-data:/tmp/kraft-combined-logs]
+    depends_on:
+      kafka-init: {condition: service_completed_successfully}
+    healthcheck:
+      test: [CMD, bash, -c, "exec 3<>/dev/tcp/localhost/9092"]
+      interval: 10s
+      timeout: 10s
+      retries: 12
+      start_period: 20s
+  kafka-topic:
+    image: apache/kafka:3.9.1
+    entrypoint: [/opt/kafka/bin/kafka-topics.sh]
+    command: [--bootstrap-server, kafka:9092, --create, --if-not-exists, --topic, experiment, --partitions, "16", --replication-factor, "1"]
+    environment:
+      KAFKA_HEAP_OPTS: -Xms64m -Xmx128m
+    depends_on:
+      kafka: {condition: service_healthy}
+  notification-sink:
+    image: cec-temperature:local
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile
+      target: runtime
+    command: [uvicorn, loadtests.notification_sink:app, --host, 0.0.0.0, --port, "8000", --no-access-log]
+    ports: [127.0.0.1:18080:8000]
+    restart: unless-stopped
+  scheduler:
+    environment:
+      TO_KAFKA_BROKERS: kafka:9092
+      TO_KAFKA_SECURITY_PROTOCOL: PLAINTEXT
+      TO_KAFKA_TOPIC: experiment
+    depends_on:
+      kafka: {condition: service_healthy}
+      kafka-topic: {condition: service_completed_successfully}
+  notification:
+    environment:
+      TO_NOTIFICATION_URL: http://notification-sink:8000/api/notify
+      TO_NOTIFICATION_TOKEN_FILE: ""
+  data:
+    ports: [127.0.0.1:8002:8000]
+  postgres:
+    ports: [127.0.0.1:15432:5432]
+  redis:
+    ports: [127.0.0.1:16379:6379]
+
+volumes:
+  kafka-data:

@@ -1,3 +1,10 @@
+# Group 15 implementation
+
+The implemented service is in [`temperature_observability/`](temperature_observability/).
+See [MONITORING.md](MONITORING.md) for startup, architecture, API, monitoring, demo
+configuration, and recovery instructions, and [STRESS-TEST-RESULTS.md](STRESS-TEST-RESULTS.md)
+for measured sizing and latency results. The original course requirements follow.
+
 # Learning Objectives
 
 - Cloud Systems

@@ -1,0 +1,29 @@
+name: Temperature monitoring
+on: [push, pull_request]
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.lock
+      - run: pip install -r requirements.lock
+      - run: ruff check temperature_observability loadtests tests scripts/prepare-monitoring-credentials.py
+      - run: python -m pytest -q -m 'not integration'
+      - run: docker compose -f compose.yml -f compose.local.yml build data api
+      - run: docker compose -f compose.yml -f compose.local.yml up -d
+      - run: TO_TEST_STACK=1 python -m pytest -q
+      - run: python -m loadtests.stress --experiments 3 --sensors 3 --duration 3 --http-rps 20 --output test-results/smoke.json
+      - if: always()
+        run: |
+          mkdir -p test-results
+          docker compose -f compose.yml -f compose.local.yml logs --no-color > test-results/containers.log
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: monitoring-test-results
+          path: test-results/
