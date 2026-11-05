@@ -1,0 +1,23 @@
+{
+  "instance_type": "t3a.medium",
+  "region": "eu-west-1",
+  "architecture": "x86_64",
+  "source": "IMDSv2 instance identity and lsblk, queried 2026-11-05",
+  "vcpu": 2,
+  "memory_gib": 3.754,
+  "provisioned_disk_gib": 20,
+  "ebs_type": "unconfirmed; gp3 assumed for displayed estimate",
+  "pricing_source": "https://pricing.us-east-1.amazonaws.com/offers/v1.0/aws/AmazonEC2/current/eu-west-1/index.csv",
+  "vm_usd_per_hour": 0.0408,
+  "storage_gp3_usd_per_gb_month": 0.088,
+  "storage_gp2_usd_per_gb_month": 0.11,
+  "estimated_vm_plus_gp3_usd_per_hour": 0.04321095890410959,
+  "excluded_costs": [
+    "surplus CPU credits",
+    "public IPv4",
+    "network traffic",
+    "taxes",
+    "discounts",
+    "external course services"
+  ]
+}

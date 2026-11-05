@@ -1,0 +1,49 @@
+[
+  {
+    "source": "01-rubric-and-readiness.md",
+    "pdf": "pdf/01-rubric-and-readiness.pdf",
+    "pages": 4,
+    "bytes": 77367
+  },
+  {
+    "source": "02-architecture-and-design-defense.md",
+    "pdf": "pdf/02-architecture-and-design-defense.pdf",
+    "pages": 7,
+    "bytes": 159848
+  },
+  {
+    "source": "03-performance-and-development-history.md",
+    "pdf": "pdf/03-performance-and-development-history.pdf",
+    "pages": 7,
+    "bytes": 212550
+  },
+  {
+    "source": "04-oral-exam-handbook.md",
+    "pdf": "pdf/04-oral-exam-handbook.pdf",
+    "pages": 9,
+    "bytes": 93675
+  },
+  {
+    "source": "05-team-rehearsal-and-presentation.md",
+    "pdf": "pdf/05-team-rehearsal-and-presentation.pdf",
+    "pages": 4,
+    "bytes": 54863
+  },
+  {
+    "source": "06-recovery-and-demo-runbook.md",
+    "pdf": "pdf/06-recovery-and-demo-runbook.pdf",
+    "pages": 5,
+    "bytes": 57418
+  },
+  {
+    "source": "07-exam-quick-reference.md",
+    "pdf": "pdf/07-exam-quick-reference.pdf",
+    "pages": 2,
+    "bytes": 49665
+  },
+  {
+    "pdf": "pdf/group-15-exam-preparation.pdf",
+    "pages": 40,
+    "bytes": 445756
+  }
+]

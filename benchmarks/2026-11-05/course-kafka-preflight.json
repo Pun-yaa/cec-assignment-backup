@@ -1,0 +1,12 @@
+{
+  "timestamp": 1793849663.325096,
+  "brokers": "kafka.cec.dlandau.nl:19092,kafka.cec.dlandau.nl:29092,kafka.cec.dlandau.nl:39092",
+  "topic": "experiment",
+  "hostname_verification": "none",
+  "connected": true,
+  "visible_topics": [
+    "experiment",
+    "group15"
+  ],
+  "assigned_partitions": 16
+}

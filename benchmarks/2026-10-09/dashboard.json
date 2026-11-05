@@ -1,0 +1,309 @@
+{
+  "checked_at": 1791506013.7954822,
+  "anonymous_dashboard_access": true,
+  "default_time_range": {
+    "from": "2026-10-09T00:28:52.238499+00:00",
+    "to": "2026-10-09T00:31:19.593132+00:00"
+  },
+  "datasources": {
+    "course-prometheus": {
+      "details": {
+        "application": "Prometheus",
+        "features": {
+          "rulerApiEnabled": false
+        }
+      },
+      "message": "Successfully queried the Prometheus API.",
+      "status": "OK"
+    },
+    "course-postgres": {
+      "message": "Database Connection OK",
+      "status": "OK"
+    }
+  },
+  "panels": [
+    {
+      "panel": "Latest local test \u2014 instructor validation",
+      "status": 200,
+      "error": null,
+      "frames": 1,
+      "values": [
+        {
+          "name": "course_test_passed",
+          "last": 1,
+          "min": 1,
+          "max": 1
+        }
+      ]
+    },
+    {
+      "panel": "Event Load",
+      "status": 200,
+      "error": null,
+      "frames": 1,
+      "values": [
+        {
+          "name": "Value",
+          "last": 7.4559999999999995,
+          "min": 0,
+          "max": 1000
+        }
+      ]
+    },
+    {
+      "panel": "HTTP Load",
+      "status": 200,
+      "error": null,
+      "frames": 1,
+      "values": [
+        {
+          "name": "http_load_generator_target_request_rate",
+          "last": 100,
+          "min": 100,
+          "max": 100
+        }
+      ]
+    },
+    {
+      "panel": "HTTP Load",
+      "status": 200,
+      "error": null,
+      "frames": 1,
+      "values": [
+        {
+          "name": "http_load_generator_effective_request_rate",
+          "last": 100,
+          "min": 46,
+          "max": 100
+        }
+      ]
+    },
+    {
+      "panel": "Notification Endpoint (Error)",
+      "status": 200,
+      "error": null,
+      "frames": 1,
+      "values": []
+    },
+    {
+      "panel": "# Required Notifications",
+      "status": 200,
+      "error": null,
+      "frames": 1,
+      "values": [
+        {
+          "name": "count",
+          "last": 610,
+          "min": 610,
+          "max": 610
+        }
+      ]
+    },
+    {
+      "panel": "# Notifications Missing",
+      "status": 200,
+      "error": null,
+      "frames": 1,
+      "values": [
+        {
+          "name": "count",
+          "last": 0,
+          "min": 0,
+          "max": 0
+        }
+      ]
+    },
+    {
+      "panel": "Notification Latency Histogram",
+      "status": 200,
+      "error": null,
+      "frames": 1,
+      "values": [
+        {
+          "name": "bucket_count",
+          "last": 0,
+          "min": 0,
+          "max": 239
+        }
+      ]
+    },
+    {
+      "panel": "# Notifications < 10s",
+      "status": 200,
+      "error": null,
+      "frames": 1,
+      "values": [
+        {
+          "name": "count",
+          "last": 610,
+          "min": 610,
+          "max": 610
+        }
+      ]
+    },
+    {
+      "panel": "# Notifications > 10s",
+      "status": 200,
+      "error": null,
+      "frames": 1,
+      "values": [
+        {
+          "name": "count",
+          "last": 0,
+          "min": 0,
+          "max": 0
+        }
+      ]
+    },
+    {
+      "panel": "Temperature (Ok)",
+      "status": 200,
+      "error": null,
+      "frames": 1,
+      "values": [
+        {
+          "name": "Value",
+          "last": 6176,
+          "min": -14523,
+          "max": 6176
+        }
+      ]
+    },
+    {
+      "panel": "OutOfBounds (Ok)",
+      "status": 200,
+      "error": null,
+      "frames": 1,
+      "values": [
+        {
+          "name": "Value",
+          "last": 6186,
+          "min": -14776,
+          "max": 6186
+        }
+      ]
+    },
+    {
+      "panel": "Response Time Histogram",
+      "status": 200,
+      "error": null,
+      "frames": 12,
+      "values": [
+        {
+          "name": "Value",
+          "last": 12362,
+          "min": -29253,
+          "max": 12362
+        },
+        {
+          "name": "Value",
+          "last": 0,
+          "min": 0,
+          "max": 0
+        },
+        {
+          "name": "Value",
+          "last": 0,
+          "min": -1,
+          "max": 1
+        },
+        {
+          "name": "Value",
+          "last": 10,
+          "min": -38,
+          "max": 10
+        },
+        {
+          "name": "Value",
+          "last": 409,
+          "min": -1068,
+          "max": 409
+        },
+        {
+          "name": "Value",
+          "last": 2153,
+          "min": -7736,
+          "max": 2153
+        },
+        {
+          "name": "Value",
+          "last": 6655,
+          "min": -23668,
+          "max": 6655
+        },
+        {
+          "name": "Value",
+          "last": 9390,
+          "min": -27532,
+          "max": 9390
+        },
+        {
+          "name": "Value",
+          "last": 12161,
+          "min": -28558,
+          "max": 12161
+        },
+        {
+          "name": "Value",
+          "last": 12362,
+          "min": -29253,
+          "max": 12362
+        },
+        {
+          "name": "Value",
+          "last": 12362,
+          "min": -29253,
+          "max": 12362
+        },
+        {
+          "name": "Value",
+          "last": 12362,
+          "min": -29253,
+          "max": 12362
+        }
+      ]
+    },
+    {
+      "panel": "Temperature (Error)",
+      "status": 200,
+      "error": null,
+      "frames": 1,
+      "values": []
+    },
+    {
+      "panel": "OutOfBounds (Error)",
+      "status": 200,
+      "error": null,
+      "frames": 1,
+      "values": []
+    },
+    {
+      "panel": "Average CPU Usage",
+      "status": 200,
+      "error": null,
+      "frames": 1,
+      "values": [
+        {
+          "name": "Value",
+          "last": 77.94863013698566,
+          "min": 54.897260273973245,
+          "max": 87.89726027397263
+        }
+      ]
+    },
+    {
+      "panel": "Average Memory Used",
+      "status": 200,
+      "error": null,
+      "frames": 1,
+      "values": [
+        {
+          "name": "Value",
+          "last": 3034852289.3061223,
+          "min": 2975517438.2585034,
+          "max": 3034852289.3061223
+        }
+      ]
+    }
+  ]
+}

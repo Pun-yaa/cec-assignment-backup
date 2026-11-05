@@ -1,0 +1,14 @@
+[
+  {
+    "service": "operational_grafana",
+    "status": 200
+  },
+  {
+    "service": "local_course_grafana",
+    "status": 200
+  },
+  {
+    "service": "prometheus",
+    "status": 200
+  }
+]

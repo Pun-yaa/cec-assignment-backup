@@ -1,0 +1,4 @@
+# Documentation only; do not install into the application environment.
+reportlab==5.1.0
+pymupdf==2.1
+markdown-it-py==3.0.0

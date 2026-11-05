@@ -1,0 +1,61 @@
+[
+  {
+    "source": "01-rubric-and-evidence.md",
+    "pdf": "pdf/01-rubric-and-evidence.pdf",
+    "pages": 3,
+    "bytes": 53468
+  },
+  {
+    "source": "02-architecture-and-correctness.md",
+    "pdf": "pdf/02-architecture-and-correctness.pdf",
+    "pages": 5,
+    "bytes": 247506
+  },
+  {
+    "source": "03-performance-and-development.md",
+    "pdf": "pdf/03-performance-and-development.pdf",
+    "pages": 5,
+    "bytes": 259592
+  },
+  {
+    "source": "04-oral-exam-handbook.md",
+    "pdf": "pdf/04-oral-exam-handbook.pdf",
+    "pages": 10,
+    "bytes": 91052
+  },
+  {
+    "source": "05-team-rehearsal.md",
+    "pdf": "pdf/05-team-rehearsal.pdf",
+    "pages": 3,
+    "bytes": 52280
+  },
+  {
+    "source": "06-demo-runbook.md",
+    "pdf": "pdf/06-demo-runbook.pdf",
+    "pages": 3,
+    "bytes": 51190
+  },
+  {
+    "source": "07-quick-reference.md",
+    "pdf": "pdf/07-quick-reference.pdf",
+    "pages": 2,
+    "bytes": 49137
+  },
+  {
+    "source": "08-submission-report.md",
+    "pdf": "pdf/08-submission-report.pdf",
+    "pages": 5,
+    "bytes": 152534
+  },
+  {
+    "source": "09-code-map.md",
+    "pdf": "pdf/09-code-map.pdf",
+    "pages": 5,
+    "bytes": 75382
+  },
+  {
+    "pdf": "pdf/group-15-assessment.pdf",
+    "pages": 43,
+    "bytes": 618833
+  }
+]

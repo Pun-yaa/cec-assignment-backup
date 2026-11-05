@@ -1,0 +1,75 @@
+{
+  "passed": true,
+  "checked_at_utc": "2026-11-03T03:33:16.258638+00:00",
+  "editable_reports": 7,
+  "oral_questions": 50,
+  "local_links_checked": 67,
+  "headings_checked_against_pdf_text": 141,
+  "markdown_word_count_including_index": 15461,
+  "numeric_comparisons_checked_against_raw_json": true,
+  "application_source_unchanged": true,
+  "private_values_checked_without_output": 111,
+  "pdfs": [
+    {
+      "file": "pdf/01-rubric-and-readiness.pdf",
+      "pages": 4,
+      "bookmarks": 6,
+      "sha256": "5ac5bf224314b2b5637cf30ea8d8347113cf4c0d91e3a8243f5552a0dc4b8659"
+    },
+    {
+      "file": "pdf/02-architecture-and-design-defense.pdf",
+      "pages": 7,
+      "bookmarks": 10,
+      "sha256": "eac6571db4436693b3ed0b8956934bdb88b2fd9a159cab3facbc110cc664ee41"
+    },
+    {
+      "file": "pdf/03-performance-and-development-history.pdf",
+      "pages": 7,
+      "bookmarks": 11,
+      "sha256": "02d022e1cb5432d333539da3acf06c70261b326ef096c5a616174bbd90991542"
+    },
+    {
+      "file": "pdf/04-oral-exam-handbook.pdf",
+      "pages": 9,
+      "bookmarks": 11,
+      "sha256": "f75912e5e08040fbf0862c1a6b44aac02296044621848cbc7735ea156a5e9cfc"
+    },
+    {
+      "file": "pdf/05-team-rehearsal-and-presentation.pdf",
+      "pages": 4,
+      "bookmarks": 9,
+      "sha256": "631f21982b7cbb67d8fae2cd98dcde58cf40234178c7dee09cfe122d031e269d"
+    },
+    {
+      "file": "pdf/06-recovery-and-demo-runbook.pdf",
+      "pages": 5,
+      "bookmarks": 10,
+      "sha256": "57cda87443f7bc6e9a04f62b76b7de06d391d739434e18124a4a7c6c1cb5e5e6"
+    },
+    {
+      "file": "pdf/07-exam-quick-reference.pdf",
+      "pages": 2,
+      "bookmarks": 7,
+      "sha256": "a0a5fa269907aa8b3a62fbab4e1d5ec232383c79c7801aa8374aa42f9fa320bd"
+    },
+    {
+      "file": "pdf/group-15-exam-preparation.pdf",
+      "pages": 40,
+      "bookmarks": 69,
+      "sha256": "6bf91fe678cff7d768b58d0b1f30a25f8234fea55e2b4154ab2c317fb94a79a8"
+    }
+  ],
+  "documentation_dependencies": {
+    "reportlab": "5.1.0",
+    "pymupdf": "2.1",
+    "markdown-it-py": "3.0.0"
+  },
+  "errors": [],
+  "visual_review": {
+    "rubric_page_visually_read": true,
+    "all_three_figures_reviewed": true,
+    "sampled_pdf_pages_reviewed": true,
+    "all_pdf_pages_automatically_checked_for_text_bounds": true,
+    "unicode_arrow_font_fallback_checked": true
+  }
+}

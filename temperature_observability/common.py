@@ -115,11 +115,12 @@ class Metrics:
     def gauge(self, name, description, labels=()):
         return Gauge(name, description, labels, registry=self.registry)
 
-    def histogram(self, name, description):
+    def histogram(self, name, description, labels=()):
         return Histogram(
             name,
             description,
-            buckets=(0.01, 0.05, 0.1, 0.25, 0.5, 1, 2, 5, 8, 10, 15, 30, 60),
+            labels,
+            buckets=(0.001, 0.005, 0.01, 0.05, 0.1, 0.25, 0.5, 1, 2, 5, 8, 10, 15, 30, 60),
             registry=self.registry,
         )
 

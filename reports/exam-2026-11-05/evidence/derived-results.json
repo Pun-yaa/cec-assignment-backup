@@ -1,0 +1,21 @@
+{
+  "native_variable_max_seconds": 2.8835694789886475,
+  "native_fixed_max_seconds": 8.957968950271606,
+  "native_fixed_achieved_rps": 190.57308682879895,
+  "native_fixed_margin_above_local_threshold_rps": 0.5730868287989495,
+  "independent_pass_peak_achieved_rps": 97.92641244686354,
+  "independent_pass_max_notification_seconds": 6.189246654510498,
+  "independent_failed_peak_achieved_rps": 150.32899161544103,
+  "independent_failed_peak_omitted_offers": 474,
+  "independent_failed_max_notification_seconds": 8.526757001876831,
+  "mean_sampled_cpu_percent": {
+    "variable-baseline": 99.32118249514733,
+    "variable-metadata-cache": 98.27891967095228,
+    "variable-final": 99.38163234975981
+  },
+  "metadata_read_deltas": {
+    "variable-baseline": 4546.0,
+    "variable-metadata-cache": 2732.0,
+    "variable-final": 1838.0
+  }
+}

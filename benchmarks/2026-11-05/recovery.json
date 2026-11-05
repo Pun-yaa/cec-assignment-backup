@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "experiment": "recovery-ed9edf188cdd4fcfba530eabe091a6ae",
+  "history_points": 4,
+  "notifications": 3,
+  "checks": [
+    "partial sensor group survives executor restart",
+    "duplicate group at new offsets",
+    "notification retries after HTTP 503",
+    "scheduler restart",
+    "Redis fallback",
+    "data service restart preserves history",
+    "PostgreSQL restart preserves history with Redis stopped and Data cache cleared"
+  ]
+}

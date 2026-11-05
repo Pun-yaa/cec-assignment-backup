@@ -1,0 +1,8 @@
+{
+  "timestamp": 1791502997.5444503,
+  "brokers": "kafka.cec.dlandau.nl:19092,kafka.cec.dlandau.nl:29092,kafka.cec.dlandau.nl:39092",
+  "topic": "experiment",
+  "hostname_verification": "https",
+  "connected": false,
+  "error": "KafkaError{code=_TRANSPORT,val=-195,str=\"Failed to get metadata: Local: Broker transport failure\"}"
+}

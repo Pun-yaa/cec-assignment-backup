@@ -32,8 +32,30 @@ class Settings(BaseSettings):
     notification_timeout: float = Field(default=2, gt=0)
     notification_lease: float = Field(default=15, gt=0)
     cache_ttl: int = Field(default=30, ge=1)
+    history_cache_points: int = Field(default=16384, ge=0)
+    history_snapshot_limit: int = Field(default=512, ge=1, le=4096)
     vm_hourly_cost_usd: float = Field(default=0, ge=0)
     storage_gb_monthly_cost_usd: float = Field(default=0, ge=0)
+    storage_provisioned_gb: float = Field(default=0, ge=0)
+
+    @property
+    def estimated_hourly_cost_usd(self):
+        # EBS bills provisioned capacity, not PostgreSQL's currently used bytes.
+        # Replicas on this same VM do not each add another VM charge.
+        return self.vm_hourly_cost_usd + (
+            self.storage_provisioned_gb * self.storage_gb_monthly_cost_usd / 730
+        )
+
+    @property
+    def cost_configured(self):
+        return all(
+            value > 0
+            for value in (
+                self.vm_hourly_cost_usd,
+                self.storage_gb_monthly_cost_usd,
+                self.storage_provisioned_gb,
+            )
+        )
 
     @model_validator(mode="after")
     def check_lease(self):

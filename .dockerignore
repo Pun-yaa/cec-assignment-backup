@@ -12,3 +12,33 @@
 !experiment-producer/schemas/
 !experiment-producer/schemas/**
 **/__pycache__/
+# Public Rust harness sources, also needed by Docker's legacy builder (which
+# does not support a Dockerfile-specific ignore file). Credentials stay excluded.
+!Cargo.toml
+!Cargo.lock
+!.sqlx/
+!.sqlx/**
+!event-hash/
+!event-hash/Cargo.toml
+!event-hash/src/
+!event-hash/src/**
+!experiment-producer/Cargo.toml
+!experiment-producer/src/
+!experiment-producer/src/**
+!notifications-service/
+!notifications-service/Cargo.toml
+!notifications-service/src/
+!notifications-service/src/**
+!notifications-service/ca.crt
+!http-load-generator/
+!http-load-generator/Cargo.toml
+!http-load-generator/src/
+!http-load-generator/src/**
+!test-to-api/
+!test-to-api/Cargo.toml
+!test-to-api/src/
+!test-to-api/src/**
+!notifier/
+!notifier/Cargo.toml
+!notifier/src/
+!notifier/src/**

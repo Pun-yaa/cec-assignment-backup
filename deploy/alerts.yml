@@ -3,16 +3,38 @@ groups:
     rules:
       - alert: NotificationDeadlineAtRisk
         expr: to_notification_oldest_pending_seconds > 5
-        for: 5s
         labels: {severity: warning}
         annotations:
           summary: Pending alerts are approaching the 10-second deadline
       - alert: NotificationLatencyExceeded
-        expr: histogram_quantile(0.99, sum by (le) (rate(to_notification_latency_seconds_bucket[5m]))) > 10
+        expr: increase(to_notification_deadline_misses_total[5m]) > 0
+        labels: {severity: critical}
+        annotations:
+          summary: At least one accepted notification missed the strict under-10-second deadline
+      - alert: DatabasePoolSaturated
+        expr: histogram_quantile(0.95, sum by (le) (rate(to_database_pool_wait_seconds_bucket[2m]))) > 0.1
+        for: 30s
+        labels: {severity: warning}
+        annotations:
+          summary: Database connection waits are slowing requests; inspect pool and transaction timings
+      - alert: DiskSpaceLow
+        expr: node_filesystem_avail_bytes{mountpoint="/",fstype!~"tmpfs|overlay"} / node_filesystem_size_bytes < 0.15
+        for: 1m
+        labels: {severity: warning}
+        annotations:
+          summary: Less than 15% free disk; preserve PostgreSQL volumes when freeing space
+      - alert: DiskSpaceCritical
+        expr: node_filesystem_avail_bytes{mountpoint="/",fstype!~"tmpfs|overlay"} / node_filesystem_size_bytes < 0.08
         for: 30s
         labels: {severity: critical}
         annotations:
-          summary: Notification p99 exceeds 10 seconds
+          summary: Less than 8% free disk; add space or remove regenerable images and build cache
+      - alert: DiskWillFillWithinOneDay
+        expr: predict_linear(node_filesystem_avail_bytes{mountpoint="/",fstype!~"tmpfs|overlay"}[1h], 86400) < 0
+        for: 10m
+        labels: {severity: warning}
+        annotations:
+          summary: Current storage growth will exhaust disk within 24 hours
       - alert: RejectedNotification
         expr: to_notification_jobs{status="failed"} > 0
         labels: {severity: critical}

@@ -1,0 +1,34 @@
+{
+  "reviewed_at_utc": "2026-11-05T05:12:04.966574+00:00",
+  "rubric_page_visually_read": true,
+  "figures_reviewed": [
+    "architecture",
+    "failure-boundaries",
+    "http-phases",
+    "executor-sizing"
+  ],
+  "pdf_samples_reviewed": {
+    "08-submission-report": [
+      1
+    ],
+    "03-performance-and-development": [
+      1,
+      2
+    ],
+    "04-oral-exam-handbook": [
+      5
+    ],
+    "09-code-map": [
+      4
+    ],
+    "07-quick-reference": [
+      2
+    ]
+  },
+  "checks": [
+    "Figure labels, axes, thresholds and source scope are legible.",
+    "Sampled body pages and tables are legible and unclipped.",
+    "Underscores in source filenames were escaped and corrected rendering rechecked.",
+    "All PDF pages also undergo automated heading and text-bound checks."
+  ]
+}

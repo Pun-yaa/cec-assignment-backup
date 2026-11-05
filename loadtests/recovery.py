@@ -100,6 +100,10 @@ async def main():
             assert response.status_code == 200 and response.json() == experiment.history
             for service in ("data", "postgres"):
                 await docker("restart", service)
+                if service == "postgres":
+                    # Clear the new process-local read snapshots too: a cached
+                    # response would not prove that PostgreSQL recovered its data.
+                    await docker("restart", "data")
                 for _ in range(150):
                     try:
                         response = await client.get(
@@ -128,7 +132,7 @@ async def main():
                         "scheduler restart",
                         "Redis fallback",
                         "data service restart preserves history",
-                        "PostgreSQL restart preserves history with Redis stopped",
+                        "PostgreSQL restart preserves history with Redis stopped and Data cache cleared",
                     ],
                 },
                 indent=2,

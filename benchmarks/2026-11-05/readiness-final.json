@@ -1,0 +1,340 @@
+{
+  "checked_at_epoch": 1793853243.3299992,
+  "api_health": {
+    "status": "ok"
+  },
+  "scheduler_health": {
+    "status": "ok"
+  },
+  "scheduler_status": {
+    "queued_events": 22,
+    "assigned_partitions": 16,
+    "executors": 1,
+    "active_tasks": 4,
+    "capacity": 8,
+    "paused_partitions": [],
+    "partition_queues": {
+      "0": 0,
+      "1": 4,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 0,
+      "6": 0,
+      "7": 0,
+      "8": 0,
+      "9": 0,
+      "10": 0,
+      "11": 1,
+      "12": 0,
+      "13": 16,
+      "14": 1,
+      "15": 0
+    }
+  },
+  "containers": {
+    "data": {
+      "status": "running",
+      "health": "healthy",
+      "image": "sha256:d42bea0e644667e73db518abd8a7e134d48be01c869d37168e6fe3b7e7199c88",
+      "configuration": {}
+    },
+    "executor": {
+      "status": "running",
+      "health": "healthy",
+      "image": "sha256:d42bea0e644667e73db518abd8a7e134d48be01c869d37168e6fe3b7e7199c88",
+      "configuration": {}
+    },
+    "scheduler": {
+      "status": "running",
+      "health": "healthy",
+      "image": "sha256:d44236d84f5045e515147d5f60da92c87d1a07f78cfcdf5e5b11708e08d9defa",
+      "configuration": {
+        "TO_KAFKA_GROUP": "group15-temperature-demo-v1",
+        "TO_KAFKA_TOPIC": "experiment"
+      }
+    },
+    "notification": {
+      "status": "running",
+      "health": "healthy",
+      "image": "sha256:d42bea0e644667e73db518abd8a7e134d48be01c869d37168e6fe3b7e7199c88",
+      "configuration": {
+        "TO_NOTIFICATION_URL": "https://notifications.cec.dlandau.nl/api/notify"
+      }
+    },
+    "api": {
+      "status": "running",
+      "health": "healthy",
+      "image": "sha256:fff40f0bd56687d4d61a1bef7c3acb9274598bd7468b30eeb222dd9cb322dd3b",
+      "configuration": {}
+    },
+    "course-http": {
+      "status": "exited",
+      "health": null,
+      "image": "sha256:95b589e85e568c8794c5fd11759b4511d6cb4e1f993694cf95e0334eeb3e0ccd",
+      "configuration": {}
+    },
+    "course-producer": {
+      "status": "exited",
+      "health": null,
+      "image": "sha256:95b589e85e568c8794c5fd11759b4511d6cb4e1f993694cf95e0334eeb3e0ccd",
+      "configuration": {}
+    }
+  },
+  "database": {
+    "measurements": 3028234,
+    "rejected_events": 0,
+    "pending_notifications": 0,
+    "failed_notifications": 0
+  },
+  "disk_available_bytes": 5288173568,
+  "tests": {
+    "passed": 92,
+    "integration": 14
+  },
+  "storage_estimate_assumption": "20 GiB gp3; type not confirmed; public on-demand rates, exclusions in report",
+  "running_module_checks": [
+    {
+      "service": "data",
+      "file": "common.py",
+      "sha256": "b2fcbc01facbc73c63d11613a6fee026e30b62887bc742c4327e7f35a2a72140",
+      "matches_repository": true
+    },
+    {
+      "service": "data",
+      "file": "config.py",
+      "sha256": "ee725afc31f5f4dca088e020b4931ef18c9ebdf95d0d3f95d4449c525c5a1fef",
+      "matches_repository": true
+    },
+    {
+      "service": "data",
+      "file": "models.py",
+      "sha256": "6baa98d4398f7be2e432e5f6f80daa23546ca33c58f0ceca1175eb0f8e574588",
+      "matches_repository": true
+    },
+    {
+      "service": "data",
+      "file": "data.py",
+      "sha256": "dbd5b3b0216aeb8bd11cbe40440bfcfed7458fa4ae8f78ecb2520fb9fee2a576",
+      "matches_repository": true
+    },
+    {
+      "service": "data",
+      "file": "history.py",
+      "sha256": "62a7150643e6a1886c982bb925579a0bc011fda5106ef73ad4c00d33dcca0f81",
+      "matches_repository": true
+    },
+    {
+      "service": "data",
+      "file": "schema.sql",
+      "sha256": "8ce9064d2d5cb4a47bfe6e959b15ffa6247f53fc149e5e7f7d50cf1ac6f38c1c",
+      "matches_repository": true
+    },
+    {
+      "service": "executor",
+      "file": "common.py",
+      "sha256": "b2fcbc01facbc73c63d11613a6fee026e30b62887bc742c4327e7f35a2a72140",
+      "matches_repository": true
+    },
+    {
+      "service": "executor",
+      "file": "config.py",
+      "sha256": "ee725afc31f5f4dca088e020b4931ef18c9ebdf95d0d3f95d4449c525c5a1fef",
+      "matches_repository": true
+    },
+    {
+      "service": "executor",
+      "file": "models.py",
+      "sha256": "6baa98d4398f7be2e432e5f6f80daa23546ca33c58f0ceca1175eb0f8e574588",
+      "matches_repository": true
+    },
+    {
+      "service": "executor",
+      "file": "executor.py",
+      "sha256": "b1a568fdebb26408d0a01c9d317f9397f94b867c93783cd76f9f9977863f7e1c",
+      "matches_repository": true
+    },
+    {
+      "service": "executor",
+      "file": "engine.py",
+      "sha256": "137982ec58422ad6ec34cd8a0849dc77fdb329374e6db1512b1454018f13d082",
+      "matches_repository": true
+    },
+    {
+      "service": "scheduler",
+      "file": "common.py",
+      "sha256": "b2fcbc01facbc73c63d11613a6fee026e30b62887bc742c4327e7f35a2a72140",
+      "matches_repository": true
+    },
+    {
+      "service": "scheduler",
+      "file": "config.py",
+      "sha256": "ee725afc31f5f4dca088e020b4931ef18c9ebdf95d0d3f95d4449c525c5a1fef",
+      "matches_repository": true
+    },
+    {
+      "service": "scheduler",
+      "file": "models.py",
+      "sha256": "6baa98d4398f7be2e432e5f6f80daa23546ca33c58f0ceca1175eb0f8e574588",
+      "matches_repository": true
+    },
+    {
+      "service": "scheduler",
+      "file": "scheduler.py",
+      "sha256": "bec84a1e2c6111c46dc0073b564e26168f52bde36cb2824b8dd015b24634d90a",
+      "matches_repository": true
+    },
+    {
+      "service": "scheduler",
+      "file": "codec.py",
+      "sha256": "5c3e5b950c696d571536a84c17736bcd0ede9469dc26741588a0cc41f7e6d57e",
+      "matches_repository": true
+    },
+    {
+      "service": "scheduler",
+      "file": "discovery.py",
+      "sha256": "359a233786c58005e77c25d9467feff638664b7d965a4d863f9e995ca622d2af",
+      "matches_repository": true
+    },
+    {
+      "service": "notification",
+      "file": "common.py",
+      "sha256": "b2fcbc01facbc73c63d11613a6fee026e30b62887bc742c4327e7f35a2a72140",
+      "matches_repository": true
+    },
+    {
+      "service": "notification",
+      "file": "config.py",
+      "sha256": "ee725afc31f5f4dca088e020b4931ef18c9ebdf95d0d3f95d4449c525c5a1fef",
+      "matches_repository": true
+    },
+    {
+      "service": "notification",
+      "file": "notification.py",
+      "sha256": "e64d0d87c153af4c10d2d90999cb1d40db5170e2d4a353196e5b1356b57214ee",
+      "matches_repository": true
+    }
+  ],
+  "kafka_lag_check": {
+    "timestamp": 1793853310.0813031,
+    "watermarks_sampled_at": 1793853310.079998,
+    "group": "group15-temperature-demo-v1",
+    "topic": "experiment",
+    "partitions": [
+      {
+        "partition": 0,
+        "low": 2792744,
+        "high": 3188982,
+        "committed_next_offset": 3188982,
+        "lag": 0
+      },
+      {
+        "partition": 1,
+        "low": 3074946,
+        "high": 3262240,
+        "committed_next_offset": 3262240,
+        "lag": 0
+      },
+      {
+        "partition": 2,
+        "low": 3206403,
+        "high": 3279188,
+        "committed_next_offset": 3279188,
+        "lag": 0
+      },
+      {
+        "partition": 3,
+        "low": 2920387,
+        "high": 3255972,
+        "committed_next_offset": 3255972,
+        "lag": 0
+      },
+      {
+        "partition": 4,
+        "low": 2643618,
+        "high": 2993364,
+        "committed_next_offset": 2993364,
+        "lag": 0
+      },
+      {
+        "partition": 5,
+        "low": 3093062,
+        "high": 3190526,
+        "committed_next_offset": 3190526,
+        "lag": 0
+      },
+      {
+        "partition": 6,
+        "low": 3275822,
+        "high": 3281315,
+        "committed_next_offset": 3281315,
+        "lag": 0
+      },
+      {
+        "partition": 7,
+        "low": 3117254,
+        "high": 3275918,
+        "committed_next_offset": 3275918,
+        "lag": 0
+      },
+      {
+        "partition": 8,
+        "low": 3061100,
+        "high": 3260028,
+        "committed_next_offset": 3260028,
+        "lag": 0
+      },
+      {
+        "partition": 9,
+        "low": 2832187,
+        "high": 3219036,
+        "committed_next_offset": 3219036,
+        "lag": 0
+      },
+      {
+        "partition": 10,
+        "low": 3281431,
+        "high": 3305867,
+        "committed_next_offset": 3305867,
+        "lag": 0
+      },
+      {
+        "partition": 11,
+        "low": 3100434,
+        "high": 3347679,
+        "committed_next_offset": 3347679,
+        "lag": 0
+      },
+      {
+        "partition": 12,
+        "low": 3282120,
+        "high": 3313184,
+        "committed_next_offset": 3313184,
+        "lag": 0
+      },
+      {
+        "partition": 13,
+        "low": 3152395,
+        "high": 3183679,
+        "committed_next_offset": 3183679,
+        "lag": 0
+      },
+      {
+        "partition": 14,
+        "low": 3021986,
+        "high": 3392603,
+        "committed_next_offset": 3392603,
+        "lag": 0
+      },
+      {
+        "partition": 15,
+        "low": 2772992,
+        "high": 3134722,
+        "committed_next_offset": 3134722,
+        "lag": 0
+      }
+    ],
+    "total_lag": 0,
+    "note": "Committed offsets sampled after watermarks; measures whether consumer reached these observed broker positions, not an atomic global snapshot."
+  }
+}

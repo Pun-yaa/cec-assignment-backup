@@ -46,6 +46,8 @@ CREATE TABLE IF NOT EXISTS notification_outbox (
 );
 CREATE INDEX IF NOT EXISTS notification_pending
     ON notification_outbox (next_attempt_at, id) WHERE status = 'pending';
+-- Keep the monitoring count off the large payload heap as history accumulates.
+CREATE INDEX IF NOT EXISTS notification_status ON notification_outbox (status);
 
 CREATE TABLE IF NOT EXISTS rejected_events (
     stream TEXT NOT NULL,

@@ -1,0 +1,207 @@
+{
+  "created_at_utc": "2026-11-05T04:41:06.131547+00:00",
+  "baseline": "Working tree before the 2026-11-05 code improvement session, including pre-existing uncommitted implementation and historical reports.",
+  "original_assignment_commit": "eb9ffa6228847440df01762b98fe758bc7944fef",
+  "scope": "All changed code, tests, deployment files and edited documentation; generated evidence/manifest/full-report artifacts and private generated configuration are excluded from their own diff.",
+  "files": [
+    {
+      "path": "IMPLEMENTATION-REPORT.md",
+      "status": "M",
+      "before_sha256": "224d42a637cbe859b76c3c3b1ede67f1cbf1cdf319ed6956815a32961b4e0305",
+      "after_sha256": "b0ff06b9d03fac956818bfc78de904b9a00707d48c5fdc36b783046e2ada2d7b"
+    },
+    {
+      "path": "MONITORING.md",
+      "status": "M",
+      "before_sha256": "21aadda578c4a6ae4c46016d92e1b2fe541a0eb2230a7b91007323b66db8d344",
+      "after_sha256": "80a9e998bfd8ca7ea328bb1c9320f10054241a08ae9fb28c0e57be3f95238f92"
+    },
+    {
+      "path": "Makefile",
+      "status": "M",
+      "before_sha256": "4a11b4d28ea9f10651992a64eb48c10c31fc7fd574a703bb1e7d08d084f23aca",
+      "after_sha256": "9043f949c8ce2f1774e4ed2ae1cecbdc514e4dcb044897a2637374e6309fee23"
+    },
+    {
+      "path": "README.md",
+      "status": "M",
+      "before_sha256": "15af4c462094fe260f93fcd7cdb6e2e2575c734f197cd4631bfa8fb6cc4b1cc4",
+      "after_sha256": "02b4d412df4358f710cae4d3a3f1609ed89c49e4a31df2c612c55c27e8fc57f1"
+    },
+    {
+      "path": "STRESS-TEST-RESULTS.md",
+      "status": "M",
+      "before_sha256": "92c2472d306fedffb8be0fa7bbf9ba98f15ddf18d1e5b154e77f6a37413f329b",
+      "after_sha256": "30d54190204049a071b7f4ef2fdf4d26467c76ee2c74dec4ea2606ecd974e07a"
+    },
+    {
+      "path": "compose.course-test.yml",
+      "status": "M",
+      "before_sha256": "34c380cb1457da7564e22e5ba69b69230db037ef470280308f03cd679ce446c2",
+      "after_sha256": "9c72d0acb07f5819a753edea9abd5f5566455fde08adf0ac9c450e4ec837f93a"
+    },
+    {
+      "path": "compose.local.yml",
+      "status": "M",
+      "before_sha256": "06ff3e50891b1c80add2e68958e5828045b023e167136aaa904ab052e1cca379",
+      "after_sha256": "2f270b396d1a978946faccb12de7f471924934c3ac1f17bea218c86a39b25519"
+    },
+    {
+      "path": "compose.monitoring.yml",
+      "status": "M",
+      "before_sha256": "a8ed68d143b148ccca17bfd33c391944d00580f7692ffd106e7fee78ec375a4d",
+      "after_sha256": "c589a898dbeaab4f2aee0bcd6d55879496c77d9653d3efeab865bf1221fb8565"
+    },
+    {
+      "path": "compose.yml",
+      "status": "M",
+      "before_sha256": "a3af26f5eea80356bdb788a28d361fbbd236d0c80e386c8fd4f0084e3a345eca",
+      "after_sha256": "04144e3e9ae90912abaabcad0eb6d12a1cfdae17d73686813b42f8a1eb03ab39"
+    },
+    {
+      "path": "deploy/alerts.yml",
+      "status": "M",
+      "before_sha256": "c82c9369df31f1778f47d439a4c34b4ab43f9124f155483b2d8608c036a27c3d",
+      "after_sha256": "b4b641a1bcd408c82cf69be0105f67728c5934497c0d633a703e9baa59ff4f06"
+    },
+    {
+      "path": "deploy/grafana/dashboards/temperature.json",
+      "status": "M",
+      "before_sha256": "2e07357b4caf66d0d2884e6c9f4406b33c7bd49c2ca94bff63c7a1bf994e48e5",
+      "after_sha256": "814e2d8e0d9a2560ca598ac1ba0541b3999a329c4ac07e7072c7d1a92b3de591"
+    },
+    {
+      "path": "loadtests/course.py",
+      "status": "M",
+      "before_sha256": "e847614305b33261bc0670306a9b05b30afabbaab7794dca0c00804a39c87767",
+      "after_sha256": "1e5df34614bcce940cf2ca65207d0ed933edd43b26218be9e56d1140c03a007a"
+    },
+    {
+      "path": "loadtests/http_profile.py",
+      "status": "A",
+      "before_sha256": null,
+      "after_sha256": "22c7983708d3e3af991b6e832ecd729d24811a23a8e6f956530d897ed0bf9fcc"
+    },
+    {
+      "path": "loadtests/recovery.py",
+      "status": "M",
+      "before_sha256": "e826a3914011a1f719cdb040f7658ef622a7b2f47cd2fcb5b65b2c57d593052b",
+      "after_sha256": "0154ce146a9ac7063521f71df74b513680da04b3b267a31bf38c5f6f1e596809"
+    },
+    {
+      "path": "loadtests/stress.py",
+      "status": "M",
+      "before_sha256": "af733b88a0d33248f0cba7057174c675e2b6028c937bdad1b293dfb33d7b74fb",
+      "after_sha256": "6db15d49fed07c050d7f9cf4c0371312b8e36eb8a40e0a057c5e24e99f3696f7"
+    },
+    {
+      "path": "loadtests/telemetry.py",
+      "status": "A",
+      "before_sha256": null,
+      "after_sha256": "0e479b9ff92b896614843d3ca3def795bc98f8ea58952c61ea760a47e63f991d"
+    },
+    {
+      "path": "loadtests/validation.py",
+      "status": "A",
+      "before_sha256": null,
+      "after_sha256": "5146bcf7fb01fd21d6b2f08c556b3e01bfaf0aadb5cddf20f8245228188e6e4d"
+    },
+    {
+      "path": "monitoring.env.example",
+      "status": "M",
+      "before_sha256": "67e9a280852c86488103baf90f4bbf7f8c1d862689b3d5178c28febcfc1f3b37",
+      "after_sha256": "44ea1de7c8779f0f3eed4ab80d94e21b0c94ae07ee4f1c81f0444b47f381f4cb"
+    },
+    {
+      "path": "reports/code-improvements-2026-11-05/README.md",
+      "status": "A",
+      "before_sha256": null,
+      "after_sha256": "74d64e96af87499326b3338443327384e06fdb25ee989f3fff6c30ea9795e4e7"
+    },
+    {
+      "path": "temperature_observability/common.py",
+      "status": "M",
+      "before_sha256": "74864ee565c7daff9db90916fedbc6c079c58998585a01bd841861e9b493134d",
+      "after_sha256": "b2fcbc01facbc73c63d11613a6fee026e30b62887bc742c4327e7f35a2a72140"
+    },
+    {
+      "path": "temperature_observability/config.py",
+      "status": "M",
+      "before_sha256": "8b89569cfbc6a84ef9f42c8ed432e028a6e37e0f6897ef4cc4fbe254aade4bc4",
+      "after_sha256": "ee725afc31f5f4dca088e020b4931ef18c9ebdf95d0d3f95d4449c525c5a1fef"
+    },
+    {
+      "path": "temperature_observability/data.py",
+      "status": "M",
+      "before_sha256": "59dc3809d9de22eaa4d82e4996b0bf309eec5a6d7a49e7c161d92a558aab9f44",
+      "after_sha256": "dbd5b3b0216aeb8bd11cbe40440bfcfed7458fa4ae8f78ecb2520fb9fee2a576"
+    },
+    {
+      "path": "temperature_observability/history.py",
+      "status": "A",
+      "before_sha256": null,
+      "after_sha256": "62a7150643e6a1886c982bb925579a0bc011fda5106ef73ad4c00d33dcca0f81"
+    },
+    {
+      "path": "temperature_observability/notification.py",
+      "status": "M",
+      "before_sha256": "fa622ca795d3c094d538076617cbfbc2d629765a539b3ad828350736e515faa7",
+      "after_sha256": "e64d0d87c153af4c10d2d90999cb1d40db5170e2d4a353196e5b1356b57214ee"
+    },
+    {
+      "path": "temperature_observability/scheduler.py",
+      "status": "M",
+      "before_sha256": "9862420baf44ebc6d17e64895d3d85e9f8a20861502fc1490dd5978e080c5248",
+      "after_sha256": "bec84a1e2c6111c46dc0073b564e26168f52bde36cb2824b8dd015b24634d90a"
+    },
+    {
+      "path": "temperature_observability/schema.sql",
+      "status": "M",
+      "before_sha256": "0320f307ee9195d07c78701234dcd45fa69dcf3921bd19577ca4af8dfb526e16",
+      "after_sha256": "8ce9064d2d5cb4a47bfe6e959b15ffa6247f53fc149e5e7f7d50cf1ac6f38c1c"
+    },
+    {
+      "path": "tests/test_cost.py",
+      "status": "A",
+      "before_sha256": null,
+      "after_sha256": "a1b5891c055a60d3c370b4df4ac65c13bc88fcfd8f7c0f9406c1631c3797d038"
+    },
+    {
+      "path": "tests/test_course_build_cache.py",
+      "status": "A",
+      "before_sha256": null,
+      "after_sha256": "d805c123f786449f419c933cd213e0ca3a048e38516a371bb993297fec429a07"
+    },
+    {
+      "path": "tests/test_data_integration.py",
+      "status": "M",
+      "before_sha256": "4b793ae0635f83a944d4adeb9c8c9e614f8354e716282c09e7cb64d04488bca9",
+      "after_sha256": "430e727998b07c5407fc9380f2fba4ce73330a3ce9ed83a20a13153f62ff2d59"
+    },
+    {
+      "path": "tests/test_history.py",
+      "status": "A",
+      "before_sha256": null,
+      "after_sha256": "0306375a13e307819c1b8fb41fe0d4a68f2f05257dedd57a6d1d08c80320e230"
+    },
+    {
+      "path": "tests/test_load_validation.py",
+      "status": "A",
+      "before_sha256": null,
+      "after_sha256": "62932f70a9c56654e1786258933a1be55c53e3b640e2f89403566ea93c93bf5c"
+    },
+    {
+      "path": "tests/test_notification.py",
+      "status": "M",
+      "before_sha256": "e7a9e34fe10c709b6bc6d9d0d4960ecb03414933492cb555514a42782cd95aad",
+      "after_sha256": "a1509715e2aefd233df20077d6e4e08369cb269ab34ba6d314e2217b2d9c5585"
+    },
+    {
+      "path": "tests/test_scheduler.py",
+      "status": "M",
+      "before_sha256": "5100c7b7745f80ce00d26167a5199062b788acea4abfd63b62e3ebf912000740",
+      "after_sha256": "16b311439108f98a54808dbaa7c5f20eccdd5964356540395ef575bc018b1007"
+    }
+  ],
+  "patch_sha256": "5cec0169c99f3c5ce59e89cd2d5f5866279ebd77e40f46a4c24aae22a7a02211"
+}

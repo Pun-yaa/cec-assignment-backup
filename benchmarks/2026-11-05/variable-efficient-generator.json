@@ -1,0 +1,158 @@
+{
+  "run_id": "stress-3bb0ddfe4bbe",
+  "configuration": {
+    "experiments": 100,
+    "sensors": 10,
+    "duration": 30,
+    "period": 1,
+    "http_rps": 200,
+    "http_profile": "50:15,200:30,100:15",
+    "brokers": "localhost:19092",
+    "topic": "experiment",
+    "api": "http://localhost:3003",
+    "sink": "http://localhost:18080",
+    "scheduler": "http://localhost:8001",
+    "data": "http://localhost:8002",
+    "output": "benchmarks/2026-11-05/variable-efficient-generator.json",
+    "event_loop": "uvloop"
+  },
+  "generator_event_loop": "uvloop",
+  "duration_seconds": 60.388919844990596,
+  "sensor_events_per_second": 1000.0,
+  "actual_sensor_events_per_second": 993.5597482785105,
+  "actual_samples_per_second_per_experiment": 0.9935597482785105,
+  "samples_per_experiment": 60,
+  "kafka_messages": 62400,
+  "http_requests_per_second": 115.03412715265114,
+  "http_attempts_per_second": 115.03412715265114,
+  "http_elapsed_seconds": 61.80774502304848,
+  "http_phases": [
+    {
+      "target_rps": 50,
+      "duration_seconds": 15.0,
+      "expected_requests": 750,
+      "scheduled_requests": 750,
+      "successful_requests": 750,
+      "errors": 0,
+      "unexpected_error_types": [],
+      "elapsed_including_drain_seconds": 15.307041492080316,
+      "achieved_rps": 48.997058013335966,
+      "latency_seconds": {
+        "count": 750,
+        "p50": 0.05668994307052344,
+        "p95": 0.42451330996118486,
+        "p99": 0.5843646300490946,
+        "max": 0.7640485359588638
+      },
+      "scheduling_delay_seconds": {
+        "count": 750,
+        "p50": 0.0007830220274627209,
+        "p95": 0.2146637390833348,
+        "p99": 0.3270672981161624,
+        "max": 0.40495539200492203
+      },
+      "passed": true
+    },
+    {
+      "target_rps": 200,
+      "duration_seconds": 30.0,
+      "expected_requests": 6000,
+      "scheduled_requests": 4860,
+      "successful_requests": 4860,
+      "errors": 0,
+      "unexpected_error_types": [],
+      "elapsed_including_drain_seconds": 36.99572188197635,
+      "achieved_rps": 131.36654058283708,
+      "latency_seconds": {
+        "count": 4860,
+        "p50": 6.795108139049262,
+        "p95": 8.07281400100328,
+        "p99": 8.725658363080584,
+        "max": 9.434920788975433
+      },
+      "scheduling_delay_seconds": {
+        "count": 4860,
+        "p50": 0.17661937198136002,
+        "p95": 0.7687907750951126,
+        "p99": 1.136840129038319,
+        "max": 1.3636049489723518
+      },
+      "passed": false
+    },
+    {
+      "target_rps": 100,
+      "duration_seconds": 15.0,
+      "expected_requests": 1500,
+      "scheduled_requests": 1500,
+      "successful_requests": 1500,
+      "errors": 0,
+      "unexpected_error_types": [],
+      "elapsed_including_drain_seconds": 16.786130893044174,
+      "achieved_rps": 89.3594843003142,
+      "latency_seconds": {
+        "count": 1500,
+        "p50": 4.95340645511169,
+        "p95": 6.907985231024213,
+        "p99": 7.3100287390407175,
+        "max": 7.776985630975105
+      },
+      "scheduling_delay_seconds": {
+        "count": 1500,
+        "p50": 0.19834329199511558,
+        "p95": 1.0671940479660407,
+        "p99": 1.4198748050257564,
+        "max": 1.5466739550465718
+      },
+      "passed": false
+    }
+  ],
+  "http_latency_seconds": {
+    "count": 7110,
+    "p50": 5.031019195099361,
+    "p95": 7.998800500994548,
+    "p99": 8.472192903980613,
+    "max": 9.434920788975433
+  },
+  "http_errors": 0,
+  "http_error_types": {},
+  "notification_latency_seconds": {
+    "count": 1626,
+    "p50": 2.4909508228302,
+    "p95": 5.51971173286438,
+    "p99": 6.555060625076294,
+    "max": 7.8767945766448975
+  },
+  "notifications_expected": 1626,
+  "notifications_received": 1626,
+  "missing_notifications": 0,
+  "unexpected_notifications": 0,
+  "duplicate_delivery_attempts": 0,
+  "data_mismatches": [],
+  "peak_scheduler_queue": 4743,
+  "telemetry": {
+    "host_cpu_mean": 0.9799561366924101,
+    "host_cpu_max": 1.0,
+    "host_cpu_steal_mean": 0.0007667027177876249,
+    "data_operation_mean_seconds": {
+      "to_database_pool_wait_seconds_mean{operation=metrics}": 0.0037153888357958445,
+      "to_database_pool_wait_seconds_mean{operation=claim}": 0.0009173899547295461,
+      "to_database_pool_wait_seconds_mean{operation=history_metadata}": 0.00994856639772964,
+      "to_database_pool_wait_seconds_mean{operation=history_snapshot}": 0.005378874082762138,
+      "to_database_pool_wait_seconds_mean{operation=health}": 3.4621755520884806e-05,
+      "to_database_pool_wait_seconds_mean{operation=load}": 0.0023254446547778516,
+      "to_database_pool_wait_seconds_mean{operation=commit}": 0.004116152265178059,
+      "to_database_pool_wait_seconds_mean{operation=acknowledge}": 0.008667132601042573,
+      "to_database_connection_seconds_mean{operation=claim}": 0.02113408799467564,
+      "to_database_connection_seconds_mean{operation=metrics}": 0.13970937406217368,
+      "to_database_connection_seconds_mean{operation=history_metadata}": 0.0378271454850321,
+      "to_database_connection_seconds_mean{operation=history_snapshot}": 0.03672991666393218,
+      "to_database_connection_seconds_mean{operation=health}": 0.012017490701206649,
+      "to_database_connection_seconds_mean{operation=load}": 0.07902745282445076,
+      "to_database_connection_seconds_mean{operation=commit}": 0.1655168589022598,
+      "to_database_connection_seconds_mean{operation=acknowledge}": 0.03513633267744759
+    },
+    "samples": 40,
+    "sample_errors": 0
+  },
+  "passed": false
+}

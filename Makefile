@@ -50,3 +50,29 @@ stress:
 
 recovery:
 	$(PYTHON) -m loadtests.recovery
+
+.PHONY: course-test course-stress course-variable course-panel course-check course-stop course-kafka-check stress-variable
+
+course-test:
+	$(PYTHON) -m loadtests.course run
+
+course-stress:
+	$(PYTHON) -m loadtests.course run --experiments 100 --sensors 10 --samples 60 --http-rps 100
+
+course-variable:
+	$(PYTHON) -m loadtests.course run --experiments 100 --sensors 10 --samples 80 --http-rps 100 --http-max-rps 200 --http-seconds 90
+
+stress-variable:
+	$(PYTHON) -m loadtests.stress --experiments 100 --sensors 10 --http-profile 50:15,200:30,100:15 --output test-results/variable.json
+
+course-panel:
+	$(PYTHON) -m loadtests.course up
+
+course-check:
+	$(PYTHON) -m loadtests.course check
+
+course-stop:
+	$(PYTHON) -m loadtests.course stop
+
+course-kafka-check:
+	$(PYTHON) scripts/check-course-kafka.py

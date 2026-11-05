@@ -1,0 +1,153 @@
+# Use with compose.yml and compose.local.yml. No course credentials are used.
+x-course-tool: &course-tool
+  image: cec-course-tools:local
+  build:
+    context: .
+    dockerfile: deploy/CourseTools.Dockerfile
+  init: true
+  working_dir: /app
+  environment:
+    DATABASE_URL: postgresql://course:course-local@course-db:5432/course
+    TOKIO_WORKER_THREADS: "2"
+  logging:
+    driver: json-file
+    options: {max-size: 5m, max-file: "2"}
+
+services:
+  kafka:
+    environment:
+      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093,HOST://:19092,TLS://:9094
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,HOST://localhost:19092,TLS://kafka:9094
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,HOST:PLAINTEXT,TLS:SSL
+      KAFKA_SSL_KEYSTORE_TYPE: PKCS12
+      KAFKA_SSL_KEYSTORE_LOCATION: /course-tls/server.pkcs12
+      KAFKA_SSL_KEYSTORE_PASSWORD: cc2023
+      KAFKA_SSL_KEY_PASSWORD: cc2023
+      KAFKA_SSL_TRUSTSTORE_TYPE: PEM
+      KAFKA_SSL_TRUSTSTORE_LOCATION: /course-tls/ca.crt
+      KAFKA_SSL_CLIENT_AUTH: required
+    volumes:
+      - ./.course-test/broker:/course-tls:ro
+  scheduler:
+    environment:
+      TO_KAFKA_TOPIC: course-test-events
+      TO_KAFKA_GROUP: group15-course-test-v1
+  notification:
+    user: "${COURSE_UID:-1000}:${COURSE_GID:-1000}"
+    environment:
+      TO_NOTIFICATION_URL: http://course-notifications:3000/api/notify
+      TO_NOTIFICATION_TOKEN_FILE: /run/course-token
+    volumes:
+      - ./.course-test/token:/run/course-token:ro
+    depends_on:
+      course-notifications: {condition: service_started}
+  course-db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: course
+      POSTGRES_PASSWORD: course-local
+      POSTGRES_DB: course
+    volumes:
+      - course-db-data:/var/lib/postgresql/data
+      - ./deploy/course/schema.sql:/docker-entrypoint-initdb.d/course.sql:ro
+    healthcheck:
+      test: [CMD-SHELL, pg_isready -U course -d course]
+      interval: 3s
+      retries: 20
+    restart: unless-stopped
+  course-notifications:
+    <<: *course-tool
+    command: [notifications-service]
+    env_file: ./.course-test/secret.env
+    environment:
+      DATABASE_URL: postgresql://course:course-local@course-db:5432/course
+      RSA_PUBLIC_KEY: /run/course-jwt-public.pem
+      TOKIO_WORKER_THREADS: "2"
+    volumes:
+      - ./.course-test/jwt-public.pem:/run/course-jwt-public.pem:ro
+    ports: [127.0.0.1:3000:3000]
+    depends_on:
+      course-db: {condition: service_healthy}
+    restart: unless-stopped
+  course-producer:
+    <<: *course-tool
+    profiles: [course-load]
+    command: [experiment-producer, --brokers, kafka:9094, --topic, course-test-events, --topic-document, course-test-documents, --config-file, /app/config.json]
+    env_file: ./.course-test/secret.env
+    volumes:
+      - ./.course-test/client:/app/experiment-producer/auth:ro
+      - ./.course-test/config.json:/app/config.json:ro
+    ports: [127.0.0.1:3001:3001]
+    depends_on:
+      kafka: {condition: service_healthy}
+      course-db: {condition: service_healthy}
+  course-http:
+    <<: *course-tool
+    profiles: [course-load]
+    command:
+      - http-load-generator
+      - --brokers
+      - kafka:9094
+      - --topic
+      - course-test-documents
+      - --group-id
+      - ${COURSE_HTTP_GROUP:-group15-course-http-v1}
+      - --consumer-wait-before-send
+      - "3"
+      - --hosts-file
+      - /app/hosts.json
+      - --min-batch-size
+      - ${COURSE_HTTP_MIN:-100}
+      - --max-batch-size
+      - ${COURSE_HTTP_MAX:-101}
+      - --num-generations
+      - "255"
+      - --stable-rate-duration
+      - ${COURSE_HTTP_PHASE_SECONDS:-20}
+      - --requestor-lag
+      - "0"
+      - --requestor-retries
+      - "0"
+      - --requestor-max-in-flight
+      - "100"
+    volumes:
+      - ./.course-test/client:/app/auth:ro
+      - ./.course-test/hosts.json:/app/hosts.json:ro
+    ports: [127.0.0.1:3002:3002]
+    depends_on:
+      kafka: {condition: service_healthy}
+      api: {condition: service_healthy}
+  course-prometheus:
+    image: prom/prometheus:v3.2.1
+    command: [--config.file=/etc/prometheus/prometheus.yml, --storage.tsdb.retention.time=7d, --storage.tsdb.retention.size=256MB]
+    volumes:
+      - ./deploy/course/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - course-prometheus-data:/prometheus
+    ports: [127.0.0.1:3005:9090]
+    restart: unless-stopped
+  course-grafana:
+    image: grafana/grafana:12.0.2
+    environment:
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Viewer
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_SECURITY_ADMIN_PASSWORD: ${COURSE_GRAFANA_PASSWORD:-course-local}
+    volumes:
+      - ./deploy/course/provisioning:/etc/grafana/provisioning:ro
+      - ./.course-test/dashboards:/var/lib/grafana/course-dashboards:ro
+      - course-grafana-data:/var/lib/grafana
+    ports: [127.0.0.1:3009:3000]
+    restart: unless-stopped
+  node-exporter:
+    image: prom/node-exporter:v1.9.1
+    restart: unless-stopped
+    pid: host
+    command: [--path.rootfs=/host, --collector.textfile.directory=/course-metrics]
+    volumes:
+      - /:/host:ro,rslave
+      - ./.course-test/metrics:/course-metrics:ro
+
+volumes:
+  course-db-data:
+  course-prometheus-data:
+  course-grafana-data:

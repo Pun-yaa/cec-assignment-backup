@@ -1,0 +1,120 @@
+{
+  "timestamp": 1793851640.6666632,
+  "group": "group15-temperature-demo-v1",
+  "topic": "experiment",
+  "partitions": [
+    {
+      "partition": 0,
+      "low": 2792744,
+      "high": 3188982,
+      "committed_next_offset": 2900136,
+      "lag": 288846
+    },
+    {
+      "partition": 1,
+      "low": 3074946,
+      "high": 3257806,
+      "committed_next_offset": 3086056,
+      "lag": 171750
+    },
+    {
+      "partition": 2,
+      "low": 3206403,
+      "high": 3277703,
+      "committed_next_offset": 3233931,
+      "lag": 43772
+    },
+    {
+      "partition": 3,
+      "low": 2920387,
+      "high": 3255719,
+      "committed_next_offset": 2923347,
+      "lag": 332372
+    },
+    {
+      "partition": 4,
+      "low": 2643618,
+      "high": 2987356,
+      "committed_next_offset": 2749751,
+      "lag": 237605
+    },
+    {
+      "partition": 5,
+      "low": 3093062,
+      "high": 3189241,
+      "committed_next_offset": 3108272,
+      "lag": 80969
+    },
+    {
+      "partition": 6,
+      "low": 3275822,
+      "high": 3276126,
+      "committed_next_offset": 3276126,
+      "lag": 0
+    },
+    {
+      "partition": 7,
+      "low": 3117254,
+      "high": 3275918,
+      "committed_next_offset": 3119871,
+      "lag": 156047
+    },
+    {
+      "partition": 8,
+      "low": 3061100,
+      "high": 3259420,
+      "committed_next_offset": 3064651,
+      "lag": 194769
+    },
+    {
+      "partition": 9,
+      "low": 2832187,
+      "high": 3212475,
+      "committed_next_offset": 2838466,
+      "lag": 374009
+    },
+    {
+      "partition": 10,
+      "low": 3281431,
+      "high": 3303695,
+      "committed_next_offset": -1001,
+      "lag": 22264
+    },
+    {
+      "partition": 11,
+      "low": 3100434,
+      "high": 3345316,
+      "committed_next_offset": 3157631,
+      "lag": 187685
+    },
+    {
+      "partition": 12,
+      "low": 3282120,
+      "high": 3312580,
+      "committed_next_offset": -1001,
+      "lag": 30460
+    },
+    {
+      "partition": 13,
+      "low": 3152395,
+      "high": 3174975,
+      "committed_next_offset": 3163135,
+      "lag": 11840
+    },
+    {
+      "partition": 14,
+      "low": 3021986,
+      "high": 3388500,
+      "committed_next_offset": -1001,
+      "lag": 366514
+    },
+    {
+      "partition": 15,
+      "low": 2772992,
+      "high": 3134628,
+      "committed_next_offset": -1001,
+      "lag": 361636
+    }
+  ],
+  "total_lag": 2860538
+}

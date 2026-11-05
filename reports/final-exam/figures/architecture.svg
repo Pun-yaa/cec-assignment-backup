@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="820" height="430" preserveAspectRatio="xMinYMin meet" viewBox="0 0 820 430" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="820" height="430"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-430)" style="clip-path: url(#clip)">
+		<g transform="">
+			<text x="25" y="405" style="font-family: StudyBold; font-size: 17px;fill: rgb(7%,18%,29%); stroke:none;" transform="translate(0,810) scale(1,-1)">Application responsibilities and data flow</text>
+			<rect x="25" y="300" width="130" height="58" rx="8" ry="8" style="stroke: rgb(83%,87%,89%); stroke-linecap: butt; stroke-width: 1; fill: rgb(93%,95%,96%); fill-rule: evenodd;"/>
+			<text x="70.65234375" y="333.0" style="font-family: StudyBold; font-size: 12px;fill: rgb(7%,18%,29%); stroke:none;" transform="translate(0,666) scale(1,-1)">Kafka</text>
+			<text x="63.063720703125" y="315.0" style="font-family: Study; font-size: 9px;fill: rgb(32%,38%,44%); stroke:none;" transform="translate(0,630) scale(1,-1)">Avro events</text>
+			<rect x="195" y="300" width="145" height="58" rx="8" ry="8" style="stroke: rgb(83%,87%,89%); stroke-linecap: butt; stroke-width: 1; fill: rgb(93%,95%,96%); fill-rule: evenodd;"/>
+			<text x="233.6298828125" y="333.0" style="font-family: StudyBold; font-size: 12px;fill: rgb(7%,18%,29%); stroke:none;" transform="translate(0,666) scale(1,-1)">Scheduler</text>
+			<text x="216.020263671875" y="315.0" style="font-family: Study; font-size: 9px;fill: rgb(32%,38%,44%); stroke:none;" transform="translate(0,630) scale(1,-1)">ordered partition tasks</text>
+			<rect x="380" y="300" width="150" height="58" rx="8" ry="8" style="stroke: rgb(83%,87%,89%); stroke-linecap: butt; stroke-width: 1; fill: rgb(93%,95%,96%); fill-rule: evenodd;"/>
+			<text x="425.1845703125" y="333.0" style="font-family: StudyBold; font-size: 12px;fill: rgb(7%,18%,29%); stroke:none;" transform="translate(0,666) scale(1,-1)">Executor</text>
+			<text x="405.001220703125" y="315.0" style="font-family: Study; font-size: 9px;fill: rgb(32%,38%,44%); stroke:none;" transform="translate(0,630) scale(1,-1)">stateless computation</text>
+			<rect x="570" y="300" width="210" height="58" rx="8" ry="8" style="stroke: rgb(83%,87%,89%); stroke-linecap: butt; stroke-width: 1; fill: rgb(93%,95%,96%); fill-rule: evenodd;"/>
+			<text x="659.0537109375" y="333.0" style="font-family: StudyBold; font-size: 12px;fill: rgb(7%,18%,29%); stroke:none;" transform="translate(0,666) scale(1,-1)">Data</text>
+			<text x="602.404541015625" y="315.0" style="font-family: Study; font-size: 9px;fill: rgb(32%,38%,44%); stroke:none;" transform="translate(0,630) scale(1,-1)">atomic state + history + outbox</text>
+			<polyline points="155 329, 195 329" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1.8; fill: None; fill-rule: evenodd;"/>
+			<polygon points="195 329, 187.9473 332.7762, 187.9473 325.2238" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<polyline points="340 329, 380 329" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1.8; fill: None; fill-rule: evenodd;"/>
+			<polygon points="380 329, 372.9473 332.7762, 372.9473 325.2238" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<polyline points="530 329, 570 329" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1.8; fill: None; fill-rule: evenodd;"/>
+			<polygon points="570 329, 562.9473 332.7762, 562.9473 325.2238" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<rect x="570" y="190" width="100" height="56" rx="8" ry="8" style="stroke: rgb(83%,87%,89%); stroke-linecap: butt; stroke-width: 1; fill: rgb(93%,95%,96%); fill-rule: evenodd;"/>
+			<text x="580.47265625" y="222.0" style="font-family: StudyBold; font-size: 12px;fill: rgb(7%,18%,29%); stroke:none;" transform="translate(0,444) scale(1,-1)">PostgreSQL</text>
+			<text x="599.492919921875" y="204.0" style="font-family: Study; font-size: 9px;fill: rgb(32%,38%,44%); stroke:none;" transform="translate(0,408) scale(1,-1)">authority</text>
+			<rect x="690" y="190" width="90" height="56" rx="8" ry="8" style="stroke: rgb(83%,87%,89%); stroke-linecap: butt; stroke-width: 1; fill: rgb(93%,95%,96%); fill-rule: evenodd;"/>
+			<text x="716.3876953125" y="222.0" style="font-family: StudyBold; font-size: 12px;fill: rgb(7%,18%,29%); stroke:none;" transform="translate(0,444) scale(1,-1)">Redis</text>
+			<text x="721.673583984375" y="204.0" style="font-family: Study; font-size: 9px;fill: rgb(32%,38%,44%); stroke:none;" transform="translate(0,408) scale(1,-1)">cache</text>
+			<polyline points="630 300, 630 246" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1.8; fill: None; fill-rule: evenodd;"/>
+			<polygon points="630 246, 633.7762 253.0527, 626.2238 253.0527" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<polyline points="735 300, 735 246" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1.8; fill: None; fill-rule: evenodd;"/>
+			<polygon points="735 246, 738.7762 253.0527, 731.2238 253.0527" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<rect x="25" y="175" width="130" height="58" rx="8" ry="8" style="stroke: rgb(83%,87%,89%); stroke-linecap: butt; stroke-width: 1; fill: rgb(93%,95%,96%); fill-rule: evenodd;"/>
+			<text x="51.8056640625" y="208.0" style="font-family: StudyBold; font-size: 12px;fill: rgb(7%,18%,29%); stroke:none;" transform="translate(0,416) scale(1,-1)">Researcher</text>
+			<text x="51.03808593749999" y="190.0" style="font-family: Study; font-size: 9px;fill: rgb(32%,38%,44%); stroke:none;" transform="translate(0,380) scale(1,-1)">or HTTP validator</text>
+			<rect x="195" y="175" width="145" height="58" rx="8" ry="8" style="stroke: rgb(83%,87%,89%); stroke-linecap: butt; stroke-width: 1; fill: rgb(93%,95%,96%); fill-rule: evenodd;"/>
+			<text x="219.494140625" y="208.0" style="font-family: StudyBold; font-size: 12px;fill: rgb(7%,18%,29%); stroke:none;" transform="translate(0,416) scale(1,-1)">REST gateway</text>
+			<text x="238.82568359375" y="190.0" style="font-family: Study; font-size: 9px;fill: rgb(32%,38%,44%); stroke:none;" transform="translate(0,380) scale(1,-1)">Caddy :3003</text>
+			<polyline points="155 204, 195 204" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1.8; fill: None; fill-rule: evenodd;"/>
+			<polygon points="195 204, 187.9473 207.7762, 187.9473 200.2238" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<polyline points="340 204, 415 204, 415 265, 600 265, 600 300" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1.8; fill: None; fill-rule: evenodd;"/>
+			<polygon points="600 300, 596.2238 292.9473, 603.7762 292.9473" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<text x="340.74609375" y="215" style="font-family: Study; font-size: 9px;fill: rgb(7%,18%,29%); stroke:none;" transform="translate(0,430) scale(1,-1)">history / state</text>
+			<polyline points="267 233, 267 274, 455 274, 455 300" style="stroke: rgb(78%,36%,14%); stroke-linecap: butt; stroke-width: 1.8; fill: None; fill-rule: evenodd;"/>
+			<polygon points="455 300, 451.2238 292.9473, 458.7762 292.9473" style="stroke: rgb(78%,36%,14%); stroke-linecap: butt; stroke-width: 1; fill: rgb(78%,36%,14%); fill-rule: evenodd;"/>
+			<text x="305.150146484375" y="282" style="font-family: Study; font-size: 9px;fill: rgb(78%,36%,14%); stroke:none;" transform="translate(0,564) scale(1,-1)">configuration</text>
+			<rect x="380" y="52" width="180" height="62" rx="8" ry="8" style="stroke: rgb(83%,87%,89%); stroke-linecap: butt; stroke-width: 1; fill: rgb(93%,95%,96%); fill-rule: evenodd;"/>
+			<text x="444.236328125" y="87.0" style="font-family: StudyBold; font-size: 12px;fill: rgb(7%,18%,29%); stroke:none;" transform="translate(0,174) scale(1,-1)">Notifier</text>
+			<text x="399.78857421875" y="69.0" style="font-family: Study; font-size: 9px;fill: rgb(32%,38%,44%); stroke:none;" transform="translate(0,138) scale(1,-1)">pull leases; send; acknowledge</text>
+			<rect x="620" y="52" width="160" height="62" rx="8" ry="8" style="stroke: rgb(83%,87%,89%); stroke-linecap: butt; stroke-width: 1; fill: rgb(93%,95%,96%); fill-rule: evenodd;"/>
+			<text x="643.4072265625" y="87.0" style="font-family: StudyBold; font-size: 12px;fill: rgb(7%,18%,29%); stroke:none;" transform="translate(0,174) scale(1,-1)">Notifications API</text>
+			<text x="645.624267578125" y="69.0" style="font-family: Study; font-size: 9px;fill: rgb(32%,38%,44%); stroke:none;" transform="translate(0,138) scale(1,-1)">local or course endpoint</text>
+			<polyline points="560 83, 620 83" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1.8; fill: None; fill-rule: evenodd;"/>
+			<polygon points="620 83, 612.9473 86.77624, 612.9473 79.22376" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<polyline points="570 315, 550 315, 550 150, 470 150, 470 114" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1.8; fill: None; fill-rule: evenodd; stroke-dasharray: 4, 3;"/>
+			<polygon points="470 114, 473.7762 121.0527, 466.2238 121.0527" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<text x="471.79931640625" y="159" style="font-family: Study; font-size: 10px;fill: rgb(7%,18%,29%); stroke:none;" transform="translate(0,318) scale(1,-1)">leased jobs</text>
+			<text x="25" y="20" style="font-family: Study; font-size: 10px;fill: rgb(32%,38%,44%); stroke:none;" transform="translate(0,40) scale(1,-1)">PostgreSQL owns durable state. Redis is disposable. The notifier pulls jobs from Data.</text>
+		</g>
+	</g>
+</svg>

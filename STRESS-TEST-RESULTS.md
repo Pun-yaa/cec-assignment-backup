@@ -1,4 +1,74 @@
-# Stress tests and sizing — 7 October 2026
+# Stress tests and sizing
+
+## 5 November 2026 follow-up
+
+The [complete code/evidence supplement](reports/code-improvements-2026-11-05/README.md)
+explains the new bounded history cache, metadata fences, monitoring overhead,
+strict notification deadline checks, and workload-controller improvements.
+These new results supersede the earlier readiness status; the older measurements
+below remain dated historical evidence.
+
+| Workload on the shared 2-vCPU VM | Result |
+| --- | --- |
+| Original Rust validators, 100 experiments × 10 sensors × 1 Hz, variable HTTP targets in 100–200 rps | Pass: actual settled targets 148/182/181/114/106 all kept up; 703/703 notifications; max 2.884s; 202 correct history checks |
+| Original Rust validators, same experiment load, 200 offered HTTP rps | Pass: 190.573 validated rps; 596/596 notifications; max 8.958s; 202 correct history checks; narrow throughput/deadline margin |
+| Independent live-history open-loop 25→100→50 rps | Pass: 1,626/1,626 notifications; max 6.189s; no HTTP errors or data mismatches |
+| Independent live-history open-loop 50→200→100 rps | Fail: CPU saturation and insufficient phase throughput, despite correct data and notifications |
+| Recovery with PostgreSQL restart, Redis stopped and Data cache cleared | Pass: four history points and three alerts preserved; partial/replayed groups and retries checked |
+| Full automated tests | 92 passed, including real database integration tests, scheduler regressions and build-cache checks |
+
+Raw reports and diagnostic timelines are under `benchmarks/2026-11-05/`.
+Native and independent workloads differ in pacing, generator overhead and queried
+histories. Random native traces are not paired before/after trials. No numeric
+grade or capacity beyond these observed workloads is claimed.
+
+## Instructor validators — 9 October 2026
+
+The supplied Rust `experiment-producer`, `notifications-service`, and
+`http-load-generator` now run locally against our Python implementation, with
+the instructor's original Group View dashboard on port **3009**. All three
+tools were built from the unmodified repository sources. Image identity and
+source hashes are recorded in [environment.json](benchmarks/2026-10-09/environment.json).
+
+The final **100-experiment × 10-sensor × 1 Hz** run passed. It offered 100 HTTP
+requests/second during 60 carry-out samples per experiment. All **610 required
+notifications** arrived, the maximum latency was **5.641 seconds**, and there
+were no notification or HTTP validation errors. Achieved HTTP throughput was
+**97.310 requests/second**. Both complete history endpoints matched the supplied
+producer's ground truth for all 100 experiments and the preceding warmup,
+giving **202 successful history checks**. The warmup ends before the 100 concurrent
+experiments start.
+
+| Run | Required / received notifications | Maximum latency (s) | HTTP/s | Result |
+| --- | ---: | ---: | ---: | --- |
+| 3 experiments, 3 sensors | 22 / 22 | 0.354 | 98.920 | Pass |
+| Initial 100 experiments, 10 sensors | 632 / 632 | 10.716 | 86.848 | Fail: 3 late notifications and insufficient HTTP rate |
+| Final 100 experiments, 10 sensors | 610 / 610 | 5.641 | 97.310 | Pass |
+
+The first stress run exposed database round trips for individual state updates.
+Data now pipelines those writes in experiment-ID order and checks every returned
+version result, rolling back the entire transaction if any update conflicts.
+The executor count and notification interval remain **one** and **0.1 seconds**.
+The rerun used the same workload settings and acceptance thresholds. Notification
+totals vary because the supplied simulator generates random temperatures.
+
+The full test suite passes **52 tests**, including a new regression check that a
+stale version in the middle of a batch rolls back the other updates. Reports:
+[smoke](benchmarks/2026-10-09/course-smoke.json),
+[initial failed stress run](benchmarks/2026-10-09/course-stress-initial.json),
+[final stress run](benchmarks/2026-10-09/course-stress.json), and
+[test output](benchmarks/2026-10-09/verification.txt).
+
+Run `make course-test` or `make course-stress`, then `make course-check`.
+The check requires actual nonzero validation traffic, all requested experiments
+to complete, exact histories, no missing notifications, no notifications above
+10 seconds, no validator errors, and at least 95% of the requested HTTP rate.
+The dashboard preserves the instructor's queries and adds an explicit run status.
+See [MONITORING.md](MONITORING.md#run-the-instructors-tests-and-grading-panel) for
+startup and SSH access. This validates the chosen local workload; the professor's
+undisclosed workload and external notification network remain separate tests.
+
+## Earlier sizing measurements — 7 October 2026
 
 The selected local configuration is **one executor**, eight concurrent task
 batches per executor, and a **0.1-second notification poll** with 32 concurrent
@@ -164,9 +234,12 @@ The two boundary profiles below the throughput criterion intentionally return
 exit status 1 while preserving their complete JSON results.
 
 These are short local runs, not a long-duration soak or an external deployment
-benchmark. Two read-only TLS metadata probes to the supplied course Kafka
-endpoint failed with `_TRANSPORT`; course-network availability and notification
-latency remain unverified. The demo overlay and credential mounts are provided,
-but local success does not establish external connectivity. Infrastructure cost
+benchmark. The original 7 October course Kafka probes failed because the broker
+certificates did not match the public hostname. On 8 October, the corrected demo
+configuration verified broker metadata and assignment of all 16 partitions on
+both authorized topics: [experiment](benchmarks/2026-10-08/course-kafka.json) and
+[group15](benchmarks/2026-10-08/course-kafka-private-topic.json). See
+[the connection instructions](MONITORING.md#coursedemo-configuration). Notification
+latency over the external course network still requires an external workload. Infrastructure cost
 rates default to unconfigured; supply actual rates before treating dashboard
 cost estimates as billing information.

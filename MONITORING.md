@@ -40,6 +40,90 @@ PostgreSQL uses a named volume. Redis holds disposable cached query responses.
 `docker compose -f compose.yml -f compose.local.yml down` stops the stack while
 retaining history and Kafka data. Deleting volumes destroys those local records.
 
+## Run the instructor's tests and grading panel
+
+The assignment **does provide independent testing tools**. `experiment-producer`,
+`notifications-service`, `http-load-generator`, and `observability/group_view.json`
+are the instructor's supplied workload, validators, and grading dashboard.
+The HTTP workload patterns used during the demo are withheld, but these tools
+can be run at any time. The dashboard on port **3004** above is our operational
+dashboard; the instructor's grading dashboard runs on **3009** below.
+
+From the repository root, with the Python environment installed as above:
+
+```sh
+make course-test
+```
+
+This command builds the **unmodified Rust course sources**, starts the test
+infrastructure, runs one short warmup experiment followed by three concurrent
+experiments with three sensors and one-second sampling, and observes at least
+60 seconds of instructor HTTP validation at 100 requests/second. The first build
+downloads a Rust compiler container and can take around 30 minutes on a small VM;
+later builds are cached. Docker, Compose, OpenSSL, Make, and the Python environment are needed on the host;
+Rust is built inside Docker. The runner uses `sudo -n docker` automatically if
+the current user cannot access Docker directly.
+
+The published notification Docker image predates the repository's JWT/public-key
+configuration, so the test image is built from the repository instead. No course
+validator logic is replaced. The tools use generated local TLS certificates,
+a local AES key, and a local signing key for a `group15` test JWT. Actual group
+credentials and the external notification service are not used in this local run.
+
+The setup automatically provisions **both Prometheus and PostgreSQL data sources**
+and selects **group15** in the original Group View dashboard. It uses a separate
+database for instructor ground truth and notification latencies. Our own Python
+implementation remains the system under test; the instructor's `run_to` reference
+implementation is not started.
+
+Open `http://localhost:3009/d/cec-course-grading` in your browser. On a remote VM,
+run this command **on your laptop** using your existing SSH key and VM address:
+
+```sh
+ssh -N -L 3009:127.0.0.1:3009 -i /path/to/your/key ubuntu@YOUR_VM_PUBLIC_IP
+```
+
+Then open the same localhost URL on your laptop. Grafana permits anonymous viewing
+over this local tunnel. Its local administrator defaults to `admin` / `course-local`.
+
+```sh
+make course-check   # Explicit pass/fail, including checks that real data exists
+make course-stress  # 100 concurrent experiments, 10 sensors, 1s sampling, 100 HTTP/s
+make course-stop    # Stop generated load; keep the panel and stored results
+```
+
+The HTTP validator continues querying completed experiments after the initial
+test result, for up to 255 minutes, so the live panel remains useful. Stop it
+with `make course-stop` when finished. `make course-panel` starts the panel and
+services without generating a new workload; an empty panel is not a pass.
+
+The runner writes `test-results/course-latest.json` and a timestamped result.
+After a check, the dashboard's default time range is pinned to that test, so
+opening it later still shows the result. Each report also contains a URL with
+the exact time range. A new run restores the live window. A successful check
+requires a completed producer, nonzero expected notifications, no missing or late
+notifications, no validator errors, successful checks of **both** REST endpoints,
+and at least 95% of the requested HTTP rate over the observed window. It also
+checks both complete history endpoints for every experiment against the supplied
+producer's ground-truth documents. An additional status panel shows this explicit
+result; the original instructor panels retain their queries. Green or zero-valued panels with
+no workload do not satisfy these checks. Passing a chosen workload does not
+establish performance for every possible hidden demo workload.
+
+For custom loads:
+
+```sh
+.venv/bin/python -m loadtests.course run --experiments 100 --sensors 10 \
+  --samples 60 --http-rps 100 --http-seconds 60
+```
+
+The warmup terminates before the requested concurrent experiments start; it
+provides a ground-truth experiment for HTTP queries while the main experiment
+load runs. The course overlay uses separate event/document topics and a separate
+application consumer group. It switches the local application's scheduler and
+notification destination to this test setup while retaining application history.
+Use `make course-stop` before switching to the demo configuration below.
+
 ## REST API
 
 The two assignment endpoints return **JSON arrays** of `{timestamp, temperature}`
@@ -224,6 +308,14 @@ Redis caches are memory bounded; historical data and deduplication records grow
 with experiment duration on disk. Scaling within a VM cannot create additional
 physical CPU or remove a shared database bottleneck.
 
+Backpressure counts queued and in-flight records. Each partition has high/low
+watermarks based on its share of the configured queue, while the global guard
+still bounds total work. A hot partition therefore pauses independently instead
+of occupying the entire queue and starving other partitions. `/status` exposes
+partition queues and paused partitions. One fetched batch can overshoot the
+global threshold by up to 512 records. This does not reorder records within a
+partition or acknowledge them before their database commit.
+
 ## Metrics and cost overview
 
 ```sh
@@ -240,20 +332,78 @@ over SSH to view Grafana from your browser.
 Panels show event throughput, queue depth, executor load, notification p99 and
 oldest pending age, HTTP throughput/p95, failed jobs, cache hit rate, process
 memory, VM CPU, database size, and estimated infrastructure cost over time.
+The additional panels separate database connection waits from time spent holding
+a connection, show free disk space, and count every accepted notification at or
+above the strict 10-second deadline. Connection occupancy includes transaction
+work and event-loop scheduling; it is not a pure PostgreSQL execution timer.
 Prometheus discovers executor replicas through Docker DNS.
 
 Copy `monitoring.env.example` to `.env.monitoring`, supply the VM's actual
-`TO_VM_HOURLY_COST_USD` and `TO_STORAGE_GB_MONTHLY_COST_USD`, and pass
-`--env-file .env.monitoring` to Compose. Costs default to **unconfigured (zero)**;
-the dashboard exposes that explicitly. The cost series is the configured VM
-hourly rate plus measured PostgreSQL storage at the supplied GB-month rate.
+`TO_VM_HOURLY_COST_USD`, `TO_STORAGE_GB_MONTHLY_COST_USD`, and
+`TO_STORAGE_PROVISIONED_GB`, and pass `--env-file .env.monitoring` to Compose.
+Costs default to **unconfigured (no data)**; `to_cost_configured=0` makes the
+missing inputs explicit. Cost is VM hourly rate plus **provisioned** disk size
+times the monthly storage rate divided by 730. Stored database size is a
+separate capacity metric. Adding containers on the same VM does not multiply
+the VM's hourly price.
 The 24-hour panel integrates available 15-second samples. This is an estimate,
-not an AWS billing feed; allocated-but-unused disk, network fees, external course
-infrastructure, and monitoring retention need separate billing inputs.
+not an AWS billing feed; CPU surplus credits, public IPv4, network fees, taxes,
+discounts and external course infrastructure are excluded. The November price
+lookup is saved in `benchmarks/2026-11-05/aws-public-pricing.json`; it does not
+establish the account's actual bill or the attached EBS volume type.
 
-Alert rules cover pending alerts approaching 10 seconds, excess notification
-latency, rejected notifications, invalid input, and unreachable services. Rules
+Alert rules cover pending alerts approaching 10 seconds, any observed deadline
+miss, database pool waits, disk space/growth, rejected notifications, invalid
+input, and unreachable services. Historical sent/rejected totals refresh once
+per minute; pending/failed counts and oldest pending age refresh every five seconds. Rules
 are visible in Prometheus; external alert routing requires an Alertmanager.
+
+### Variable workload validation and bounded history caching
+
+Use `make course-variable` for the repository's original Rust validators at
+100 concurrent experiments, 10 sensors, 1 Hz and random HTTP targets from 100
+through 200 requests/second. Each generation lasts 20 seconds. The report
+requires at least two distinct settled targets and checks throughput and the
+validator's effective rate in every observed phase. Its gauges describe
+processed batches, so this is complemented by `make stress-variable` on the
+plain **local** stack: an independent open-loop ramp of 50 → 200 → 100 rps.
+Do not run the two workloads simultaneously or point synthetic local data at
+the external notification service. Stop the Rust generators with `make course-stop`.
+
+The runner reuses completed instructor binaries only when their saved image ID
+and a fingerprint of the public Rust/build inputs both match. This avoids
+recompiling Rust merely because disposable builder layers were cleaned up to
+free disk space. Application images still rebuild normally. `--rebuild-tools`
+forces a tool rebuild; allow several GiB of working space for Rust compilation.
+`--skip-build` explicitly bypasses all builds and requires existing images.
+
+The open-loop report includes intended versus scheduled requests, generator
+delay, errors, latency including semaphore waits, and each phase's drain time.
+Dropped load, a slow phase, or any failed HTTP request makes the run fail.
+`*.telemetry.json` records VM CPU (including steal separately), scheduler queues,
+Data connection timings and cache counters. All runners enforce notification
+latency **strictly less than 10 seconds**; exactly 10 seconds fails.
+
+Data keeps at most 16,384 history points across 256 snapshot entries, with at
+most 512 points per experiment. Queries over a small snapshot use binary search
+for inclusive time bounds. Concurrent cold reads share a fill. Snapshot data and
+its version come from one database statement; commits fence metadata updates,
+and reads never reuse an older snapshot for a newer version. Long histories use
+the existing indexed SQL/Redis path: a bounded 513-row probe detects them, and
+a bounded marker avoids repeating the probe. No stored history is truncated or
+deleted. Set `TO_HISTORY_CACHE_POINTS=0` to disable this optimization for comparison.
+
+This cache, like the metadata cache, assumes a **single Data process** owns all
+writes. Scale executors independently; do not add Data replicas or Uvicorn
+workers without replacing the local invalidation protocol.
+
+Local Kafka test retention is limited by both age and bytes per partition
+(32 MiB, with 16 MiB segments). This does not change the instructor's Kafka
+cluster. Local Prometheus retention is bounded by size as well as time. Kafka
+deletes whole closed segments, and Prometheus also has active/WAL overhead:
+these settings are not a hard cap on total disk use. PostgreSQL history remains
+persistent and needs enough capacity for experiment duration. Remove obsolete
+build artifacts when necessary; never use `docker compose down -v` to free space.
 
 ## Course/demo configuration
 
@@ -277,12 +427,26 @@ directory or its owner differs from the default `group15-credentials`, UID/GID
 1000. Credential directories and generated secrets are excluded from Git and
 from the Docker build context. Notification URL tokens are not written to logs.
 
-Kafka uses certificate and hostname verification by default. If the course
-requires a different broker endpoint, set `TO_KAFKA_BROKERS`; the complete
-security configuration is in `config.py`. `TO_KAFKA_ENDPOINT_IDENTIFICATION`
-exists for explicitly configured course certificates; the default is `https`.
-External availability must be verified when deploying. Local test results do
-not establish latency across the course's network and notification service.
+The base configuration verifies both CA trust and hostnames. The **demo overlay**
+defaults `TO_KAFKA_ENDPOINT_IDENTIFICATION` to `none`, matching the course tutorial:
+the broker certificates identify `kafka-1`/`kafka-2`/`kafka-3`, while clients connect
+to `kafka.cec.dlandau.nl`. CA chain validation and client authentication remain
+enabled. Set `TO_KAFKA_ENDPOINT_IDENTIFICATION=https` when the course supplies
+certificates matching its public hostname.
+
+Run the read-only connection check before the professor's demo:
+
+```sh
+make course-kafka-check
+.venv/bin/python scripts/check-course-kafka.py --topic group15
+```
+
+It checks broker metadata and actual consumer partition assignment without
+publishing events or committing offsets. The verified connection results are
+recorded in `benchmarks/2026-10-08/`. Strict hostname verification failed with
+OpenSSL's `hostname mismatch`; the course-compatible configuration connected
+successfully to both authorized topics. Local test results still do not measure
+latency across the course's notification network during a professor-run workload.
 
 ## Verification and operations
 

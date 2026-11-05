@@ -1,0 +1,138 @@
+[
+  {
+    "timestamp": 1793851987.6715407,
+    "label": "before_partition_backpressure",
+    "remaining_from_initial_topic_snapshot": 1820791
+  },
+  {
+    "timestamp": 1793852352.4613516,
+    "label": "after_partition_backpressure",
+    "remaining_from_initial_topic_snapshot": 809841,
+    "scheduler": {
+      "queued_events": 1024,
+      "assigned_partitions": 16,
+      "executors": 1,
+      "active_tasks": 5,
+      "capacity": 8,
+      "paused_partitions": [
+        3,
+        14,
+        15
+      ],
+      "partition_queues": {
+        "0": 0,
+        "1": 4,
+        "2": 0,
+        "3": 978,
+        "4": 0,
+        "5": 2,
+        "6": 16,
+        "7": 0,
+        "8": 4,
+        "9": 0,
+        "10": 0,
+        "11": 10,
+        "12": 0,
+        "13": 10,
+        "14": 0,
+        "15": 0
+      }
+    }
+  },
+  {
+    "timestamp": 1793852658.97646,
+    "label": "after_partition_backpressure",
+    "remaining_from_initial_topic_snapshot": 258802,
+    "scheduler": {
+      "queued_events": 1017,
+      "assigned_partitions": 16,
+      "executors": 1,
+      "active_tasks": 2,
+      "capacity": 8,
+      "paused_partitions": [
+        14,
+        15
+      ],
+      "partition_queues": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 0,
+        "4": 0,
+        "5": 0,
+        "6": 0,
+        "7": 0,
+        "8": 0,
+        "9": 0,
+        "10": 0,
+        "11": 0,
+        "12": 0,
+        "13": 0,
+        "14": 505,
+        "15": 512
+      }
+    }
+  },
+  {
+    "timestamp": 1793852834.5561032,
+    "label": "after_partition_backpressure",
+    "remaining_from_initial_topic_snapshot": 81784,
+    "scheduler": {
+      "queued_events": 0,
+      "assigned_partitions": 16,
+      "executors": 1,
+      "active_tasks": 0,
+      "capacity": 8,
+      "paused_partitions": [],
+      "partition_queues": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 0,
+        "4": 0,
+        "5": 0,
+        "6": 0,
+        "7": 0,
+        "8": 0,
+        "9": 0,
+        "10": 0,
+        "11": 0,
+        "12": 0,
+        "13": 0,
+        "14": 0,
+        "15": 0
+      }
+    }
+  },
+  {
+    "timestamp": 1793853073.0329561,
+    "label": "after_partition_backpressure",
+    "remaining_from_initial_topic_snapshot": 0,
+    "scheduler": {
+      "queued_events": 0,
+      "assigned_partitions": 16,
+      "executors": 1,
+      "active_tasks": 0,
+      "capacity": 8,
+      "paused_partitions": [],
+      "partition_queues": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 0,
+        "4": 0,
+        "5": 0,
+        "6": 0,
+        "7": 0,
+        "8": 0,
+        "9": 0,
+        "10": 0,
+        "11": 0,
+        "12": 0,
+        "13": 0,
+        "14": 0,
+        "15": 0
+      }
+    }
+  }
+]

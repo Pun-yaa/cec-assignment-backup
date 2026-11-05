@@ -1,5 +1,9 @@
 name: cec-temperature
 
+x-logging: &logging
+  driver: json-file
+  options: {max-size: 5m, max-file: "3"}
+
 x-python: &python
   image: cec-temperature:local
   build:
@@ -9,9 +13,7 @@ x-python: &python
   init: true
   restart: unless-stopped
   stop_grace_period: 30s
-  logging:
-    driver: json-file
-    options: {max-size: 5m, max-file: "3"}
+  logging: *logging
   healthcheck:
     test: [CMD, python, -m, temperature_observability.healthcheck]
     interval: 30s
@@ -23,6 +25,7 @@ services:
   postgres:
     image: postgres:16-alpine
     restart: unless-stopped
+    logging: *logging
     environment:
       POSTGRES_DB: observability
       POSTGRES_USER: observability
@@ -36,6 +39,7 @@ services:
   redis:
     image: redis:7.4-alpine
     restart: unless-stopped
+    logging: *logging
     command: [redis-server, --maxmemory, 128mb, --maxmemory-policy, allkeys-lru, --save, ""]
     healthcheck:
       test: [CMD, redis-cli, ping]
@@ -50,6 +54,8 @@ services:
       TO_REDIS_URL: redis://redis:6379/0
       TO_VM_HOURLY_COST_USD: ${TO_VM_HOURLY_COST_USD:-0}
       TO_STORAGE_GB_MONTHLY_COST_USD: ${TO_STORAGE_GB_MONTHLY_COST_USD:-0}
+      TO_STORAGE_PROVISIONED_GB: ${TO_STORAGE_PROVISIONED_GB:-0}
+      TO_HISTORY_CACHE_POINTS: ${TO_HISTORY_CACHE_POINTS:-16384}
     depends_on:
       postgres: {condition: service_healthy}
       redis: {condition: service_healthy}
@@ -88,6 +94,7 @@ services:
       dockerfile: deploy/Dockerfile
       target: gateway
     restart: unless-stopped
+    logging: *logging
     ports: ["3003:8000"]
     healthcheck:
       test: [CMD, wget, -q, -O, /dev/null, http://127.0.0.1:8000/health]

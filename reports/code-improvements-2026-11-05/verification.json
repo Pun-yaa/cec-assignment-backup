@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "changed_files": 33,
+  "patch_lines": 2651,
+  "full_report_bytes": 153346,
+  "private_values_checked_without_display": 111,
+  "hashes_and_links_verified": true,
+  "patch_reconstruction_verified": true
+}

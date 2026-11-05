@@ -1,0 +1,17 @@
+global:
+  scrape_interval: 1s
+scrape_configs:
+  - job_name: course-notifications
+    metrics_path: /api/metrics
+    static_configs:
+      - targets: [course-notifications:3000]
+  - job_name: course-producer
+    static_configs:
+      - targets: [course-producer:3001]
+  - job_name: course-http
+    static_configs:
+      - targets: [course-http:3002]
+  - job_name: infrastructure-costs
+    static_configs:
+      - targets: [node-exporter:9100]
+        labels: {instance: "group15:9100"}

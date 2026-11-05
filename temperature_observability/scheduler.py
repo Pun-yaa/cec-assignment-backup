@@ -28,6 +28,7 @@ class KafkaConsumerAndTaskScheduler:
         self.inflight: dict[int, int] = {}
         self.assigned: set[int] = set()
         self.paused = False
+        self.paused_partitions: set[int] = set()
         self.thread = ThreadPoolExecutor(max_workers=1, thread_name_prefix="kafka")
         self.received = metrics.counter("to_kafka_received_total", "Kafka messages consumed")
         self.committed = metrics.counter(
@@ -37,6 +38,9 @@ class KafkaConsumerAndTaskScheduler:
         self.lag = metrics.histogram("to_kafka_event_age_seconds", "Kafka message age on receipt")
         self.backlog = metrics.gauge("to_scheduler_queued_events", "Queued and in-flight events")
         self.workers = metrics.gauge("to_scheduler_executors", "Healthy discovered executors")
+        self.paused_count = metrics.gauge(
+            "to_scheduler_paused_partitions", "Partitions paused by bounded backpressure"
+        )
 
     async def kafka_call(self, method, *args, **kwargs):
         return await asyncio.get_running_loop().run_in_executor(
@@ -48,10 +52,12 @@ class KafkaConsumerAndTaskScheduler:
         for partition in partitions:
             self.queues.setdefault(partition, deque())
         self.paused = False
+        self.paused_partitions.clear()
 
     def on_revoke(self, partitions):
         for partition in partitions:
             self.assigned.discard(partition)
+            self.paused_partitions.discard(partition)
             self.queues.pop(partition, None)
             task = self.running.pop(partition, None)
             if task:
@@ -121,7 +127,46 @@ class KafkaConsumerAndTaskScheduler:
             "executors": len(self.executors.workers),
             "active_tasks": sum(w.load for w in self.executors.workers.values()),
             "capacity": sum(w.capacity for w in self.executors.workers.values()),
+            "paused_partitions": sorted(self.paused_partitions),
+            "partition_queues": {
+                str(p): len(q) + self.inflight.get(p, 0) for p, q in self.queues.items()
+            },
         }
+
+    async def apply_backpressure(self):
+        total = self.status()["queued_events"]
+        self.backlog.set(total)
+        if total >= self.settings.queue_capacity:
+            self.paused = True
+        elif total < self.settings.queue_capacity // 2:
+            self.paused = False
+        # A hot partition must not consume the entire queue budget and pause
+        # every other partition while most executors are idle. Keep the global
+        # cap as a final guard, and apply per-partition high/low watermarks too.
+        share = max(
+            self.settings.batch_size, self.settings.queue_capacity // max(1, len(self.assigned))
+        )
+        pause, resume = set(), set()
+        for partition in self.assigned:
+            queued = len(self.queues.get(partition, ())) + self.inflight.get(partition, 0)
+            if self.paused or queued >= share:
+                if partition not in self.paused_partitions:
+                    pause.add(partition)
+            elif queued < share // 2 and partition in self.paused_partitions:
+                resume.add(partition)
+        if pause:
+            await self.kafka_call(
+                self.consumer.pause,
+                [TopicPartition(self.settings.kafka_topic, p) for p in sorted(pause)],
+            )
+            self.paused_partitions.update(pause)
+        if resume:
+            await self.kafka_call(
+                self.consumer.resume,
+                [TopicPartition(self.settings.kafka_topic, p) for p in sorted(resume)],
+            )
+            self.paused_partitions.difference_update(resume)
+        self.paused_count.set(len(self.paused_partitions))
 
     async def run(self):
         loop = asyncio.get_running_loop()
@@ -151,15 +196,7 @@ class KafkaConsumerAndTaskScheduler:
         discovery = asyncio.create_task(self.discover())
         try:
             while True:
-                total = self.status()["queued_events"]
-                self.backlog.set(total)
-                assigned = [TopicPartition(self.settings.kafka_topic, p) for p in self.assigned]
-                if total >= self.settings.queue_capacity and not self.paused and assigned:
-                    await self.kafka_call(self.consumer.pause, assigned)
-                    self.paused = True
-                elif total < self.settings.queue_capacity // 2 and self.paused and assigned:
-                    await self.kafka_call(self.consumer.resume, assigned)
-                    self.paused = False
+                await self.apply_backpressure()
                 messages = await self.kafka_call(
                     self.consumer.consume, num_messages=512, timeout=0.05
                 )
@@ -197,6 +234,7 @@ class KafkaConsumerAndTaskScheduler:
             self.inflight.clear()
             self.assigned.clear()
             self.paused = False
+            self.paused_partitions.clear()
 
 
 def create_app(settings: Settings | None = None):

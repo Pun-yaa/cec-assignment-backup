@@ -32,6 +32,10 @@ class NotificationHandler:
         self.results = metrics.counter(
             "to_notification_attempts_total", "Notification delivery outcomes", ["outcome"]
         )
+        self.deadline_misses = metrics.counter(
+            "to_notification_deadline_misses_total",
+            "Accepted notifications taking at least 10 seconds",
+        )
         self.last_successful_poll = time.monotonic()
 
     async def deliver(self, job):
@@ -62,6 +66,8 @@ class NotificationHandler:
                 result["outcome"] = "sent"
                 result["latency"] = max(0, time.time() - job["measured_at"])
                 self.latency.observe(result["latency"])
+                if result["latency"] >= 10:
+                    self.deadline_misses.inc()
             elif response.status_code in {400, 404, 405, 410, 413, 415, 422}:
                 result["outcome"] = "failed"
                 log.error(

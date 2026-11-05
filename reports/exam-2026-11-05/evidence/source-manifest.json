@@ -1,0 +1,282 @@
+{
+  "created_at_utc": "2026-11-05T04:44:44.660374+00:00",
+  "scope": "Application, tests, runners, deployment, and public build configuration at report preparation; no runtime secrets.",
+  "files": [
+    {
+      "path": ".dockerignore",
+      "sha256": "a33dca25de9f8b464952d3c9c7d0f5c31f73090060d77824b8e8d0d60262c7c7"
+    },
+    {
+      "path": ".gitignore",
+      "sha256": "5fdf4677cc8d3059735ef32fbcf9b7355a00ec378a5c1ae0409285aa01976771"
+    },
+    {
+      "path": "Makefile",
+      "sha256": "9043f949c8ce2f1774e4ed2ae1cecbdc514e4dcb044897a2637374e6309fee23"
+    },
+    {
+      "path": "compose.course-test.yml",
+      "sha256": "9c72d0acb07f5819a753edea9abd5f5566455fde08adf0ac9c450e4ec837f93a"
+    },
+    {
+      "path": "compose.demo.yml",
+      "sha256": "a7f9aaa3c8251455b6faecbb19662e9a1859d8af6114b10ddf65e72e137fe91a"
+    },
+    {
+      "path": "compose.local.yml",
+      "sha256": "2f270b396d1a978946faccb12de7f471924934c3ac1f17bea218c86a39b25519"
+    },
+    {
+      "path": "compose.monitoring.yml",
+      "sha256": "c589a898dbeaab4f2aee0bcd6d55879496c77d9653d3efeab865bf1221fb8565"
+    },
+    {
+      "path": "compose.yml",
+      "sha256": "04144e3e9ae90912abaabcad0eb6d12a1cfdae17d73686813b42f8a1eb03ab39"
+    },
+    {
+      "path": "deploy/Caddyfile",
+      "sha256": "f96c8f740930d7547558bba78efc0fe14aa4ce6375c8bbd0691967bdac125aa4"
+    },
+    {
+      "path": "deploy/CourseTools.Dockerfile",
+      "sha256": "00e5f162af8094797fd0e7a6d121f82d31acbda111e3574534821785898cf2f2"
+    },
+    {
+      "path": "deploy/CourseTools.Dockerfile.dockerignore",
+      "sha256": "ca756dab7bfaaae4a7e734e619d1f2153e9081b81c4969a82938be980673531e"
+    },
+    {
+      "path": "deploy/Dockerfile",
+      "sha256": "a007a0e8b4466273722c75867b83d806b29061cfea5d8dab8791cf7f33790f3c"
+    },
+    {
+      "path": "deploy/alerts.yml",
+      "sha256": "b4b641a1bcd408c82cf69be0105f67728c5934497c0d633a703e9baa59ff4f06"
+    },
+    {
+      "path": "deploy/course/prometheus.yml",
+      "sha256": "4307bec03bbb2b8076db1de320a60311f9c5f1a6836e8b27242baaf51a0cb428"
+    },
+    {
+      "path": "deploy/course/provisioning/dashboards/course.yml",
+      "sha256": "53449f316fed19ced38b49ac4866830d6a801e65f7c9d74f10e17c7e94678d06"
+    },
+    {
+      "path": "deploy/course/provisioning/datasources/course.yml",
+      "sha256": "1b250ef2d83ae585d6a3bcec596485aac023dcfe4710b1575468adde8378b117"
+    },
+    {
+      "path": "deploy/course/schema.sql",
+      "sha256": "56c15681fa0c4e48bd66a11e0d364e7c588a7751ec5194ef02a28e464ad39617"
+    },
+    {
+      "path": "deploy/docs.html",
+      "sha256": "6ff6ebac412d5eed8bdc7a177f451bc9db2b094557846d920f6d96412f774bd0"
+    },
+    {
+      "path": "deploy/grafana/dashboards/temperature.json",
+      "sha256": "814e2d8e0d9a2560ca598ac1ba0541b3999a329c4ac07e7072c7d1a92b3de591"
+    },
+    {
+      "path": "deploy/grafana/provisioning/dashboards/default.yml",
+      "sha256": "076cb56000ccadbf5ccd9d7bf24869ca8e31f82f5ba10d143f5475dc9d09b5f8"
+    },
+    {
+      "path": "deploy/grafana/provisioning/datasources/prometheus.yml",
+      "sha256": "725d7ae42e32230bc315c45b09d250332d8617b5c65b03e4da906c669fe20905"
+    },
+    {
+      "path": "deploy/prometheus.yml",
+      "sha256": "0a8269827fd9bcaee00ff37c6c1f677141b0044061ee1382c882518c3b3f5ae6"
+    },
+    {
+      "path": "loadtests/__init__.py",
+      "sha256": "5408d218d1bb59fa006cde2fe1ddbd9c5eff923168f398f280fad3b049a2d480"
+    },
+    {
+      "path": "loadtests/course.py",
+      "sha256": "1e5df34614bcce940cf2ca65207d0ed933edd43b26218be9e56d1140c03a007a"
+    },
+    {
+      "path": "loadtests/http_profile.py",
+      "sha256": "22c7983708d3e3af991b6e832ecd729d24811a23a8e6f956530d897ed0bf9fcc"
+    },
+    {
+      "path": "loadtests/matrix.py",
+      "sha256": "177d96b2db63fbdd84bb786c746efcc2c7cca0931508045268269491f957fd4f"
+    },
+    {
+      "path": "loadtests/notification_sink.py",
+      "sha256": "4cbbc293269fdc89de6589541a30b3d35438575aab65f970283f8405ebe521c9"
+    },
+    {
+      "path": "loadtests/recovery.py",
+      "sha256": "0154ce146a9ac7063521f71df74b513680da04b3b267a31bf38c5f6f1e596809"
+    },
+    {
+      "path": "loadtests/stress.py",
+      "sha256": "6db15d49fed07c050d7f9cf4c0371312b8e36eb8a40e0a057c5e24e99f3696f7"
+    },
+    {
+      "path": "loadtests/telemetry.py",
+      "sha256": "0e479b9ff92b896614843d3ca3def795bc98f8ea58952c61ea760a47e63f991d"
+    },
+    {
+      "path": "loadtests/validation.py",
+      "sha256": "5146bcf7fb01fd21d6b2f08c556b3e01bfaf0aadb5cddf20f8245228188e6e4d"
+    },
+    {
+      "path": "loadtests/workload.py",
+      "sha256": "18ad023166dd09d3a4281797e44bf4a328e883cab015a28f84af155dafe644ac"
+    },
+    {
+      "path": "monitoring.env.example",
+      "sha256": "44ea1de7c8779f0f3eed4ab80d94e21b0c94ae07ee4f1c81f0444b47f381f4cb"
+    },
+    {
+      "path": "pyproject.toml",
+      "sha256": "e10f86b33de22f35c77dbee2b8ccc716f7baef54ecf954879342fc041b3d626d"
+    },
+    {
+      "path": "requirements.lock",
+      "sha256": "3fe93c4dc6b3b7fb256017fd499137ba17f4fdfc80f8e55013a009e927b4aa23"
+    },
+    {
+      "path": "scripts/build.sh",
+      "sha256": "056ee85939db0125d75643de476d3c3813e8eb73d21431e78e71132307b2a3e5"
+    },
+    {
+      "path": "scripts/check-course-kafka.py",
+      "sha256": "3a0dcbea083b166caf94053ae6882667c1f7e8f4412e73a5f2a46f9674820fa2"
+    },
+    {
+      "path": "scripts/generate-group-tokens.sh",
+      "sha256": "30e64593ed4986e5ce4ec504a48e76fb78124501c0a078c80139b0eb217866fb"
+    },
+    {
+      "path": "scripts/prepare-monitoring-credentials.py",
+      "sha256": "a873f29e9dbf11ee1f2e3699ced34c4e47c10c5823423340ada5e20e32d8775b"
+    },
+    {
+      "path": "scripts/push.sh",
+      "sha256": "31e42fc681f15fe5e8a266980066424a39867c0ca9508ed298f44e1333335549"
+    },
+    {
+      "path": "scripts/save_env.sh",
+      "sha256": "49e794c3bac88bd30c4a29558651b41fb87cff2f5d279a46b3b6e1ca32db280f"
+    },
+    {
+      "path": "scripts/setup_env.sh",
+      "sha256": "adbcf7d612d3a0f1f24f465f4e7b1cc661ebecc53ca8e3913d5092aa18ee2084"
+    },
+    {
+      "path": "temperature_observability/__init__.py",
+      "sha256": "b181706c32a94873855e583d77402faaf924307fd73d2d483d1dc4173a95f10f"
+    },
+    {
+      "path": "temperature_observability/api.py",
+      "sha256": "773b805ba7c73ba802af876329bfd3c9c5073237103e099bde670373ffc82792"
+    },
+    {
+      "path": "temperature_observability/autoscale.py",
+      "sha256": "c67ef53c42fdcdd50d201b970435cf6575af34e4d9aa1b76b7cce47ef3a8a270"
+    },
+    {
+      "path": "temperature_observability/codec.py",
+      "sha256": "5c3e5b950c696d571536a84c17736bcd0ede9469dc26741588a0cc41f7e6d57e"
+    },
+    {
+      "path": "temperature_observability/common.py",
+      "sha256": "b2fcbc01facbc73c63d11613a6fee026e30b62887bc742c4327e7f35a2a72140"
+    },
+    {
+      "path": "temperature_observability/config.py",
+      "sha256": "ee725afc31f5f4dca088e020b4931ef18c9ebdf95d0d3f95d4449c525c5a1fef"
+    },
+    {
+      "path": "temperature_observability/data.py",
+      "sha256": "dbd5b3b0216aeb8bd11cbe40440bfcfed7458fa4ae8f78ecb2520fb9fee2a576"
+    },
+    {
+      "path": "temperature_observability/discovery.py",
+      "sha256": "359a233786c58005e77c25d9467feff638664b7d965a4d863f9e995ca622d2af"
+    },
+    {
+      "path": "temperature_observability/engine.py",
+      "sha256": "137982ec58422ad6ec34cd8a0849dc77fdb329374e6db1512b1454018f13d082"
+    },
+    {
+      "path": "temperature_observability/executor.py",
+      "sha256": "b1a568fdebb26408d0a01c9d317f9397f94b867c93783cd76f9f9977863f7e1c"
+    },
+    {
+      "path": "temperature_observability/healthcheck.py",
+      "sha256": "816b6299a37e39ee160362bb701aa0b0ba5ec438c83e9ffaecb8ee00f98aa61f"
+    },
+    {
+      "path": "temperature_observability/history.py",
+      "sha256": "62a7150643e6a1886c982bb925579a0bc011fda5106ef73ad4c00d33dcca0f81"
+    },
+    {
+      "path": "temperature_observability/models.py",
+      "sha256": "6baa98d4398f7be2e432e5f6f80daa23546ca33c58f0ceca1175eb0f8e574588"
+    },
+    {
+      "path": "temperature_observability/notification.py",
+      "sha256": "e64d0d87c153af4c10d2d90999cb1d40db5170e2d4a353196e5b1356b57214ee"
+    },
+    {
+      "path": "temperature_observability/scheduler.py",
+      "sha256": "bec84a1e2c6111c46dc0073b564e26168f52bde36cb2824b8dd015b24634d90a"
+    },
+    {
+      "path": "temperature_observability/schema.sql",
+      "sha256": "8ce9064d2d5cb4a47bfe6e959b15ffa6247f53fc149e5e7f7d50cf1ac6f38c1c"
+    },
+    {
+      "path": "tests/test_codec.py",
+      "sha256": "d69ab8f668e9df3d5ab8026db4695f25061a9d49e0ffb95f4dc2a7ae2c2020e1"
+    },
+    {
+      "path": "tests/test_cost.py",
+      "sha256": "a1b5891c055a60d3c370b4df4ac65c13bc88fcfd8f7c0f9406c1631c3797d038"
+    },
+    {
+      "path": "tests/test_course_build_cache.py",
+      "sha256": "d805c123f786449f419c933cd213e0ca3a048e38516a371bb993297fec429a07"
+    },
+    {
+      "path": "tests/test_data_integration.py",
+      "sha256": "430e727998b07c5407fc9380f2fba4ce73330a3ce9ed83a20a13153f62ff2d59"
+    },
+    {
+      "path": "tests/test_engine.py",
+      "sha256": "4a8c8e2dc8996a8ebba48abc9e02335ca7b8a9723556eccc856e27a6e0092735"
+    },
+    {
+      "path": "tests/test_history.py",
+      "sha256": "0306375a13e307819c1b8fb41fe0d4a68f2f05257dedd57a6d1d08c80320e230"
+    },
+    {
+      "path": "tests/test_load_validation.py",
+      "sha256": "62932f70a9c56654e1786258933a1be55c53e3b640e2f89403566ea93c93bf5c"
+    },
+    {
+      "path": "tests/test_notification.py",
+      "sha256": "a1509715e2aefd233df20077d6e4e08369cb269ab34ba6d314e2217b2d9c5585"
+    },
+    {
+      "path": "tests/test_public_api_integration.py",
+      "sha256": "b62d7831506d8f3ba038334bbd55a2519777227e634fba2070e774aa917bf9ea"
+    },
+    {
+      "path": "tests/test_scheduler.py",
+      "sha256": "16b311439108f98a54808dbaa7c5f20eccdd5964356540395ef575bc018b1007"
+    },
+    {
+      "path": "tests/test_service_client.py",
+      "sha256": "390cf502e90432f9abed69950e728799367282cb6fab0a42451edd4ed940421f"
+    }
+  ]
+}

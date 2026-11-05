@@ -24,6 +24,12 @@ services:
       KAFKA_NUM_PARTITIONS: 16
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
       KAFKA_LOG_RETENTION_HOURS: 24
+      # Bound local test data as well as its age; retain the authoritative PG history.
+      # Limits are per partition, and Kafka deletes whole, closed segments.
+      KAFKA_LOG_RETENTION_BYTES: 33554432
+      KAFKA_LOG_SEGMENT_BYTES: 16777216
+      KAFKA_LOG_ROLL_MS: 300000
+      KAFKA_LOG_RETENTION_CHECK_INTERVAL_MS: 60000
       KAFKA_LOG_DIRS: /tmp/kraft-combined-logs
       KAFKA_HEAP_OPTS: -Xms256m -Xmx384m
       CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk

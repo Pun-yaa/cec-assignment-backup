@@ -3,6 +3,7 @@
 import argparse
 import asyncio
 import json
+import math
 import time
 from collections import Counter
 from pathlib import Path
@@ -12,6 +13,9 @@ import httpx
 
 from temperature_observability.common import http_client
 
+from .http_profile import Phase, parse_profile, run_profile
+from .telemetry import Telemetry
+from .validation import meets_notification_deadline
 from .workload import Experiment, LocalProducer, distribution
 
 
@@ -46,6 +50,9 @@ async def wait_for_experiments(client, base_url, experiments, status, deadline_s
 
 
 async def run(args):
+    profile = getattr(args, "http_profile", None)
+    phases = parse_profile(profile) if profile else [Phase(args.http_rps, args.duration)]
+    duration = sum(phase.seconds for phase in phases)
     prefix = "stress-" + uuid4().hex[:12]
     producer = LocalProducer(args.brokers, args.topic)
     experiments = [
@@ -71,15 +78,14 @@ async def run(args):
             experiment.transition("experiment_started")
         await producer.flush()
         await wait_for_experiments(client, args.api, experiments, "running")
-        http_times, http_errors = [], []
+        http_errors = []
         queue_peak = 0
+        telemetry = Telemetry(getattr(args, "data", "http://localhost:8002"))
         stop = asyncio.Event()
         semaphore = asyncio.Semaphore(50)
-        scheduled_requests = set()
 
         async def query(index):
             experiment = experiments[index % len(experiments)]
-            start = time.monotonic()
             try:
                 async with asyncio.timeout(10), semaphore:
                     path = "/temperature" if index % 2 else "/temperature/out-of-range"
@@ -91,23 +97,10 @@ async def run(args):
                     points = response.json()
                     assert isinstance(points, list)
                     assert all(set(point) == {"timestamp", "temperature"} for point in points)
+                return True
             except (httpx.HTTPError, ValueError, AssertionError, TimeoutError) as exc:
                 http_errors.append(type(exc).__name__)
-            finally:
-                http_times.append(time.monotonic() - start)
-
-        async def read_load():
-            if args.http_rps == 0:
-                return
-            start = time.monotonic()
-            index = 0
-            while not stop.is_set():
-                # Open-loop pacing: latency includes waiting for the concurrency limit.
-                task = asyncio.create_task(query(index))
-                scheduled_requests.add(task)
-                task.add_done_callback(scheduled_requests.discard)
-                index += 1
-                await asyncio.sleep(max(0, start + index / args.http_rps - time.monotonic()))
+                return False
 
         async def watch_queue():
             nonlocal queue_peak
@@ -116,14 +109,16 @@ async def run(args):
                     response = await client.get(args.scheduler + "/status")
                     response.raise_for_status()
                     queue_peak = max(queue_peak, response.json()["queued_events"])
+                    await telemetry.sample(client, start, response.json()["queued_events"])
                 except httpx.HTTPError:
                     pass
-                await asyncio.sleep(0.2)
+                await asyncio.sleep(1)
 
-        load_task, queue_task = asyncio.create_task(read_load()), asyncio.create_task(watch_queue())
         temperatures = (25.5, 27, 28, 26, 24, 24, 25, 25.5)
         start = time.monotonic()
-        samples = max(1, round(args.duration / args.period))
+        load_task = asyncio.create_task(run_profile(phases, query, start))
+        queue_task = asyncio.create_task(watch_queue())
+        samples = max(1, math.ceil(duration / args.period))
         for sample in range(samples):
             for i, experiment in enumerate(experiments):
                 # Vary phases between experiments while retaining sustained excursions.
@@ -135,10 +130,11 @@ async def run(args):
         await producer.flush()
         elapsed = time.monotonic() - start
         stop.set()
-        await asyncio.gather(load_task, queue_task)
-        if scheduled_requests:
-            await asyncio.gather(*scheduled_requests)
+        phase_results = await load_task
+        http_phases = [phase.report() for phase in phase_results]
+        await queue_task
         http_elapsed = time.monotonic() - start
+        http_requests = sum(phase["scheduled_requests"] for phase in http_phases)
         await wait_for_experiments(client, args.api, experiments, "terminated")
 
         mismatches = []
@@ -201,17 +197,22 @@ async def run(args):
         report = {
             "run_id": prefix,
             "configuration": vars(args),
+            "generator_event_loop": type(asyncio.get_running_loop()).__module__,
             "duration_seconds": elapsed,
             "sensor_events_per_second": args.experiments * args.sensors / args.period,
             "actual_sensor_events_per_second": args.experiments * args.sensors * samples / elapsed,
             "actual_samples_per_second_per_experiment": samples / elapsed,
             "samples_per_experiment": samples,
             "kafka_messages": producer.sent,
-            "http_requests_per_second": (len(http_times) - len(http_errors)) / http_elapsed,
-            "http_attempts_per_second": len(http_times) / http_elapsed,
+            "http_requests_per_second": sum(p["successful_requests"] for p in http_phases)
+            / http_elapsed,
+            "http_attempts_per_second": http_requests / http_elapsed,
             "http_elapsed_seconds": http_elapsed,
-            "http_latency_seconds": distribution(http_times),
-            "http_errors": len(http_errors),
+            "http_phases": http_phases,
+            "http_latency_seconds": distribution(
+                [latency for phase in phase_results for latency in phase.latencies]
+            ),
+            "http_errors": sum(p["errors"] for p in http_phases),
             "http_error_types": dict(Counter(http_errors)),
             "notification_latency_seconds": latency,
             "notifications_expected": len(expected_alerts),
@@ -221,14 +222,15 @@ async def run(args):
             "duplicate_delivery_attempts": sum(n["attempts"] - 1 for n in notifications),
             "data_mismatches": mismatches,
             "peak_scheduler_queue": queue_peak,
+            "telemetry": telemetry.summary(),
         }
         report["passed"] = (
             not http_errors
             and not mismatches
             and expected_alerts == actual_alerts
-            and latency["max"] <= 10
+            and all(meets_notification_deadline(n["latency"]) for n in notifications)
             and samples / elapsed >= 0.95 / args.period
-            and len(http_times) >= 0.95 * args.http_rps * http_elapsed
+            and all(phase["passed"] for phase in http_phases)
         )
         output = json.dumps(report, indent=2)
         print(output)
@@ -236,6 +238,10 @@ async def run(args):
             path = Path(args.output)
             await asyncio.to_thread(path.parent.mkdir, parents=True, exist_ok=True)
             await asyncio.to_thread(path.write_text, output + "\n")
+            await asyncio.to_thread(
+                path.with_suffix(".telemetry.json").write_text,
+                json.dumps(telemetry.samples, indent=2) + "\n",
+            )
         return report
 
 
@@ -246,18 +252,31 @@ def parser():
     result.add_argument("--duration", type=float, default=30)
     result.add_argument("--period", type=float, default=1)
     result.add_argument("--http-rps", type=int, default=200)
+    result.add_argument(
+        "--http-profile",
+        help="RATE:SECONDS phases, e.g. 50:20,200:30,100:20; overrides duration/rps",
+    )
     result.add_argument("--brokers", default="localhost:19092")
     result.add_argument("--topic", default="experiment")
     result.add_argument("--api", default="http://localhost:3003")
     result.add_argument("--sink", default="http://localhost:18080")
     result.add_argument("--scheduler", default="http://localhost:8001")
+    result.add_argument(
+        "--data", default="http://localhost:8002", help="Internal local Data URL for metrics"
+    )
     result.add_argument("--output")
     return result
 
 
 def main():
     args = parser().parse_args()
-    if min(args.experiments, args.sensors, args.duration, args.period) <= 0 or args.http_rps < 0:
+    if args.http_profile:
+        parse_profile(args.http_profile)
+    if (
+        min(args.experiments, args.sensors, args.duration, args.period) <= 0
+        or not all(math.isfinite(value) for value in (args.duration, args.period))
+        or args.http_rps < 0
+    ):
         raise SystemExit(
             "experiment count, sensors, duration, and period must be positive; HTTP rate nonnegative"
         )

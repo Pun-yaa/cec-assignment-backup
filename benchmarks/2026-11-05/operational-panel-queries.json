@@ -1,0 +1,112 @@
+[
+  {
+    "panel": "Kafka events processed / second",
+    "status": "success",
+    "series": 1
+  },
+  {
+    "panel": "Scheduler queue",
+    "status": "success",
+    "series": 1
+  },
+  {
+    "panel": "Notification latency p99",
+    "status": "success",
+    "series": 1
+  },
+  {
+    "panel": "Oldest pending notification",
+    "status": "success",
+    "series": 1
+  },
+  {
+    "panel": "HTTP requests / second",
+    "status": "success",
+    "series": 1
+  },
+  {
+    "panel": "HTTP latency p95",
+    "status": "success",
+    "series": 1
+  },
+  {
+    "panel": "Notification jobs",
+    "status": "success",
+    "series": 3
+  },
+  {
+    "panel": "Executor tasks and replicas",
+    "status": "success",
+    "series": 1
+  },
+  {
+    "panel": "Process resident memory",
+    "status": "success",
+    "series": 5
+  },
+  {
+    "panel": "VM CPU utilization",
+    "status": "success",
+    "series": 1
+  },
+  {
+    "panel": "Database size",
+    "status": "success",
+    "series": 1
+  },
+  {
+    "panel": "Cache hit rate",
+    "status": "success",
+    "series": 1
+  },
+  {
+    "panel": "Estimated infrastructure cost / hour (configure rates)",
+    "status": "success",
+    "series": 1
+  },
+  {
+    "panel": "Estimated cost over the last 24h",
+    "status": "success",
+    "series": 1
+  },
+  {
+    "panel": "Cost rate configured (1 = yes)",
+    "status": "success",
+    "series": 1
+  },
+  {
+    "panel": "Rejected input events",
+    "status": "success",
+    "series": 1
+  },
+  {
+    "panel": "Database pool wait p95 by operation",
+    "status": "success",
+    "series": 7
+  },
+  {
+    "panel": "Database connection occupancy p95 by operation",
+    "status": "success",
+    "series": 7
+  },
+  {
+    "panel": "Database pool connections",
+    "status": "success",
+    "series": 3
+  },
+  {
+    "panel": "Notifications missing the strict deadline (5m)",
+    "status": "success",
+    "series": 1
+  },
+  {
+    "panel": "Free root filesystem space",
+    "status": "success",
+    "series": 1
+  },
+  {
+    "panel": "Data cache outcomes / second",
+    "status": "success",
+    "series": 2
+  }
+]

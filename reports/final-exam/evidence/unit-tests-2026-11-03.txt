@@ -1,0 +1,7 @@
+Command: .venv/bin/python -m pytest -q -m 'not integration'
+Date: 2026-11-03 UTC
+..........................................                               [100%]
+42 passed, 10 deselected in 1.88s
+
+The ten integration cases were deliberately deselected.
+No containers, load generators, or external course tests were started.

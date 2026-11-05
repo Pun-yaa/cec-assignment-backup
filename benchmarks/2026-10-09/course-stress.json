@@ -1,0 +1,62 @@
+{
+  "started": 1791505732.238499,
+  "passed": true,
+  "concurrent_experiments": 100,
+  "warmup_experiments": 1,
+  "sensors": 10,
+  "sample_period_seconds": 1,
+  "carry_out_samples": 60,
+  "http_rps": 100,
+  "http_seconds": 60,
+  "document_offsets": {
+    "0": 7,
+    "1": 5,
+    "2": 9,
+    "3": 7,
+    "4": 6,
+    "5": 11,
+    "6": 8,
+    "7": 2,
+    "8": 6,
+    "9": 7,
+    "10": 2,
+    "11": 9,
+    "12": 7,
+    "13": 9,
+    "14": 5,
+    "15": 5
+  },
+  "first_http_timestamp": 1791505755.526549,
+  "initial_http_ok": 200,
+  "http_observation_seconds": 78.10110592842102,
+  "finished": 1791505835.0508306,
+  "panel_status_observed": true,
+  "notifications": {
+    "required": 610,
+    "received": 610,
+    "missing": 0,
+    "over_10_seconds": 0,
+    "max_latency_seconds": 5.640532970428467
+  },
+  "histories": {
+    "expected_experiments": 101,
+    "completed_experiments": 101,
+    "history_endpoint_checks": 202,
+    "failures": [],
+    "passed": true
+  },
+  "notification_errors": 0,
+  "http_responses": {
+    "/temperature:Ok": 3893,
+    "/temperature/out-of-bounds:Ok": 3907
+  },
+  "http_rates": {
+    "http_load_generator_target_request_rate": 100,
+    "http_load_generator_effective_request_rate": 100
+  },
+  "achieved_http_rps": 97.30976161804077,
+  "enough_http_load": true,
+  "producer_exit_code": 0,
+  "producer_status": "exited",
+  "dashboard": "http://localhost:3009/d/cec-course-grading/course-grading?from=1791505732238&to=1791505835050&var-group=group15&var-topic=course-test-events"
+}

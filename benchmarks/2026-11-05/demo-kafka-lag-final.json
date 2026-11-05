@@ -1,0 +1,122 @@
+{
+  "timestamp": 1793853310.0813031,
+  "watermarks_sampled_at": 1793853310.079998,
+  "group": "group15-temperature-demo-v1",
+  "topic": "experiment",
+  "partitions": [
+    {
+      "partition": 0,
+      "low": 2792744,
+      "high": 3188982,
+      "committed_next_offset": 3188982,
+      "lag": 0
+    },
+    {
+      "partition": 1,
+      "low": 3074946,
+      "high": 3262240,
+      "committed_next_offset": 3262240,
+      "lag": 0
+    },
+    {
+      "partition": 2,
+      "low": 3206403,
+      "high": 3279188,
+      "committed_next_offset": 3279188,
+      "lag": 0
+    },
+    {
+      "partition": 3,
+      "low": 2920387,
+      "high": 3255972,
+      "committed_next_offset": 3255972,
+      "lag": 0
+    },
+    {
+      "partition": 4,
+      "low": 2643618,
+      "high": 2993364,
+      "committed_next_offset": 2993364,
+      "lag": 0
+    },
+    {
+      "partition": 5,
+      "low": 3093062,
+      "high": 3190526,
+      "committed_next_offset": 3190526,
+      "lag": 0
+    },
+    {
+      "partition": 6,
+      "low": 3275822,
+      "high": 3281315,
+      "committed_next_offset": 3281315,
+      "lag": 0
+    },
+    {
+      "partition": 7,
+      "low": 3117254,
+      "high": 3275918,
+      "committed_next_offset": 3275918,
+      "lag": 0
+    },
+    {
+      "partition": 8,
+      "low": 3061100,
+      "high": 3260028,
+      "committed_next_offset": 3260028,
+      "lag": 0
+    },
+    {
+      "partition": 9,
+      "low": 2832187,
+      "high": 3219036,
+      "committed_next_offset": 3219036,
+      "lag": 0
+    },
+    {
+      "partition": 10,
+      "low": 3281431,
+      "high": 3305867,
+      "committed_next_offset": 3305867,
+      "lag": 0
+    },
+    {
+      "partition": 11,
+      "low": 3100434,
+      "high": 3347679,
+      "committed_next_offset": 3347679,
+      "lag": 0
+    },
+    {
+      "partition": 12,
+      "low": 3282120,
+      "high": 3313184,
+      "committed_next_offset": 3313184,
+      "lag": 0
+    },
+    {
+      "partition": 13,
+      "low": 3152395,
+      "high": 3183679,
+      "committed_next_offset": 3183679,
+      "lag": 0
+    },
+    {
+      "partition": 14,
+      "low": 3021986,
+      "high": 3392603,
+      "committed_next_offset": 3392603,
+      "lag": 0
+    },
+    {
+      "partition": 15,
+      "low": 2772992,
+      "high": 3134722,
+      "committed_next_offset": 3134722,
+      "lag": 0
+    }
+  ],
+  "total_lag": 0,
+  "note": "Committed offsets sampled after watermarks; measures whether consumer reached these observed broker positions, not an atomic global snapshot."
+}

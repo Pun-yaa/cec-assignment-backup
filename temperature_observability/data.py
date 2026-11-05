@@ -5,6 +5,7 @@ import logging
 import time
 from collections import Counter, OrderedDict
 from contextlib import asynccontextmanager
+from itertools import groupby
 from math import isfinite
 from pathlib import Path
 from uuid import uuid4
@@ -19,6 +20,7 @@ from redis.exceptions import RedisError
 
 from .common import Metrics, cancel_tasks, configure_logging
 from .config import Settings
+from .history import HistoryCache, HistorySnapshot
 from .models import ClaimRequest, Commit, NotificationResult, Snapshot, StoredState, TaskLookup
 
 log = logging.getLogger(__name__)
@@ -49,33 +51,77 @@ def create_app(settings: Settings | None = None):
     rejected_count = metrics.gauge("to_rejected_events", "Durably quarantined Kafka messages")
     storage = metrics.gauge("to_database_bytes", "PostgreSQL database size")
     cost = metrics.gauge(
-        "to_estimated_hourly_cost_usd", "Configured VM and measured DB storage cost"
+        "to_estimated_hourly_cost_usd",
+        "Estimated VM and provisioned storage cost, excluding credits/network/tax",
     )
-    cost_configured = metrics.gauge("to_cost_configured", "Whether a nonzero VM cost was supplied")
+    cost_configured = metrics.gauge(
+        "to_cost_configured", "Whether VM rate, storage rate and provisioned size are supplied"
+    )
+    pool_wait = metrics.histogram(
+        "to_database_pool_wait_seconds",
+        "Time waiting to acquire a database connection",
+        ["operation"],
+    )
+    connection_time = metrics.histogram(
+        "to_database_connection_seconds",
+        "Time holding a connection, including transaction work",
+        ["operation"],
+    )
+    pool_connections = metrics.gauge(
+        "to_database_pool_connections", "Database pool size", ["state"]
+    )
+
+    @asynccontextmanager
+    async def connection(operation):
+        started = time.monotonic()
+        async with app.state.pool.acquire() as conn:
+            acquired = time.monotonic()
+            pool_wait.labels(operation).observe(acquired - started)
+            try:
+                yield conn
+            finally:
+                connection_time.labels(operation).observe(time.monotonic() - acquired)
 
     async def update_metrics():
+        next_full_count = 0
         while True:
             try:
-                async with app.state.pool.acquire() as conn:
+                pool = app.state.pool
+                pool_connections.labels("open").set(pool.get_size())
+                pool_connections.labels("idle").set(pool.get_idle_size())
+                pool_connections.labels("limit").set(pool.get_max_size())
+                async with connection("metrics") as conn:
+                    full_count = time.monotonic() >= next_full_count
+                    # Alerting needs current pending/failed counts. Historical
+                    # sent/rejected totals need not rescan years of data every 5s.
                     rows = await conn.fetch(
-                        "SELECT status, count(*) AS n FROM notification_outbox GROUP BY status"
+                        "SELECT status, count(*) AS n FROM notification_outbox "
+                        + ("" if full_count else "WHERE status IN ('pending','failed') ")
+                        + "GROUP BY status"
                     )
                     counts = {r["status"]: r["n"] for r in rows}
-                    for status in ("pending", "sent", "failed"):
+                    for status in (
+                        ("pending", "sent", "failed") if full_count else ("pending", "failed")
+                    ):
                         outbox_count.labels(status).set(counts.get(status, 0))
                     age = await conn.fetchval("""
                         SELECT greatest(0, extract(epoch FROM now()) - min(measured_at))
                         FROM notification_outbox WHERE status = 'pending'
                     """)
                     outbox_age.set(age or 0)
-                    rejected_count.set(await conn.fetchval("SELECT count(*) FROM rejected_events"))
+                    if full_count:
+                        rejected_count.set(
+                            await conn.fetchval("SELECT count(*) FROM rejected_events")
+                        )
+                        next_full_count = time.monotonic() + 60
                     size = await conn.fetchval("SELECT pg_database_size(current_database())")
                     storage.set(size)
                     cost.set(
-                        settings.vm_hourly_cost_usd
-                        + size / 1e9 * settings.storage_gb_monthly_cost_usd / 730
+                        settings.estimated_hourly_cost_usd
+                        if settings.cost_configured
+                        else float("nan")
                     )
-                    cost_configured.set(int(settings.vm_hourly_cost_usd > 0))
+                    cost_configured.set(int(settings.cost_configured))
             except Exception:
                 log.warning("Data metrics collection failed", exc_info=True)
             await asyncio.sleep(5)
@@ -86,6 +132,9 @@ def create_app(settings: Settings | None = None):
         app.state.history_metadata = OrderedDict()
         app.state.metadata_epoch = 0
         app.state.metadata_writers = Counter()
+        app.state.metadata_generations = {}
+        app.state.histories = HistoryCache(settings.history_cache_points)
+        app.state.snapshot_locks = {}
         app.state.pool = await asyncpg.create_pool(
             settings.database_url,
             min_size=2,
@@ -119,23 +168,48 @@ def create_app(settings: Settings | None = None):
         # Data is the single writer. Fence cache fills for the entire transaction,
         # including rollback/cancellation, and discard metadata on both boundaries.
         app.state.metadata_epoch += 1
+        generation = app.state.metadata_epoch
+        warmable = set()
         for experiment in experiments:
             app.state.history_metadata.pop(experiment, None)
             app.state.metadata_writers[experiment] += 1
+            app.state.metadata_generations[experiment] = generation
         try:
-            yield
+            yield warmable
         finally:
             app.state.metadata_epoch += 1
             for experiment in experiments:
                 app.state.history_metadata.pop(experiment, None)
                 app.state.metadata_writers[experiment] -= 1
                 if app.state.metadata_writers[experiment] == 0:
+                    if app.state.metadata_generations[experiment] == generation:
+                        warmable.add(experiment)
                     del app.state.metadata_writers[experiment]
+                    del app.state.metadata_generations[experiment]
+
+    def remember_metadata(experiment, row):
+        app.state.history_metadata[experiment] = row
+        app.state.history_metadata.move_to_end(experiment)
+        if len(app.state.history_metadata) > 4096:
+            app.state.history_metadata.popitem(last=False)
+
+    @asynccontextmanager
+    async def snapshot_lock(experiment):
+        # Count users before awaiting; remove locks only once all waiters leave.
+        entry = app.state.snapshot_locks.setdefault(experiment, [asyncio.Lock(), 0])
+        entry[1] += 1
+        try:
+            async with entry[0]:
+                yield
+        finally:
+            entry[1] -= 1
+            if entry[1] == 0:
+                del app.state.snapshot_locks[experiment]
 
     @app.get("/health")
     async def health():
         try:
-            async with app.state.pool.acquire() as conn:
+            async with connection("health") as conn:
                 await conn.fetchval("SELECT 1")
         except Exception as exc:
             raise HTTPException(503, "PostgreSQL unavailable") from exc
@@ -145,7 +219,7 @@ def create_app(settings: Settings | None = None):
     @app.post("/internal/tasks/load", response_model=Snapshot)
     async def load(task: TaskLookup):
         async with (
-            app.state.pool.acquire() as conn,
+            connection("load") as conn,
             conn.transaction(isolation="repeatable_read", readonly=True),
         ):
             checkpoint = -1
@@ -181,9 +255,10 @@ def create_app(settings: Settings | None = None):
 
     @app.post("/internal/tasks/commit")
     async def commit(change: Commit):
+        committed_metadata = {}
         async with (
-            invalidate_metadata(change.states),
-            app.state.pool.acquire() as conn,
+            invalidate_metadata(change.states) as warmable,
+            connection("commit") as conn,
             conn.transaction(),
         ):
             if change.stream is not None:
@@ -205,28 +280,41 @@ def create_app(settings: Settings | None = None):
                     raise HTTPException(409, "partition checkpoint changed; reload task")
                 if change.checkpoint < checkpoint:
                     raise HTTPException(400, "checkpoint cannot move backwards")
-            for experiment, saved in sorted(change.states.items()):
-                if saved.version == -1:
-                    result = await conn.fetchval(
+            # Pipeline adjacent writes of the same kind instead of paying a
+            # database round trip per experiment. Keep the global ID ordering
+            # for row locks and require every optimistic version check to pass.
+            for creating, entries in groupby(
+                sorted(change.states.items()), key=lambda item: item[1].version == -1
+            ):
+                entries = list(entries)
+                if creating:
+                    rows = await conn.fetchmany(
                         """
                         INSERT INTO experiments(id, version, state) VALUES ($1,0,$2)
-                        ON CONFLICT DO NOTHING RETURNING version
+                        ON CONFLICT DO NOTHING RETURNING id,version
                     """,
-                        experiment,
-                        saved.state.model_dump(),
+                        [(experiment, saved.state.model_dump()) for experiment, saved in entries],
                     )
                 else:
-                    result = await conn.fetchval(
+                    rows = await conn.fetchmany(
                         """
                         UPDATE experiments SET version=version+1, state=$3, updated_at=now()
-                        WHERE id=$1 AND version=$2 RETURNING version
+                        WHERE id=$1 AND version=$2 RETURNING id,version
                     """,
-                        experiment,
-                        saved.version,
-                        saved.state.model_dump(),
+                        [
+                            (experiment, saved.version, saved.state.model_dump())
+                            for experiment, saved in entries
+                        ],
                     )
-                if result is None:
+                if len(rows) != len(entries):
                     raise HTTPException(409, "experiment version changed; reload task")
+                for row in rows:
+                    state = change.states[row["id"]].state
+                    committed_metadata[row["id"]] = {
+                        "version": row["version"],
+                        "ended": state.terminated_at,
+                        "latest": state.last_timestamp,
+                    }
             if change.measurements:
                 await conn.executemany(
                     """
@@ -283,11 +371,17 @@ def create_app(settings: Settings | None = None):
                     change.partition,
                     change.checkpoint,
                 )
+        # The successful transaction already knows these values. Avoid a SELECT
+        # on the first history read after every update. Only warm when this was
+        # the last uncontended writer: a delayed pool release must not overwrite
+        # metadata belonging to a newer commit. No await between fence and fill.
+        for experiment in warmable:
+            remember_metadata(experiment, committed_metadata[experiment])
         return {"status": "committed", "checkpoint": change.checkpoint}
 
     @app.get("/experiments/{experiment_id}")
     async def get_experiment(experiment_id: str):
-        async with app.state.pool.acquire() as conn:
+        async with connection("experiment") as conn:
             row = await conn.fetchrow(
                 "SELECT state,version FROM experiments WHERE id=$1", experiment_id
             )
@@ -326,7 +420,7 @@ def create_app(settings: Settings | None = None):
         row = app.state.history_metadata.get(experiment_id)
         if row is None:
             epoch = app.state.metadata_epoch
-            async with app.state.pool.acquire() as conn:
+            async with connection("history_metadata") as conn:
                 row = await conn.fetchrow(
                     f"SELECT {metadata} FROM experiments WHERE id=$1", experiment_id
                 )
@@ -335,13 +429,53 @@ def create_app(settings: Settings | None = None):
                 and epoch == app.state.metadata_epoch
                 and not app.state.metadata_writers[experiment_id]
             ):
-                app.state.history_metadata[experiment_id] = row
-                if len(app.state.history_metadata) > 4096:
-                    app.state.history_metadata.popitem(last=False)
+                remember_metadata(experiment_id, row)
         else:
             app.state.history_metadata.move_to_end(experiment_id)
         if row is None:
             raise HTTPException(404, "unknown experiment")
+        snapshots = app.state.histories
+        if settings.history_cache_points and not snapshots.is_large(experiment_id):
+            async with snapshot_lock(experiment_id):
+                snapshot = snapshots.get(experiment_id, row["version"])
+                if snapshot is not None:
+                    cache_reads.labels("snapshot_hit").inc()
+                elif not snapshots.is_large(experiment_id):
+                    # Fetch at most limit+1 points in the SAME MVCC snapshot as
+                    # the version. Never load years of data for a narrow query.
+                    async with connection("history_snapshot") as conn:
+                        saved = await conn.fetchrow(
+                            f"""
+                            SELECT {metadata}, (
+                                SELECT coalesce(json_agg(point),'[]'::json)::text FROM (
+                                    SELECT timestamp,temperature,out_of_range FROM measurements
+                                    WHERE experiment_id=$1 AND phase='running'
+                                    ORDER BY timestamp,measurement_id LIMIT $2
+                                ) point
+                            ) AS body FROM experiments WHERE id=$1
+                        """,
+                            experiment_id,
+                            settings.history_snapshot_limit + 1,
+                        )
+                    points = json.loads(saved["body"])
+                    if len(points) <= min(
+                        settings.history_snapshot_limit, settings.history_cache_points
+                    ):
+                        snapshot = HistorySnapshot(
+                            saved["version"],
+                            float(saved["ended"]) if saved["ended"] is not None else None,
+                            points,
+                        )
+                        snapshots.put(experiment_id, snapshot)
+                        cache_reads.labels("snapshot_fill").inc()
+                    else:
+                        snapshots.put(experiment_id, None)
+                        cache_reads.labels("snapshot_too_large").inc()
+                if snapshot is not None:
+                    return Response(
+                        snapshot.render(start, end, outside, intervals),
+                        media_type="application/json",
+                    )
         if time.monotonic() >= app.state.cache_unavailable_until:
             try:
                 cached = await app.state.cache.get(key_for(row))
@@ -361,7 +495,7 @@ def create_app(settings: Settings | None = None):
         columns = "timestamp,temperature" + (",out_of_range" if intervals else "")
         # One SQL statement gives metadata and points the same MVCC snapshot.
         # PostgreSQL emits the wire JSON; cache I/O never holds a database connection.
-        async with app.state.pool.acquire() as conn:
+        async with connection("history") as conn:
             row = await conn.fetchrow(
                 f"""
                 SELECT {metadata}, (
@@ -419,7 +553,7 @@ def create_app(settings: Settings | None = None):
     @app.post("/internal/notifications/claim")
     async def claim(request: ClaimRequest):
         token = str(uuid4())
-        async with app.state.pool.acquire() as conn:
+        async with connection("claim") as conn:
             rows = await conn.fetch(
                 """
                 WITH selected AS (
@@ -441,7 +575,7 @@ def create_app(settings: Settings | None = None):
 
     @app.post("/internal/notifications/{job_id}/result")
     async def notification_result(job_id: int, result: NotificationResult):
-        async with app.state.pool.acquire() as conn:
+        async with connection("acknowledge") as conn:
             updated = await conn.fetchval(
                 """
                 UPDATE notification_outbox SET

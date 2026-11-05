@@ -1,0 +1,81 @@
+{
+  "passed": true,
+  "checked_at_utc": "2026-11-05T05:12:08.353563+00:00",
+  "editable_reports": 9,
+  "oral_questions": 60,
+  "source_files": 69,
+  "local_links_checked": 176,
+  "headings_checked": 138,
+  "markdown_words_excluding_code_appendix": 16385,
+  "application_source_unchanged": true,
+  "numeric_evidence_checked": true,
+  "private_values_checked_without_display": 111,
+  "pdfs": [
+    {
+      "file": "pdf/01-rubric-and-evidence.pdf",
+      "pages": 3,
+      "bookmarks": 6,
+      "sha256": "dad9235a9ef64e8bf3b004a7e7f8497d6c0affb58be35aeba1edb8f54b7bb773"
+    },
+    {
+      "file": "pdf/02-architecture-and-correctness.pdf",
+      "pages": 5,
+      "bookmarks": 10,
+      "sha256": "dd131f9273a2ea495144fececc65043846e39576398bfa461682943082a1485a"
+    },
+    {
+      "file": "pdf/03-performance-and-development.pdf",
+      "pages": 5,
+      "bookmarks": 8,
+      "sha256": "7140451a72c6c247d2cf119bf885b678c6c3bb1ae58eea1bf3ea7cf733b40fff"
+    },
+    {
+      "file": "pdf/04-oral-exam-handbook.pdf",
+      "pages": 10,
+      "bookmarks": 71,
+      "sha256": "1d285aad63e5a9b5308e25c2db421377a0508a099b6d48f12e3698739106e264"
+    },
+    {
+      "file": "pdf/05-team-rehearsal.pdf",
+      "pages": 3,
+      "bookmarks": 7,
+      "sha256": "92b5b5e3b6891ab4c1511a23357093d8f1dfeb8363cd5963168ab0b8d6cd4ace"
+    },
+    {
+      "file": "pdf/06-demo-runbook.pdf",
+      "pages": 3,
+      "bookmarks": 7,
+      "sha256": "2d66c63c70fd8672f5b4632c89e8369856fc4efced3d8ed6425a11cdd3f7a149"
+    },
+    {
+      "file": "pdf/07-quick-reference.pdf",
+      "pages": 2,
+      "bookmarks": 7,
+      "sha256": "de1815e44c54fc517f26109198ad80f129915f93b4b33a3eab279e20663c1c3e"
+    },
+    {
+      "file": "pdf/08-submission-report.pdf",
+      "pages": 5,
+      "bookmarks": 8,
+      "sha256": "a0f9418a32accafd2135e4b17d202b915f1e49b18d18faed04a601cd60f2574a"
+    },
+    {
+      "file": "pdf/09-code-map.pdf",
+      "pages": 5,
+      "bookmarks": 10,
+      "sha256": "104b907dc220a7ceb82c37c101a767684979bb59cfac5d94997410118539e9e2"
+    },
+    {
+      "file": "pdf/group-15-assessment.pdf",
+      "pages": 43,
+      "bookmarks": 138,
+      "sha256": "94e3722b50bf3fea79135b5ff77f0f75eec04f3f8be233ddc60745c5ac25167c"
+    }
+  ],
+  "documentation_dependencies": {
+    "reportlab": "5.1.0",
+    "pymupdf": "2.1",
+    "markdown-it-py": "3.0.0"
+  },
+  "errors": []
+}

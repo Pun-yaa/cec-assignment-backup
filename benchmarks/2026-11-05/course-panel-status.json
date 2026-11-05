@@ -1,0 +1,19 @@
+{
+  "status": "success",
+  "data": {
+    "resultType": "vector",
+    "result": [
+      {
+        "metric": {
+          "__name__": "course_test_passed",
+          "instance": "group15:9100",
+          "job": "infrastructure-costs"
+        },
+        "value": [
+          1793850273.346,
+          "1"
+        ]
+      }
+    ]
+  }
+}

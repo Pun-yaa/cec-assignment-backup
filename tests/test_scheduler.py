@@ -53,3 +53,63 @@ def test_scaling_uses_sustained_load_and_downscale_cooldown():
     assert policy.decide(idle, 6) == 2
     assert policy.decide(idle, 65) == 2
     assert policy.decide(idle, 66) == 1
+
+
+async def test_hot_partition_is_paused_without_stalling_other_partitions():
+    calls = []
+
+    class Consumer:
+        def pause(self, partitions):
+            calls.append(("pause", [p.partition for p in partitions]))
+
+        def resume(self, partitions):
+            calls.append(("resume", [p.partition for p in partitions]))
+
+    scheduler = KafkaConsumerAndTaskScheduler(Settings(queue_capacity=1024), None, Metrics())
+    scheduler.consumer = Consumer()
+    scheduler.on_assign([0, 1, 2, 3])
+    try:
+        scheduler.queues[0].extend([None] * 300)
+        await scheduler.apply_backpressure()
+        assert calls == [("pause", [0])]
+        assert not scheduler.paused
+        scheduler.queues[0].clear()
+        scheduler.inflight[1] = 256  # Count tasks already assigned, not just queued work.
+        await scheduler.apply_backpressure()
+        assert calls[-2:] == [("pause", [1]), ("resume", [0])]
+        scheduler.on_revoke([1])
+        assert 1 not in scheduler.paused_partitions
+    finally:
+        scheduler.thread.shutdown()
+
+
+async def test_global_backpressure_retains_hysteresis_and_assignment_resets_pauses():
+    class Consumer:
+        def pause(self, partitions):
+            pass
+
+        def resume(self, partitions):
+            pass
+
+    scheduler = KafkaConsumerAndTaskScheduler(Settings(queue_capacity=1024), None, Metrics())
+    scheduler.consumer = Consumer()
+    scheduler.on_assign([0, 1, 2, 3])
+    try:
+        for queue in scheduler.queues.values():
+            queue.extend([None] * 256)
+        await scheduler.apply_backpressure()
+        assert scheduler.paused and scheduler.paused_partitions == {0, 1, 2, 3}
+        for queue in scheduler.queues.values():
+            while len(queue) > 200:
+                queue.pop()
+        await scheduler.apply_backpressure()
+        assert scheduler.paused  # Still above the global low watermark.
+        for queue in scheduler.queues.values():
+            queue.clear()
+        await scheduler.apply_backpressure()
+        assert not scheduler.paused_partitions and not scheduler.paused
+        scheduler.paused_partitions.add(0)
+        scheduler.on_assign([0, 1, 2, 3])
+        assert not scheduler.paused_partitions
+    finally:
+        scheduler.thread.shutdown()

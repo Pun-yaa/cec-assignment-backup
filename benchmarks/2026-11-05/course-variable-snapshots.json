@@ -1,0 +1,214 @@
+{
+  "started": 1793849830.1353571,
+  "passed": false,
+  "concurrent_experiments": 100,
+  "warmup_experiments": 1,
+  "sensors": 10,
+  "sample_period_seconds": 1,
+  "carry_out_samples": 80,
+  "http_rps": 100,
+  "http_max_rps": 200,
+  "http_phase_seconds": 20,
+  "http_load_samples": [
+    {
+      "elapsed": 0.0005142559530213475,
+      "target_rps": 189,
+      "effective_rps": 0,
+      "http_ok": 189
+    },
+    {
+      "elapsed": 8.537041830946691,
+      "target_rps": 189,
+      "effective_rps": 189,
+      "http_ok": 1699
+    },
+    {
+      "elapsed": 15.918784852023236,
+      "target_rps": 189,
+      "effective_rps": 141,
+      "http_ok": 2545
+    },
+    {
+      "elapsed": 23.10059549997095,
+      "target_rps": 189,
+      "effective_rps": 143,
+      "http_ok": 3507
+    },
+    {
+      "elapsed": 28.295957710011862,
+      "target_rps": 170,
+      "effective_rps": 117,
+      "http_ok": 4287
+    },
+    {
+      "elapsed": 34.491076099919155,
+      "target_rps": 170,
+      "effective_rps": 148,
+      "http_ok": 5080
+    },
+    {
+      "elapsed": 39.54973730200436,
+      "target_rps": 170,
+      "effective_rps": 170,
+      "http_ok": 5798
+    },
+    {
+      "elapsed": 45.58712480298709,
+      "target_rps": 170,
+      "effective_rps": 170,
+      "http_ok": 6657
+    },
+    {
+      "elapsed": 50.92334021499846,
+      "target_rps": 195,
+      "effective_rps": 195,
+      "http_ok": 7547
+    },
+    {
+      "elapsed": 55.52232319395989,
+      "target_rps": 195,
+      "effective_rps": 195,
+      "http_ok": 8414
+    },
+    {
+      "elapsed": 59.17909934895579,
+      "target_rps": 195,
+      "effective_rps": 141,
+      "http_ok": 8861
+    },
+    {
+      "elapsed": 64.304548960994,
+      "target_rps": 195,
+      "effective_rps": 105,
+      "http_ok": 9653
+    },
+    {
+      "elapsed": 73.36531805701088,
+      "target_rps": 195,
+      "effective_rps": 169,
+      "http_ok": 11003
+    },
+    {
+      "elapsed": 79.16087454895023,
+      "target_rps": 158,
+      "effective_rps": 158,
+      "http_ok": 11870
+    },
+    {
+      "elapsed": 82.79225029295776,
+      "target_rps": 158,
+      "effective_rps": 158,
+      "http_ok": 12384
+    },
+    {
+      "elapsed": 86.63411633297801,
+      "target_rps": 158,
+      "effective_rps": 158,
+      "http_ok": 12967
+    },
+    {
+      "elapsed": 91.5201973170042,
+      "target_rps": 158,
+      "effective_rps": 158,
+      "http_ok": 13711
+    },
+    {
+      "elapsed": 96.2014392609708,
+      "target_rps": 189,
+      "effective_rps": 158,
+      "http_ok": 14377
+    },
+    {
+      "elapsed": 99.09047351102345,
+      "target_rps": 189,
+      "effective_rps": 189,
+      "http_ok": 14996
+    }
+  ],
+  "http_seconds": 90,
+  "document_offsets": {
+    "0": 19,
+    "1": 18,
+    "2": 26,
+    "3": 20,
+    "4": 19,
+    "5": 18,
+    "6": 16,
+    "7": 16,
+    "8": 22,
+    "9": 19,
+    "10": 22,
+    "11": 26,
+    "12": 15,
+    "13": 18,
+    "14": 17,
+    "15": 20
+  },
+  "first_http_timestamp": 1793849849.766842,
+  "initial_http_ok": 189,
+  "http_observation_seconds": 102.01018571853638,
+  "finished": 1793849953.1604304,
+  "panel_status_observed": true,
+  "notifications": {
+    "required": 674,
+    "received": 674,
+    "missing": 0,
+    "at_or_over_10_seconds": 0,
+    "max_latency_seconds": 7.424878835678101
+  },
+  "histories": {
+    "expected_experiments": 101,
+    "completed_experiments": 101,
+    "history_endpoint_checks": 202,
+    "failures": [],
+    "passed": true
+  },
+  "notification_errors": 0,
+  "http_responses": {
+    "/temperature/out-of-bounds:Ok": 7713,
+    "/temperature:Ok": 7661
+  },
+  "http_rates": {
+    "http_load_generator_target_request_rate": 189,
+    "http_load_generator_effective_request_rate": 189
+  },
+  "achieved_http_rps": 148.85768409341028,
+  "enough_http_load": false,
+  "variable_http_validation": {
+    "phases": [
+      {
+        "target_rps": 189,
+        "observed_seconds": 14.563553669024259,
+        "achieved_rps": 124.14552389404103,
+        "minimum_effective_rps": 141,
+        "passed": false
+      },
+      {
+        "target_rps": 170,
+        "observed_seconds": 11.096048703067936,
+        "achieved_rps": 142.12266385997177,
+        "minimum_effective_rps": 148,
+        "passed": false
+      },
+      {
+        "target_rps": 195,
+        "observed_seconds": 17.84299486305099,
+        "achieved_rps": 145.0989601169063,
+        "minimum_effective_rps": 105,
+        "passed": false
+      },
+      {
+        "target_rps": 158,
+        "observed_seconds": 8.727947024046443,
+        "achieved_rps": 152.04033621468722,
+        "minimum_effective_rps": 158,
+        "passed": true
+      }
+    ],
+    "distinct_rates": 4,
+    "passed": false
+  },
+  "producer_exit_code": 0,
+  "producer_status": "exited",
+  "dashboard": "http://localhost:3009/d/cec-course-grading/course-grading?from=1793849830135&to=1793849953160&var-group=group15&var-topic=course-test-events"
+}

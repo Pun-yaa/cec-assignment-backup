@@ -21,7 +21,7 @@ pytestmark = [
 
 
 @pytest.fixture
-async def data_client():
+async def data_client(request):
     admin_url = os.environ.get(
         "TO_TEST_DATABASE_URL",
         "postgresql://observability:observability@localhost:15432/observability",
@@ -33,6 +33,7 @@ async def data_client():
         database_url=admin_url.rsplit("/", 1)[0] + "/" + database,
         # Deliberately unavailable: PostgreSQL must remain a correct fallback.
         redis_url="redis://127.0.0.1:1/0",
+        **getattr(request, "param", {}),
     )
     app = create_app(settings)
     try:
@@ -162,6 +163,32 @@ async def test_pool_release_rolls_back_an_unfinished_transaction(data_client):
         assert await conn.fetchval("SELECT version FROM experiments WHERE id='e'") == 0
 
 
+async def test_batched_versions_are_all_checked_and_conflicts_roll_back(data_client):
+    client, app = data_client
+    _, change = await process(
+        client, [("experiment_configured", config(name)) for name in ("a", "b", "c")]
+    )
+    change.stream = None
+    for saved in change.states.values():
+        saved.version = 0
+        saved.state.status = "running"
+    change.states["b"].version = 999
+    assert (
+        await client.post("/internal/tasks/commit", json=change.model_dump())
+    ).status_code == 409
+    async with app.state.pool.acquire() as conn:
+        rows = await conn.fetch("SELECT version,state->>'status' AS status FROM experiments")
+    assert len(rows) == 3
+    assert all(row["version"] == 0 and row["status"] == "configured" for row in rows)
+    change.states["b"].version = 0
+    assert (
+        await client.post("/internal/tasks/commit", json=change.model_dump())
+    ).status_code == 200
+    async with app.state.pool.acquire() as conn:
+        rows = await conn.fetch("SELECT version,state->>'status' AS status FROM experiments")
+    assert all(row["version"] == 1 and row["status"] == "running" for row in rows)
+
+
 async def test_partial_sensors_survive_reload_and_duplicate_new_offset(data_client):
     client, app = data_client
     await process(
@@ -226,6 +253,7 @@ async def test_query_validation_and_empty_configured_experiment(data_client):
         assert response.status_code == 422
 
 
+@pytest.mark.parametrize("data_client", [{"history_cache_points": 0}], indirect=True)
 async def test_cached_history_cannot_hide_a_committed_measurement(data_client):
     client, app = data_client
 
@@ -289,3 +317,138 @@ async def test_query_during_commit_cannot_repopulate_stale_metadata(data_client)
     assert (await client.get("/temperature", params=params)).json() == [
         {"timestamp": 2, "temperature": 25.5}
     ]
+
+
+async def test_successful_commit_warms_metadata_without_an_extra_read(data_client):
+    client, app = data_client
+    await process(client, [("experiment_configured", config())])
+    assert app.state.history_metadata["e"] == {"version": 0, "ended": None, "latest": None}
+    response = await client.get("/temperature/out-of-range", params={"experiment-id": "e"})
+    assert response.json() == []
+    metrics = (await client.get("/metrics")).text
+    assert 'operation="history_metadata"' not in metrics
+
+
+async def test_delayed_old_writer_cannot_warm_over_a_newer_commit(data_client):
+    client, app = data_client
+    await process(client, [("experiment_configured", config())])
+    released, resume = asyncio.Event(), asyncio.Event()
+    original = app.state.pool
+
+    class DelayedRelease:
+        def __init__(self):
+            self.first = True
+
+        def __getattr__(self, name):
+            return getattr(original, name)
+
+        def acquire(self):
+            from contextlib import asynccontextmanager
+
+            @asynccontextmanager
+            async def acquire():
+                # Delay after the first writer's COMMIT and connection release.
+                # Another writer can now commit while the first is still fencing.
+                first, self.first = self.first, False
+                async with original.acquire() as conn:
+                    yield conn
+                if first:
+                    released.set()
+                    await resume.wait()
+
+            return acquire()
+
+    task = TaskBatch(
+        stream="test-stream",
+        events=[
+            EventEnvelope(
+                offset=1,
+                kind="experiment_started",
+                records=[{"experiment": "e", "timestamp": 1}],
+            )
+        ],
+    )
+    snapshot = Snapshot.model_validate(
+        (
+            await client.post(
+                "/internal/tasks/load",
+                json=TaskLookup.from_task(task).model_dump(),
+            )
+        ).json()
+    )
+    change = prepare_commit(task, snapshot, 256)
+    app.state.pool = DelayedRelease()
+    writer = asyncio.create_task(client.post("/internal/tasks/commit", json=change.model_dump()))
+    try:
+        await asyncio.wait_for(released.wait(), 5)
+        await process(client, [measurement("a", 25, "m", 2), measurement("b", 26, "m", 2)], start=2)
+        resume.set()
+        assert (await writer).status_code == 200
+        assert (
+            await client.get(
+                "/temperature",
+                params={
+                    "experiment-id": "e",
+                    "start-time": 0,
+                    "end-time": 10,
+                },
+            )
+        ).json() == [{"timestamp": 2, "temperature": 25.5}]
+        assert app.state.history_metadata["e"]["version"] == 2
+        assert not app.state.metadata_generations
+    finally:
+        resume.set()
+        await writer
+        app.state.pool = original
+
+
+async def test_simultaneous_cold_reads_share_one_bounded_snapshot(data_client):
+    client, app = data_client
+    await process(client, [("experiment_configured", config())])
+    responses = await asyncio.gather(
+        *(
+            client.get(
+                "/temperature", params={"experiment-id": "e", "start-time": i, "end-time": i + 1}
+            )
+            for i in range(20)
+        )
+    )
+    assert all(response.json() == [] for response in responses)
+    metrics = (await client.get("/metrics")).text
+    assert 'to_database_connection_seconds_count{operation="history_snapshot"} 1.0' in metrics
+    assert not app.state.snapshot_locks
+
+
+@pytest.mark.parametrize("data_client", [{"history_snapshot_limit": 2}], indirect=True)
+async def test_large_history_falls_back_without_truncation_or_repeated_probes(data_client):
+    client, app = data_client
+    await process(
+        client,
+        [
+            ("experiment_configured", config()),
+            ("experiment_started", {"experiment": "e", "timestamp": 1}),
+            measurement("a", 27, "a", 2),
+            measurement("b", 27, "a", 2),
+            measurement("a", 25, "b", 3),
+            measurement("b", 26, "b", 3),
+            measurement("a", 27, "c", 4),
+            measurement("b", 27, "c", 4),
+        ],
+    )
+    assert (
+        await client.get(
+            "/temperature",
+            params={
+                "experiment-id": "e",
+                "start-time": 4,
+                "end-time": 4,
+            },
+        )
+    ).json() == [{"timestamp": 4, "temperature": 27}]
+    assert app.state.histories.is_large("e")
+    assert (
+        len((await client.get("/temperature/out-of-range", params={"experiment-id": "e"})).json())
+        == 2
+    )
+    metrics = (await client.get("/metrics")).text
+    assert 'to_database_connection_seconds_count{operation="history_snapshot"} 1.0' in metrics

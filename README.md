@@ -5,6 +5,15 @@ See [MONITORING.md](MONITORING.md) for startup, architecture, API, monitoring, d
 configuration, and recovery instructions, and [STRESS-TEST-RESULTS.md](STRESS-TEST-RESULTS.md)
 for measured sizing and latency results. The original course requirements follow.
 
+The [5 November code and exam supplement](reports/code-improvements-2026-11-05/README.md)
+records the cache optimizations, strict deadline checks, variable-load evidence,
+remaining capacity limits, and every subsequent code change.
+
+To run the supplied instructor validators against our implementation and view the
+grading dashboard, use **`make course-test`**. See the
+[independent course-test instructions](MONITORING.md#run-the-instructors-tests-and-grading-panel)
+for the dashboard on port **3009**, SSH access, and the 100-experiment stress run.
+
 # Learning Objectives
 
 - Cloud Systems

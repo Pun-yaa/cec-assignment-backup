@@ -25,3 +25,4 @@ __pycache__/
 !.env.example
 !monitoring.env.example
 test-results/
+.course-test/

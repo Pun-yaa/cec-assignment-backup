@@ -1,0 +1,14 @@
+[
+  {
+    "command": "compose_ps",
+    "runs": 3,
+    "wall_seconds": 0.9076909840805456,
+    "cpu_seconds": 0.95295
+  },
+  {
+    "command": "inspect",
+    "runs": 3,
+    "wall_seconds": 0.18362115905620158,
+    "cpu_seconds": 0.14526100000000003
+  }
+]

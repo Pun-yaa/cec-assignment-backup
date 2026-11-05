@@ -61,3 +61,29 @@ def test_retry_delay_is_bounded():
     assert retry_delay(1, "3") == 3
     assert retry_delay(1, "100000") == 60
     assert retry_delay(1, "invalid") == 0.25
+
+
+@pytest.mark.parametrize("latency,misses", [(9.999, 0), (10, 1), (10.001, 1)])
+async def test_deadline_metric_counts_every_late_delivery(monkeypatch, latency, misses):
+    monkeypatch.setattr("temperature_observability.notification.time.time", lambda: 100)
+    metrics = Metrics()
+    async with httpx.AsyncClient(
+        transport=httpx.MockTransport(lambda _: httpx.Response(200))
+    ) as client:
+        handler = NotificationHandler(
+            Settings(notification_url="http://sink/notify"), client, metrics
+        )
+        await handler.deliver(
+            {
+                "id": 1,
+                "payload": {
+                    "experiment_id": "e",
+                    "measurement_id": "m",
+                    "notification_type": "OutOfRange",
+                },
+                "measured_at": 100 - latency,
+                "lease_token": "t",
+                "attempts": 1,
+            }
+        )
+    assert metrics.registry.get_sample_value("to_notification_deadline_misses_total") == misses

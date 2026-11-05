@@ -6,6 +6,9 @@ services:
       TO_KAFKA_TOPIC: ${TO_KAFKA_TOPIC:-experiment}
       TO_KAFKA_GROUP: ${TO_KAFKA_GROUP:-group15-temperature-demo-v1}
       TO_KAFKA_SECURITY_PROTOCOL: SSL
+      # Course broker certificates use kafka-1/2/3, not the public DNS name.
+      # Keep CA/client certificate verification; match the course tutorial.
+      TO_KAFKA_ENDPOINT_IDENTIFICATION: ${TO_KAFKA_ENDPOINT_IDENTIFICATION:-none}
       TO_KAFKA_CA_FILE: /run/credentials/ca.crt
       TO_KAFKA_KEYSTORE_FILE: /run/credentials/kafka.keystore.pkcs12
       TO_KAFKA_KEYSTORE_PASSWORD_FILE: /run/credentials/keystore-password

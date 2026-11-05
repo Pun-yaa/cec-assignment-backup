@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="820" height="330" preserveAspectRatio="xMinYMin meet" viewBox="0 0 820 330" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="820" height="330"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-330)" style="clip-path: url(#clip)">
+		<g transform="">
+			<text x="25" y="305" style="font-family: StudyBold; font-size: 17px;fill: rgb(7%,18%,29%); stroke:none;" transform="translate(0,610) scale(1,-1)">Two different acknowledgement boundaries</text>
+			<rect x="25" y="215" width="145" height="56" rx="8" ry="8" style="stroke: rgb(83%,87%,89%); stroke-linecap: butt; stroke-width: 1; fill: rgb(93%,95%,96%); fill-rule: evenodd;"/>
+			<text x="61.5849609375" y="247.0" style="font-family: StudyBold; font-size: 12px;fill: rgb(7%,18%,29%); stroke:none;" transform="translate(0,494) scale(1,-1)">Kafka task</text>
+			<text x="48.83276367187499" y="229.0" style="font-family: Study; font-size: 9px;fill: rgb(32%,38%,44%); stroke:none;" transform="translate(0,458) scale(1,-1)">offsets 41 through 45</text>
+			<rect x="245" y="205" width="290" height="76" rx="8" ry="8" style="stroke: rgb(83%,87%,89%); stroke-linecap: butt; stroke-width: 1; fill: rgb(93%,95%,96%); fill-rule: evenodd;"/>
+			<text x="320.61328125" y="247.0" style="font-family: StudyBold; font-size: 12px;fill: rgb(7%,18%,29%); stroke:none;" transform="translate(0,494) scale(1,-1)">PostgreSQL COMMIT</text>
+			<text x="304.5615234375" y="229.0" style="font-family: Study; font-size: 9px;fill: rgb(32%,38%,44%); stroke:none;" transform="translate(0,458) scale(1,-1)">state + history + job + checkpoint 45</text>
+			<rect x="610" y="215" width="180" height="56" rx="8" ry="8" style="stroke: rgb(83%,87%,89%); stroke-linecap: butt; stroke-width: 1; fill: rgb(93%,95%,96%); fill-rule: evenodd;"/>
+			<text x="634.24609375" y="247.0" style="font-family: StudyBold; font-size: 12px;fill: rgb(7%,18%,29%); stroke:none;" transform="translate(0,494) scale(1,-1)">Kafka acknowledge</text>
+			<text x="656.70947265625" y="229.0" style="font-family: Study; font-size: 9px;fill: rgb(32%,38%,44%); stroke:none;" transform="translate(0,458) scale(1,-1)">next-read offset 46</text>
+			<polyline points="170 243, 245 243" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1.8; fill: None; fill-rule: evenodd;"/>
+			<polygon points="245 243, 237.9473 246.7762, 237.9473 239.2238" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<polyline points="535 243, 610 243" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1.8; fill: None; fill-rule: evenodd;"/>
+			<polygon points="610 243, 602.9473 246.7762, 602.9473 239.2238" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<text x="567.969482421875" y="286" style="font-family: StudyBold; font-size: 13px;fill: rgb(78%,36%,14%); stroke:none;" transform="translate(0,572) scale(1,-1)">A</text>
+			<text x="25" y="181" style="font-family: Study; font-size: 11px;fill: rgb(7%,18%,29%); stroke:none;" transform="translate(0,362) scale(1,-1)">A: lost response after COMMIT -&gt; replay finds durable progress; no second database effect.</text>
+			<rect x="25" y="78" width="180" height="56" rx="8" ry="8" style="stroke: rgb(83%,87%,89%); stroke-linecap: butt; stroke-width: 1; fill: rgb(93%,95%,96%); fill-rule: evenodd;"/>
+			<text x="54.771484375" y="110.0" style="font-family: StudyBold; font-size: 12px;fill: rgb(7%,18%,29%); stroke:none;" transform="translate(0,220) scale(1,-1)">Lease durable job</text>
+			<text x="60.67041015624999" y="92.0" style="font-family: Study; font-size: 9px;fill: rgb(32%,38%,44%); stroke:none;" transform="translate(0,184) scale(1,-1)">token guards ownership</text>
+			<rect x="295" y="78" width="200" height="56" rx="8" ry="8" style="stroke: rgb(83%,87%,89%); stroke-linecap: butt; stroke-width: 1; fill: rgb(93%,95%,96%); fill-rule: evenodd;"/>
+			<text x="337.6337890625" y="110.0" style="font-family: StudyBold; font-size: 12px;fill: rgb(7%,18%,29%); stroke:none;" transform="translate(0,220) scale(1,-1)">Receiver accepts</text>
+			<text x="348.925537109375" y="92.0" style="font-family: Study; font-size: 9px;fill: rgb(32%,38%,44%); stroke:none;" transform="translate(0,184) scale(1,-1)">external HTTP effect</text>
+			<rect x="595" y="78" width="195" height="56" rx="8" ry="8" style="stroke: rgb(83%,87%,89%); stroke-linecap: butt; stroke-width: 1; fill: rgb(93%,95%,96%); fill-rule: evenodd;"/>
+			<text x="639.4609375" y="110.0" style="font-family: StudyBold; font-size: 12px;fill: rgb(7%,18%,29%); stroke:none;" transform="translate(0,220) scale(1,-1)">Record delivery</text>
+			<text x="635.382080078125" y="92.0" style="font-family: Study; font-size: 9px;fill: rgb(32%,38%,44%); stroke:none;" transform="translate(0,184) scale(1,-1)">acknowledge lease token</text>
+			<polyline points="205 106, 295 106" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1.8; fill: None; fill-rule: evenodd;"/>
+			<polygon points="295 106, 287.9473 109.7762, 287.9473 102.2238" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<polyline points="495 106, 595 106" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1.8; fill: None; fill-rule: evenodd;"/>
+			<polygon points="595 106, 587.9473 109.7762, 587.9473 102.2238" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<text x="540.045654296875" y="145" style="font-family: StudyBold; font-size: 13px;fill: rgb(70%,26%,23%); stroke:none;" transform="translate(0,290) scale(1,-1)">B</text>
+			<text x="25" y="48" style="font-family: Study; font-size: 11px;fill: rgb(7%,18%,29%); stroke:none;" transform="translate(0,96) scale(1,-1)">B: lost response after acceptance -&gt; retry may repeat the external effect.</text>
+			<text x="25" y="25" style="font-family: Study; font-size: 10px;fill: rgb(32%,38%,44%); stroke:none;" transform="translate(0,50) scale(1,-1)">Receiver idempotency is needed for unique external acceptance. A database transaction cannot decide that outcome.</text>
+		</g>
+	</g>
+</svg>

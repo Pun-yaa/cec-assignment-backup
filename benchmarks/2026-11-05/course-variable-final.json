@@ -1,0 +1,587 @@
+{
+  "started": 1793850154.2824113,
+  "passed": true,
+  "concurrent_experiments": 100,
+  "warmup_experiments": 1,
+  "sensors": 10,
+  "sample_period_seconds": 1,
+  "carry_out_samples": 80,
+  "http_rps": 100,
+  "http_max_rps": 200,
+  "http_phase_seconds": 20,
+  "http_load_samples": [
+    {
+      "elapsed": 0.000644547981210053,
+      "target_rps": 148,
+      "effective_rps": 0,
+      "http_ok": 148
+    },
+    {
+      "elapsed": 1.08491314901039,
+      "target_rps": 148,
+      "effective_rps": 148,
+      "http_ok": 296
+    },
+    {
+      "elapsed": 2.6845617690123618,
+      "target_rps": 148,
+      "effective_rps": 148,
+      "http_ok": 515
+    },
+    {
+      "elapsed": 3.8359049410792068,
+      "target_rps": 148,
+      "effective_rps": 148,
+      "http_ok": 706
+    },
+    {
+      "elapsed": 5.806551470072009,
+      "target_rps": 148,
+      "effective_rps": 148,
+      "http_ok": 921
+    },
+    {
+      "elapsed": 7.149411246995442,
+      "target_rps": 148,
+      "effective_rps": 148,
+      "http_ok": 1184
+    },
+    {
+      "elapsed": 8.337558266008273,
+      "target_rps": 148,
+      "effective_rps": 148,
+      "http_ok": 1332
+    },
+    {
+      "elapsed": 9.445753274019808,
+      "target_rps": 148,
+      "effective_rps": 148,
+      "http_ok": 1480
+    },
+    {
+      "elapsed": 10.679964754031971,
+      "target_rps": 148,
+      "effective_rps": 148,
+      "http_ok": 1701
+    },
+    {
+      "elapsed": 12.14443912403658,
+      "target_rps": 148,
+      "effective_rps": 148,
+      "http_ok": 1924
+    },
+    {
+      "elapsed": 13.377437698072754,
+      "target_rps": 148,
+      "effective_rps": 147,
+      "http_ok": 2072
+    },
+    {
+      "elapsed": 14.647868080995977,
+      "target_rps": 148,
+      "effective_rps": 148,
+      "http_ok": 2235
+    },
+    {
+      "elapsed": 15.964792034006678,
+      "target_rps": 148,
+      "effective_rps": 148,
+      "http_ok": 2508
+    },
+    {
+      "elapsed": 17.79666614998132,
+      "target_rps": 148,
+      "effective_rps": 148,
+      "http_ok": 2719
+    },
+    {
+      "elapsed": 19.05877711903304,
+      "target_rps": 148,
+      "effective_rps": 148,
+      "http_ok": 2951
+    },
+    {
+      "elapsed": 20.1522631800035,
+      "target_rps": 182,
+      "effective_rps": 148,
+      "http_ok": 3122
+    },
+    {
+      "elapsed": 21.633443425991572,
+      "target_rps": 182,
+      "effective_rps": 182,
+      "http_ok": 3339
+    },
+    {
+      "elapsed": 22.80778957705479,
+      "target_rps": 182,
+      "effective_rps": 182,
+      "http_ok": 3552
+    },
+    {
+      "elapsed": 24.329114694031887,
+      "target_rps": 182,
+      "effective_rps": 182,
+      "http_ok": 3854
+    },
+    {
+      "elapsed": 25.474197051022202,
+      "target_rps": 182,
+      "effective_rps": 181,
+      "http_ok": 4052
+    },
+    {
+      "elapsed": 26.73730343102943,
+      "target_rps": 182,
+      "effective_rps": 182,
+      "http_ok": 4282
+    },
+    {
+      "elapsed": 27.861821401049383,
+      "target_rps": 182,
+      "effective_rps": 182,
+      "http_ok": 4519
+    },
+    {
+      "elapsed": 29.184360341052525,
+      "target_rps": 182,
+      "effective_rps": 182,
+      "http_ok": 4780
+    },
+    {
+      "elapsed": 30.245478008058853,
+      "target_rps": 182,
+      "effective_rps": 182,
+      "http_ok": 4962
+    },
+    {
+      "elapsed": 31.3924564269837,
+      "target_rps": 182,
+      "effective_rps": 182,
+      "http_ok": 5144
+    },
+    {
+      "elapsed": 32.4647731030127,
+      "target_rps": 182,
+      "effective_rps": 182,
+      "http_ok": 5326
+    },
+    {
+      "elapsed": 33.66106580698397,
+      "target_rps": 182,
+      "effective_rps": 182,
+      "http_ok": 5530
+    },
+    {
+      "elapsed": 34.788311109063216,
+      "target_rps": 182,
+      "effective_rps": 182,
+      "http_ok": 5726
+    },
+    {
+      "elapsed": 35.911860745050944,
+      "target_rps": 182,
+      "effective_rps": 182,
+      "http_ok": 5959
+    },
+    {
+      "elapsed": 37.298535756068304,
+      "target_rps": 182,
+      "effective_rps": 182,
+      "http_ok": 6232
+    },
+    {
+      "elapsed": 38.54649422504008,
+      "target_rps": 182,
+      "effective_rps": 182,
+      "http_ok": 6418
+    },
+    {
+      "elapsed": 39.855566887999885,
+      "target_rps": 181,
+      "effective_rps": 177,
+      "http_ok": 6684
+    },
+    {
+      "elapsed": 41.0112828949932,
+      "target_rps": 181,
+      "effective_rps": 181,
+      "http_ok": 6895
+    },
+    {
+      "elapsed": 42.26108925708104,
+      "target_rps": 181,
+      "effective_rps": 181,
+      "http_ok": 7143
+    },
+    {
+      "elapsed": 43.360050006071106,
+      "target_rps": 181,
+      "effective_rps": 181,
+      "http_ok": 7324
+    },
+    {
+      "elapsed": 44.528553106007166,
+      "target_rps": 181,
+      "effective_rps": 181,
+      "http_ok": 7505
+    },
+    {
+      "elapsed": 45.621280713006854,
+      "target_rps": 181,
+      "effective_rps": 180,
+      "http_ok": 7686
+    },
+    {
+      "elapsed": 46.901574977091514,
+      "target_rps": 181,
+      "effective_rps": 181,
+      "http_ok": 7987
+    },
+    {
+      "elapsed": 47.99707250809297,
+      "target_rps": 181,
+      "effective_rps": 181,
+      "http_ok": 8190
+    },
+    {
+      "elapsed": 49.24674115900416,
+      "target_rps": 181,
+      "effective_rps": 181,
+      "http_ok": 8410
+    },
+    {
+      "elapsed": 50.570104352082126,
+      "target_rps": 181,
+      "effective_rps": 181,
+      "http_ok": 8591
+    },
+    {
+      "elapsed": 52.24197144701611,
+      "target_rps": 181,
+      "effective_rps": 181,
+      "http_ok": 8945
+    },
+    {
+      "elapsed": 53.303543504094705,
+      "target_rps": 181,
+      "effective_rps": 181,
+      "http_ok": 9134
+    },
+    {
+      "elapsed": 54.6881339030806,
+      "target_rps": 181,
+      "effective_rps": 181,
+      "http_ok": 9322
+    },
+    {
+      "elapsed": 55.791516614030115,
+      "target_rps": 181,
+      "effective_rps": 181,
+      "http_ok": 9528
+    },
+    {
+      "elapsed": 56.954389478079975,
+      "target_rps": 181,
+      "effective_rps": 181,
+      "http_ok": 9793
+    },
+    {
+      "elapsed": 58.12473954609595,
+      "target_rps": 181,
+      "effective_rps": 181,
+      "http_ok": 10022
+    },
+    {
+      "elapsed": 59.22306688304525,
+      "target_rps": 181,
+      "effective_rps": 181,
+      "http_ok": 10220
+    },
+    {
+      "elapsed": 60.56296571099665,
+      "target_rps": 114,
+      "effective_rps": 181,
+      "http_ok": 10334
+    },
+    {
+      "elapsed": 61.717378896079026,
+      "target_rps": 114,
+      "effective_rps": 114,
+      "http_ok": 10451
+    },
+    {
+      "elapsed": 63.11466135003138,
+      "target_rps": 114,
+      "effective_rps": 114,
+      "http_ok": 10650
+    },
+    {
+      "elapsed": 64.30943941208534,
+      "target_rps": 114,
+      "effective_rps": 114,
+      "http_ok": 10790
+    },
+    {
+      "elapsed": 65.5243542380631,
+      "target_rps": 114,
+      "effective_rps": 114,
+      "http_ok": 10904
+    },
+    {
+      "elapsed": 66.9133882370079,
+      "target_rps": 114,
+      "effective_rps": 114,
+      "http_ok": 11054
+    },
+    {
+      "elapsed": 68.17672382004093,
+      "target_rps": 114,
+      "effective_rps": 114,
+      "http_ok": 11246
+    },
+    {
+      "elapsed": 69.25565979909152,
+      "target_rps": 114,
+      "effective_rps": 114,
+      "http_ok": 11360
+    },
+    {
+      "elapsed": 70.3894912370015,
+      "target_rps": 114,
+      "effective_rps": 114,
+      "http_ok": 11474
+    },
+    {
+      "elapsed": 71.50403617299162,
+      "target_rps": 114,
+      "effective_rps": 114,
+      "http_ok": 11588
+    },
+    {
+      "elapsed": 72.58071067300625,
+      "target_rps": 114,
+      "effective_rps": 114,
+      "http_ok": 11702
+    },
+    {
+      "elapsed": 73.7355382440146,
+      "target_rps": 114,
+      "effective_rps": 114,
+      "http_ok": 11816
+    },
+    {
+      "elapsed": 74.89933921804186,
+      "target_rps": 114,
+      "effective_rps": 114,
+      "http_ok": 11990
+    },
+    {
+      "elapsed": 76.38077888800763,
+      "target_rps": 114,
+      "effective_rps": 114,
+      "http_ok": 12158
+    },
+    {
+      "elapsed": 77.50816262105945,
+      "target_rps": 114,
+      "effective_rps": 114,
+      "http_ok": 12272
+    },
+    {
+      "elapsed": 78.7728549890453,
+      "target_rps": 114,
+      "effective_rps": 114,
+      "http_ok": 12401
+    },
+    {
+      "elapsed": 79.88279287400655,
+      "target_rps": 106,
+      "effective_rps": 114,
+      "http_ok": 12524
+    },
+    {
+      "elapsed": 81.13379144005012,
+      "target_rps": 106,
+      "effective_rps": 106,
+      "http_ok": 12712
+    },
+    {
+      "elapsed": 82.22068404499441,
+      "target_rps": 106,
+      "effective_rps": 106,
+      "http_ok": 12818
+    },
+    {
+      "elapsed": 83.28833237907384,
+      "target_rps": 106,
+      "effective_rps": 106,
+      "http_ok": 12924
+    },
+    {
+      "elapsed": 84.34765338909347,
+      "target_rps": 106,
+      "effective_rps": 106,
+      "http_ok": 13030
+    },
+    {
+      "elapsed": 85.42325360199902,
+      "target_rps": 106,
+      "effective_rps": 106,
+      "http_ok": 13136
+    },
+    {
+      "elapsed": 86.49429964902811,
+      "target_rps": 106,
+      "effective_rps": 106,
+      "http_ok": 13242
+    },
+    {
+      "elapsed": 88.14830773405265,
+      "target_rps": 106,
+      "effective_rps": 106,
+      "http_ok": 13435
+    },
+    {
+      "elapsed": 89.24736804305576,
+      "target_rps": 106,
+      "effective_rps": 106,
+      "http_ok": 13560
+    },
+    {
+      "elapsed": 90.4163987400243,
+      "target_rps": 106,
+      "effective_rps": 106,
+      "http_ok": 13666
+    },
+    {
+      "elapsed": 91.92006866808515,
+      "target_rps": 106,
+      "effective_rps": 106,
+      "http_ok": 13822
+    },
+    {
+      "elapsed": 93.10394753806759,
+      "target_rps": 106,
+      "effective_rps": 106,
+      "http_ok": 13968
+    },
+    {
+      "elapsed": 94.31996193202212,
+      "target_rps": 106,
+      "effective_rps": 106,
+      "http_ok": 14090
+    },
+    {
+      "elapsed": 95.38406769407447,
+      "target_rps": 106,
+      "effective_rps": 106,
+      "http_ok": 14196
+    },
+    {
+      "elapsed": 96.44369167101104,
+      "target_rps": 106,
+      "effective_rps": 106,
+      "http_ok": 14302
+    },
+    {
+      "elapsed": 97.52745263907127,
+      "target_rps": 106,
+      "effective_rps": 106,
+      "http_ok": 14408
+    }
+  ],
+  "http_seconds": 90,
+  "document_offsets": {
+    "0": 26,
+    "1": 25,
+    "2": 31,
+    "3": 26,
+    "4": 24,
+    "5": 26,
+    "6": 23,
+    "7": 20,
+    "8": 33,
+    "9": 29,
+    "10": 27,
+    "11": 33,
+    "12": 18,
+    "13": 22,
+    "14": 24,
+    "15": 25
+  },
+  "first_http_timestamp": 1793850172.6596625,
+  "initial_http_ok": 148,
+  "http_observation_seconds": 99.63747644424438,
+  "finished": 1793850273.3461506,
+  "panel_status_observed": true,
+  "notifications": {
+    "required": 703,
+    "received": 703,
+    "missing": 0,
+    "at_or_over_10_seconds": 0,
+    "max_latency_seconds": 2.8835694789886475
+  },
+  "histories": {
+    "expected_experiments": 101,
+    "completed_experiments": 101,
+    "history_endpoint_checks": 202,
+    "failures": [],
+    "passed": true
+  },
+  "notification_errors": 0,
+  "http_responses": {
+    "/temperature:Ok": 7215,
+    "/temperature/out-of-bounds:Ok": 7405
+  },
+  "http_rates": {
+    "http_load_generator_target_request_rate": 106,
+    "http_load_generator_effective_request_rate": 106
+  },
+  "achieved_http_rps": 145.24655296843363,
+  "enough_http_load": true,
+  "variable_http_validation": {
+    "phases": [
+      {
+        "target_rps": 148,
+        "observed_seconds": 16.374215350020677,
+        "achieved_rps": 148.7704874967901,
+        "minimum_effective_rps": 147,
+        "passed": true
+      },
+      {
+        "target_rps": 182,
+        "observed_seconds": 15.738704647985287,
+        "achieved_rps": 182.09884892699077,
+        "minimum_effective_rps": 181,
+        "passed": true
+      },
+      {
+        "target_rps": 181,
+        "observed_seconds": 16.96197762596421,
+        "achieved_rps": 181.40573392161204,
+        "minimum_effective_rps": 180,
+        "passed": true
+      },
+      {
+        "target_rps": 114,
+        "observed_seconds": 15.658193639013916,
+        "achieved_rps": 111.82643671216408,
+        "minimum_effective_rps": 114,
+        "passed": true
+      },
+      {
+        "target_rps": 106,
+        "observed_seconds": 15.306768594076857,
+        "achieved_rps": 103.87561491033908,
+        "minimum_effective_rps": 106,
+        "passed": true
+      }
+    ],
+    "distinct_rates": 5,
+    "passed": true
+  },
+  "producer_exit_code": 0,
+  "producer_status": "exited",
+  "dashboard": "http://localhost:3009/d/cec-course-grading/course-grading?from=1793850154282&to=1793850273346&var-group=group15&var-topic=course-test-events"
+}

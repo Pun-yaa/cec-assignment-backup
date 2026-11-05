@@ -1,0 +1,163 @@
+{
+  "checked_at_utc": "2026-11-05T04:44:44.661012+00:00",
+  "method": "Read-only health/status and selected container metadata; no workload or deployment changes.",
+  "api": {
+    "status": 200,
+    "body": {
+      "status": "ok"
+    }
+  },
+  "scheduler": {
+    "status": 200,
+    "body": {
+      "queued_events": 0,
+      "assigned_partitions": 16,
+      "executors": 1,
+      "active_tasks": 0,
+      "capacity": 8,
+      "paused_partitions": [],
+      "partition_queues": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 0,
+        "4": 0,
+        "5": 0,
+        "6": 0,
+        "7": 0,
+        "8": 0,
+        "9": 0,
+        "10": 0,
+        "11": 0,
+        "12": 0,
+        "13": 0,
+        "14": 0,
+        "15": 0
+      }
+    }
+  },
+  "operational_grafana": {
+    "status": 200,
+    "body": {
+      "database": "ok",
+      "version": "12.0.2",
+      "commit": "5bda17e7c1cb313eb96266f2fdda73a6b35c3977"
+    }
+  },
+  "course_grafana": {
+    "status": 200,
+    "body": {
+      "database": "ok",
+      "version": "12.0.2",
+      "commit": "5bda17e7c1cb313eb96266f2fdda73a6b35c3977"
+    }
+  },
+  "containers": {
+    "scheduler": {
+      "status": "running",
+      "health": "healthy",
+      "configuration": {
+        "TO_KAFKA_GROUP": "group15-temperature-demo-v1",
+        "TO_KAFKA_TOPIC": "experiment"
+      }
+    },
+    "notification": {
+      "status": "running",
+      "health": "healthy",
+      "configuration": {
+        "TO_NOTIFICATION_URL": "https://notifications.cec.dlandau.nl/api/notify"
+      }
+    },
+    "data": {
+      "status": "running",
+      "health": "healthy",
+      "configuration": {}
+    },
+    "postgres": {
+      "status": "running",
+      "health": "healthy",
+      "configuration": {}
+    },
+    "redis": {
+      "status": "running",
+      "health": "healthy",
+      "configuration": {}
+    },
+    "node-exporter": {
+      "status": "running",
+      "health": null,
+      "configuration": {}
+    },
+    "course-producer": {
+      "status": "exited",
+      "health": null,
+      "configuration": {}
+    },
+    "course-http": {
+      "status": "exited",
+      "health": null,
+      "configuration": {}
+    },
+    "course-notifications": {
+      "status": "exited",
+      "health": null,
+      "configuration": {}
+    },
+    "executor": {
+      "status": "running",
+      "health": "healthy",
+      "configuration": {}
+    },
+    "kafka": {
+      "status": "exited",
+      "health": "unhealthy",
+      "configuration": {}
+    },
+    "prometheus": {
+      "status": "running",
+      "health": null,
+      "configuration": {}
+    },
+    "grafana": {
+      "status": "running",
+      "health": null,
+      "configuration": {}
+    },
+    "notification-sink": {
+      "status": "exited",
+      "health": null,
+      "configuration": {}
+    },
+    "course-prometheus": {
+      "status": "running",
+      "health": null,
+      "configuration": {}
+    },
+    "course-grafana": {
+      "status": "running",
+      "health": null,
+      "configuration": {}
+    },
+    "course-db": {
+      "status": "running",
+      "health": "healthy",
+      "configuration": {}
+    },
+    "api": {
+      "status": "running",
+      "health": "healthy",
+      "configuration": {}
+    },
+    "kafka-topic": {
+      "status": "exited",
+      "health": null,
+      "configuration": {}
+    },
+    "kafka-init": {
+      "status": "exited",
+      "health": null,
+      "configuration": {}
+    }
+  },
+  "free_disk_gib": 4.645912170410156
+}

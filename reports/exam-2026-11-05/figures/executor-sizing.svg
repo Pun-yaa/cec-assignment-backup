@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="820" height="330" preserveAspectRatio="xMinYMin meet" viewBox="0 0 820 330" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="820" height="330"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-330)" style="clip-path: url(#clip)">
+		<g transform="">
+			<text x="25" y="304" style="font-family: StudyBold; font-size: 16px;fill: rgb(7%,18%,29%); stroke:none;" transform="translate(0,608) scale(1,-1)">More executors did not improve combined capacity on this VM</text>
+			<g transform="">
+				<path d="M 80,79 L 730,79 Z" style="stroke: rgb(83%,87%,89%); stroke-linecap: butt; stroke-width: 0.25;"/>
+				<path d="M 80,110.818182 L 730,110.818182 Z" style="stroke: rgb(83%,87%,89%); stroke-linecap: butt; stroke-width: 0.25;"/>
+				<path d="M 80,142.636364 L 730,142.636364 Z" style="stroke: rgb(83%,87%,89%); stroke-linecap: butt; stroke-width: 0.25;"/>
+				<path d="M 80,174.454545 L 730,174.454545 Z" style="stroke: rgb(83%,87%,89%); stroke-linecap: butt; stroke-width: 0.25;"/>
+				<path d="M 80,206.272727 L 730,206.272727 Z" style="stroke: rgb(83%,87%,89%); stroke-linecap: butt; stroke-width: 0.25;"/>
+				<path d="M 80,238.090909 L 730,238.090909 Z" style="stroke: rgb(83%,87%,89%); stroke-linecap: butt; stroke-width: 0.25;"/>
+				<g transform="">
+					<rect x="116.11111111111111" y="79.0" width="144.44444444444443" height="156.03132884677555" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+					<rect x="332.7777777777777" y="79.0" width="144.44444444444446" height="148.61115900532835" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(32%,38%,44%); fill-rule: evenodd;"/>
+					<rect x="549.4444444444443" y="79.0" width="144.44444444444446" height="148.83944569483015" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(32%,38%,44%); fill-rule: evenodd;"/>
+					<g transform="">
+						<g transform=" matrix(1,0,0,1,188.333333,242.031329)">
+							<text x="-21.223876953125" y="-4.4" style="font-family: StudyBold; font-size: 11px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,-8) scale(1,-1)">98.077</text>
+						</g>
+						<g transform=" matrix(1,0,0,1,405,234.611159)">
+							<text x="-21.223876953125" y="-4.4" style="font-family: StudyBold; font-size: 11px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,-8) scale(1,-1)">93.413</text>
+						</g>
+						<g transform=" matrix(1,0,0,1,621.666667,234.839446)">
+							<text x="-21.223876953125" y="-4.4" style="font-family: StudyBold; font-size: 11px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,-8) scale(1,-1)">93.556</text>
+						</g>
+					</g>
+				</g>
+				<g transform="">
+					<g transform="">
+						<path d="M 80,79 L 730,79 Z" style="stroke: rgb(0%,0%,0%); stroke-linecap: butt; stroke-width: 1;"/>
+					</g>
+					<g transform="">
+						<path d="M 80,79 L 80,74 Z" style="stroke: rgb(0%,0%,0%); stroke-linecap: butt; stroke-width: 1;"/>
+						<path d="M 296.666667,79 L 296.666667,74 Z" style="stroke: rgb(0%,0%,0%); stroke-linecap: butt; stroke-width: 1;"/>
+						<path d="M 513.333333,79 L 513.333333,74 Z" style="stroke: rgb(0%,0%,0%); stroke-linecap: butt; stroke-width: 1;"/>
+						<path d="M 730,79 L 730,74 Z" style="stroke: rgb(0%,0%,0%); stroke-linecap: butt; stroke-width: 1;"/>
+					</g>
+					<g transform="">
+						<g transform=" matrix(1,0,0,1,188.333333,74)">
+							<text x="-29.5625" y="-11.0" style="font-family: Study; font-size: 11px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,-22) scale(1,-1)">1 executor</text>
+						</g>
+						<g transform=" matrix(1,0,0,1,405,74)">
+							<text x="-32.427978515625" y="-11.0" style="font-family: Study; font-size: 11px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,-22) scale(1,-1)">2 executors</text>
+						</g>
+						<g transform=" matrix(1,0,0,1,621.666667,74)">
+							<text x="-32.427978515625" y="-11.0" style="font-family: Study; font-size: 11px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,-22) scale(1,-1)">4 executors</text>
+						</g>
+					</g>
+				</g>
+				<g transform="">
+					<g transform="">
+						<path d="M 80,79 L 80,254 Z" style="stroke: rgb(0%,0%,0%); stroke-linecap: butt; stroke-width: 1;"/>
+					</g>
+					<g transform="">
+						<path d="M 80,79 L 75,79 Z" style="stroke: rgb(0%,0%,0%); stroke-linecap: butt; stroke-width: 1;"/>
+						<path d="M 80,110.818182 L 75,110.818182 Z" style="stroke: rgb(0%,0%,0%); stroke-linecap: butt; stroke-width: 1;"/>
+						<path d="M 80,142.636364 L 75,142.636364 Z" style="stroke: rgb(0%,0%,0%); stroke-linecap: butt; stroke-width: 1;"/>
+						<path d="M 80,174.454545 L 75,174.454545 Z" style="stroke: rgb(0%,0%,0%); stroke-linecap: butt; stroke-width: 1;"/>
+						<path d="M 80,206.272727 L 75,206.272727 Z" style="stroke: rgb(0%,0%,0%); stroke-linecap: butt; stroke-width: 1;"/>
+						<path d="M 80,238.090909 L 75,238.090909 Z" style="stroke: rgb(0%,0%,0%); stroke-linecap: butt; stroke-width: 1;"/>
+					</g>
+					<g transform="">
+						<g transform=" matrix(1,0,0,1,75,79)">
+							<text x="-6.3623046875" y="-4.0" style="font-family: Study; font-size: 10px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,-8) scale(1,-1)">0</text>
+						</g>
+						<g transform=" matrix(1,0,0,1,75,110.818182)">
+							<text x="-12.724609375" y="-4.0" style="font-family: Study; font-size: 10px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,-8) scale(1,-1)">20</text>
+						</g>
+						<g transform=" matrix(1,0,0,1,75,142.636364)">
+							<text x="-12.724609375" y="-4.0" style="font-family: Study; font-size: 10px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,-8) scale(1,-1)">40</text>
+						</g>
+						<g transform=" matrix(1,0,0,1,75,174.454545)">
+							<text x="-12.724609375" y="-4.0" style="font-family: Study; font-size: 10px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,-8) scale(1,-1)">60</text>
+						</g>
+						<g transform=" matrix(1,0,0,1,75,206.272727)">
+							<text x="-12.724609375" y="-4.0" style="font-family: Study; font-size: 10px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,-8) scale(1,-1)">80</text>
+						</g>
+						<g transform=" matrix(1,0,0,1,75,238.090909)">
+							<text x="-19.0869140625" y="-4.0" style="font-family: Study; font-size: 10px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,-8) scale(1,-1)">100</text>
+						</g>
+					</g>
+				</g>
+			</g>
+			<path d="M 80,230.136364 L 730,230.136364 Z" style="stroke: rgb(78%,36%,14%); stroke-linecap: butt; stroke-width: 1; stroke-dasharray: 5, 3;"/>
+			<text x="740" y="220.13636363636363" style="font-family: Study; font-size: 9px;fill: rgb(78%,36%,14%); stroke:none;" transform="translate(0,440) scale(1,-1)">95/s</text>
+			<text x="252.9306640625" y="273" style="font-family: StudyBold; font-size: 12px;fill: rgb(7%,18%,29%); stroke:none;" transform="translate(0,546) scale(1,-1)">Achieved HTTP responses/second; 100 offered</text>
+			<text x="25" y="34" style="font-family: Study; font-size: 9px;fill: rgb(32%,38%,44%); stroke:none;" transform="translate(0,68) scale(1,-1)">100 experiments x 10 sensors x 1 Hz, 0.1-second notification poll. Historical local runs, 7 October 2026.</text>
+			<text x="25" y="17" style="font-family: Study; font-size: 9px;fill: rgb(32%,38%,44%); stroke:none;" transform="translate(0,34) scale(1,-1)">The dashed line is our 95% acceptance criterion. Notification deadlines and data correctness passed in all three.</text>
+		</g>
+	</g>
+</svg>

@@ -1,0 +1,165 @@
+{
+  "created_at_utc": "2026-11-03T03:37:04.900100+00:00",
+  "purpose": "Rubric-aligned reports and oral exam preparation for Group 15",
+  "combined_book_pages": 40,
+  "individual_reports": 7,
+  "oral_questions": 50,
+  "total_artifact_bytes_excluding_manifest": 1658038,
+  "files": [
+    {
+      "path": "01-rubric-and-readiness.md",
+      "bytes": 11108,
+      "sha256": "695efbdbddb05be846a14249c3cfb098c94116523b14e92ab1ca74773d1dc8dd"
+    },
+    {
+      "path": "02-architecture-and-design-defense.md",
+      "bytes": 19421,
+      "sha256": "f6a447fb9fc8ec2475fc16534dd5898fa886671368fc0481ef99196126ef71b6"
+    },
+    {
+      "path": "03-performance-and-development-history.md",
+      "bytes": 16746,
+      "sha256": "53b7bf666d65225a13b943ea19c05acca451408e11a90c27c6b52a7daa91668a"
+    },
+    {
+      "path": "04-oral-exam-handbook.md",
+      "bytes": 26738,
+      "sha256": "524742647b049de4cea71385d9a336eb9f6c40829bf4a12b3018038dd3072c7b"
+    },
+    {
+      "path": "05-team-rehearsal-and-presentation.md",
+      "bytes": 10570,
+      "sha256": "4b0c3434403e1a42e74d441e8ed1bd22e854c03d68121e3dfb5e81475b0b9a14"
+    },
+    {
+      "path": "06-recovery-and-demo-runbook.md",
+      "bytes": 13997,
+      "sha256": "888a94c2ae5a1c74e5c2eb4ef80f928af55e6b4afcfc23bd52799344ee3320ae"
+    },
+    {
+      "path": "07-exam-quick-reference.md",
+      "bytes": 4892,
+      "sha256": "003918128b444db7dcd9dc9480f15f9a163e1801bc20103468344f4de42ec6b7"
+    },
+    {
+      "path": "README.md",
+      "bytes": 4760,
+      "sha256": "ec74aba1847f3fc2edcb4c12ff3c928ad3cc65234b0eb59086c7cfba849e91f0"
+    },
+    {
+      "path": "build_reports.py",
+      "bytes": 18200,
+      "sha256": "16088d369473051d5fbc0424283ca87d7e7b05df6e74c504a194b93d825fbfad"
+    },
+    {
+      "path": "evidence/document-verification.json",
+      "bytes": 2326,
+      "sha256": "f8c1151155e5b32f508a6e669da29f5a9d79f355588bf518f2b5fd0291edee6d"
+    },
+    {
+      "path": "evidence/pdf-build.json",
+      "bytes": 1117,
+      "sha256": "4abfb407bf3638e114a2c34844e54755c506945cfd3e663cfee90982aae20032"
+    },
+    {
+      "path": "evidence/readiness-2026-11-03.json",
+      "bytes": 10160,
+      "sha256": "721cd1a4bd1f8edb2a200a781c97f622fed3bc6676f01c76ccb6a896b77616de"
+    },
+    {
+      "path": "evidence/unit-tests-2026-11-03.txt",
+      "bytes": 323,
+      "sha256": "1d9aceb83fc50b39f8a5e2bcc4f22210ccb64f7f1ad8fc2e10eb1c8ff6435545"
+    },
+    {
+      "path": "figures/architecture.pdf",
+      "bytes": 43551,
+      "sha256": "0ca0d47978cdcafdef8f6b434163805f1877a9bf8c1fdc8179c53b6095c9027b"
+    },
+    {
+      "path": "figures/architecture.png",
+      "bytes": 78489,
+      "sha256": "0493ef1b70294ef6e325e039df5a646dff53bfc8ddfd607e9b69d1f9c76f8b47"
+    },
+    {
+      "path": "figures/architecture.svg",
+      "bytes": 10446,
+      "sha256": "507881b66b20ec9fad3b11d30d8bed5f051d7444ff9d94a502561878c6808c4e"
+    },
+    {
+      "path": "figures/executor-sizing.pdf",
+      "bytes": 42493,
+      "sha256": "0fd4d50a004734e30b506aa9f65197c5f947ce5544fd0dc7c66bc20cb4eac230"
+    },
+    {
+      "path": "figures/executor-sizing.png",
+      "bytes": 58114,
+      "sha256": "3276dca1dd7c2990545c16847b13b0a3eb72ae7eb0f11ee2d3166b0585c28997"
+    },
+    {
+      "path": "figures/executor-sizing.svg",
+      "bytes": 7807,
+      "sha256": "afa0c665a48257d00076e02b8ec68258f6ce0c057324003a61dfbc93f691d805"
+    },
+    {
+      "path": "figures/instructor-comparison.pdf",
+      "bytes": 42861,
+      "sha256": "299faa3f90b416cb32c5b4854b0975db1a80d9468effc15b48abef0be8a1aa90"
+    },
+    {
+      "path": "figures/instructor-comparison.png",
+      "bytes": 63607,
+      "sha256": "86debda9db705f65209b57d01082c1c0a4411e42e6cb9f2ed27a4ea5bbb0b020"
+    },
+    {
+      "path": "figures/instructor-comparison.svg",
+      "bytes": 13200,
+      "sha256": "a3ad718da845bf4df1078ecc76a74301689547442b0fd18a62ce7e1c9cd5b1f1"
+    },
+    {
+      "path": "pdf/01-rubric-and-readiness.pdf",
+      "bytes": 77367,
+      "sha256": "5ac5bf224314b2b5637cf30ea8d8347113cf4c0d91e3a8243f5552a0dc4b8659"
+    },
+    {
+      "path": "pdf/02-architecture-and-design-defense.pdf",
+      "bytes": 159848,
+      "sha256": "eac6571db4436693b3ed0b8956934bdb88b2fd9a159cab3facbc110cc664ee41"
+    },
+    {
+      "path": "pdf/03-performance-and-development-history.pdf",
+      "bytes": 212550,
+      "sha256": "02d022e1cb5432d333539da3acf06c70261b326ef096c5a616174bbd90991542"
+    },
+    {
+      "path": "pdf/04-oral-exam-handbook.pdf",
+      "bytes": 93675,
+      "sha256": "f75912e5e08040fbf0862c1a6b44aac02296044621848cbc7735ea156a5e9cfc"
+    },
+    {
+      "path": "pdf/05-team-rehearsal-and-presentation.pdf",
+      "bytes": 54863,
+      "sha256": "631f21982b7cbb67d8fae2cd98dcde58cf40234178c7dee09cfe122d031e269d"
+    },
+    {
+      "path": "pdf/06-recovery-and-demo-runbook.pdf",
+      "bytes": 57418,
+      "sha256": "57cda87443f7bc6e9a04f62b76b7de06d391d739434e18124a4a7c6c1cb5e5e6"
+    },
+    {
+      "path": "pdf/07-exam-quick-reference.pdf",
+      "bytes": 49665,
+      "sha256": "a0a5fa269907aa8b3a62fbab4e1d5ec232383c79c7801aa8374aa42f9fa320bd"
+    },
+    {
+      "path": "pdf/group-15-exam-preparation.pdf",
+      "bytes": 445756,
+      "sha256": "6bf91fe678cff7d768b58d0b1f30a25f8234fea55e2b4154ab2c317fb94a79a8"
+    },
+    {
+      "path": "verify_reports.py",
+      "bytes": 5970,
+      "sha256": "36aa232363d4a19295f78a7a069d63fb8b358fc9081563bf9d43418bee21fb94"
+    }
+  ]
+}
