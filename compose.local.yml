@@ -73,6 +73,8 @@ services:
       TO_NOTIFICATION_TOKEN_FILE: ""
   data:
     ports: [127.0.0.1:8002:8000]
+  data-read:
+    ports: [127.0.0.1:8003:8000]
   postgres:
     ports: [127.0.0.1:15432:5432]
   redis:

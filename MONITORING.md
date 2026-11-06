@@ -33,6 +33,7 @@ test-only ciphertext is opaque to the implementation.
 | Public REST API and OpenAPI UI | `http://localhost:3003`, `/docs` |
 | Scheduler status | `http://localhost:8001/status` (loopback only) |
 | Data service, local overlay only | `http://localhost:8002` (loopback only) |
+| History reader, local overlay only | `http://localhost:8003` (loopback only) |
 | Local test notification records | `http://localhost:18080/test/notifications` |
 | Local Kafka, host-side producer | `localhost:19092` |
 
@@ -166,7 +167,10 @@ flowchart LR
     S --> E[Stateless executor replicas]
     U[Researcher] --> A[User REST: port 3003]
     A -- configuration --> E
-    A -- queries --> D[Data service]
+    A -- queries --> H[Read-only history service]
+    H --> P[(PostgreSQL)]
+    H --> R[(Redis query cache)]
+    D[Data writer]
     E -- load / atomic commit --> D
     D --> P[(PostgreSQL)]
     D --> R[(Redis query cache)]
@@ -183,8 +187,8 @@ flowchart LR
 | --- | --- |
 | `scheduler.py`, `codec.py` | Poll Kafka, decode Avro object containers, batch ordered events, discover executor replicas and dispatch to the least busy available one. |
 | `executor.py`, `engine.py` | Validate lifecycle events, aggregate sensor groups, detect range transitions, and produce state/history/outbox changes. No local durable experiment state. |
-| `data.py`, `schema.sql` | Own PostgreSQL and Redis; atomically commit state, history, deduplication progress, rejected events, and notification jobs; serve history queries. |
-| `deploy/Caddyfile`, `api.py` | The User REST container forwards public queries to Data and configurations to an executor. Each destination validates its own inputs. `api.py` defines the OpenAPI contract and a Python development entry point. |
+| `data.py`, `schema.sql` | One `data` writer atomically commits experiment state, measurements, checkpoints and notification jobs. A separate `data-read` process serves public histories using the same database; it has no internal mutation endpoints and uses read-only PostgreSQL transactions. |
+| `deploy/Caddyfile`, `api.py` | The deployed User REST container forwards public queries to `data-read` and configurations to an executor. Each destination validates its inputs. `api.py` defines the OpenAPI contract and a Python development entry point. Caddy's reload endpoint is bound only to its container loopback address. |
 | `notification.py` | Lease a bounded batch of jobs, send concurrently, and record delivery or schedule retries. |
 | `autoscale.py` | Host-side control of executor replica count from scheduler load, with upper/lower bounds and cooldowns. |
 
@@ -260,12 +264,14 @@ make an external HTTP side effect exactly once.
 
 Redis cache keys include the database experiment version and query arguments.
 Queries use a consistent PostgreSQL snapshot, so writes cannot leave an older
-cached answer under the current version. The single Data process keeps a bounded
+cached answer under the current version. The single Data writer keeps a bounded
 cache of experiment versions; every state transaction invalidates those entries
 before and after the write, including rollback or cancellation. Concurrent reads
 cannot refill that cache with stale versions. Keep Data at one process/replica;
-adding Data writers requires shared metadata invalidation first. Executors and
-notification dispatchers can scale independently.
+adding Data writers requires shared metadata invalidation first. The separate
+read-only process re-reads an active experiment's version from PostgreSQL on each
+request. It only retains metadata for terminated experiments, whose histories
+cannot change. Executors, read-only processes and dispatchers can scale independently.
 
 Redis outages fall back to PostgreSQL. Cache operations have a short timeout, no
 automatic retries, and a two-second circuit breaker. Redis I/O never holds a
@@ -393,9 +399,18 @@ the existing indexed SQL/Redis path: a bounded 513-row probe detects them, and
 a bounded marker avoids repeating the probe. No stored history is truncated or
 deleted. Set `TO_HISTORY_CACHE_POINTS=0` to disable this optimization for comparison.
 
-This cache, like the metadata cache, assumes a **single Data process** owns all
-writes. Scale executors independently; do not add Data replicas or Uvicorn
-workers without replacing the local invalidation protocol.
+Snapshots encode measurement JSON once per version, then answer time windows by
+slicing complete JSON values at precomputed offsets. This removes repeated JSON
+encoding on cache hits. Point and entry limits bound these encoded snapshots too.
+One Data writer owns mutations; read-only processes use the revalidation rule
+above rather than depending on another process's in-memory invalidation.
+
+The course notification receiver returns its own latency in the response body.
+The notifier uses a finite, nonnegative receiver value for its deadline metric;
+otherwise it falls back to the local-clock estimate. The local estimate and the
+chosen clock source are exported separately. This matters because the course
+receiver clock was about 25 seconds behind the VM on 6 November. Existing stored
+latencies are preserved. See the [live incident record](benchmarks/2026-11-06/README.md).
 
 Local Kafka test retention is limited by both age and bytes per partition
 (32 MiB, with 16 MiB segments). This does not change the instructor's Kafka

@@ -2,6 +2,7 @@ import asyncio
 import logging
 import time
 from contextlib import asynccontextmanager
+from math import isfinite
 from pathlib import Path
 
 import httpx
@@ -28,6 +29,13 @@ class NotificationHandler:
         self.settings, self.client = settings, client
         self.latency = metrics.histogram(
             "to_notification_latency_seconds", "Measurement to accepted notification"
+        )
+        self.local_latency = metrics.histogram(
+            "to_notification_local_latency_seconds",
+            "Local clock minus producer timestamp; may include clock skew",
+        )
+        self.latency_sources = metrics.counter(
+            "to_notification_latency_sources_total", "Accepted latency clock source", ["source"]
         )
         self.results = metrics.counter(
             "to_notification_attempts_total", "Notification delivery outcomes", ["outcome"]
@@ -64,7 +72,21 @@ class NotificationHandler:
             result["status_code"] = response.status_code
             if 200 <= response.status_code < 300:
                 result["outcome"] = "sent"
-                result["latency"] = max(0, time.time() - job["measured_at"])
+                local_latency = max(0, time.time() - job["measured_at"])
+                self.local_latency.observe(local_latency)
+                # The course receiver returns its measured latency as plain text.
+                # Its clock is the grading authority; our VM can have a different
+                # clock even when NTP is synchronized. Preserve the local estimate
+                # separately, and fall back for receivers without this contract.
+                source, latency = "local", local_latency
+                try:
+                    reported = float(response.text)
+                    if isfinite(reported) and reported >= 0:
+                        source, latency = "receiver", reported
+                except ValueError:
+                    pass
+                result["latency"] = latency
+                self.latency_sources.labels(source).inc()
                 self.latency.observe(result["latency"])
                 if result["latency"] >= 10:
                     self.deadline_misses.inc()

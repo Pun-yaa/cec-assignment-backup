@@ -90,6 +90,11 @@ def create_app(settings: Settings | None = None):
                 pool_connections.labels("open").set(pool.get_size())
                 pool_connections.labels("idle").set(pool.get_idle_size())
                 pool_connections.labels("limit").set(pool.get_max_size())
+                if settings.data_read_only:
+                    # The writer exports outbox/storage totals. Readers only
+                    # export their own request, cache, and connection metrics.
+                    await asyncio.sleep(5)
+                    continue
                 async with connection("metrics") as conn:
                     full_count = time.monotonic() >= next_full_count
                     # Alerting needs current pending/failed counts. Historical
@@ -142,10 +147,14 @@ def create_app(settings: Settings | None = None):
             init=init_connection,
             reset=reset_connection,
             command_timeout=20,
+            server_settings=(
+                {"default_transaction_read_only": "on"} if settings.data_read_only else {}
+            ),
         )
-        async with app.state.pool.acquire() as conn, conn.transaction():
-            await conn.execute("SELECT pg_advisory_xact_lock(151503)")
-            await conn.execute(Path(__file__).with_name("schema.sql").read_text())
+        if not settings.data_read_only:
+            async with app.state.pool.acquire() as conn, conn.transaction():
+                await conn.execute("SELECT pg_advisory_xact_lock(151503)")
+                await conn.execute(Path(__file__).with_name("schema.sql").read_text())
         app.state.cache = Redis.from_url(
             settings.redis_url,
             socket_connect_timeout=0.1,
@@ -188,6 +197,11 @@ def create_app(settings: Settings | None = None):
                     del app.state.metadata_generations[experiment]
 
     def remember_metadata(experiment, row):
+        # A separate reader cannot observe the writer's in-process invalidation.
+        # Revalidate active experiments in PostgreSQL on every request. Only
+        # terminated histories are immutable and safe to retain across requests.
+        if settings.data_read_only and row["ended"] is None:
+            return
         app.state.history_metadata[experiment] = row
         app.state.history_metadata.move_to_end(experiment)
         if len(app.state.history_metadata) > 4096:
@@ -595,6 +609,12 @@ def create_app(settings: Settings | None = None):
             raise HTTPException(409, "notification lease changed")
         return {"status": "ok"}
 
+    if settings.data_read_only:
+        app.router.routes = [
+            route
+            for route in app.router.routes
+            if not getattr(route, "path", "").startswith("/internal/")
+        ]
     return app
 
 

@@ -87,3 +87,32 @@ async def test_deadline_metric_counts_every_late_delivery(monkeypatch, latency, 
             }
         )
     assert metrics.registry.get_sample_value("to_notification_deadline_misses_total") == misses
+
+
+@pytest.mark.parametrize(
+    "body,expected,source",
+    [("0.25", 0.25, "receiver"), ("10.1", 10.1, "receiver"),
+     ("nan", 25.5, "local"), ("inf", 25.5, "local"),
+     ("-1", 25.5, "local"), ("not a latency", 25.5, "local"), ("", 25.5, "local")],
+)
+async def test_receiver_latency_avoids_local_clock_skew(monkeypatch, body, expected, source):
+    monkeypatch.setattr("temperature_observability.notification.time.time", lambda: 100)
+    acknowledgements = []
+
+    def transport(request):
+        if request.url.path == "/notify":
+            return httpx.Response(200, text=body)
+        acknowledgements.append(json.loads(request.content))
+        return httpx.Response(200, json={})
+
+    metrics = Metrics()
+    async with httpx.AsyncClient(transport=httpx.MockTransport(transport)) as client:
+        handler = NotificationHandler(Settings(notification_url="http://sink/notify"), client, metrics)
+        await handler.deliver({
+            "id": 1, "measured_at": 74.5, "attempts": 1, "lease_token": "lease",
+            "payload": {"experiment_id": "e", "measurement_id": "m", "notification_type": "OutOfRange"},
+        })
+    assert acknowledgements[0]["latency"] == expected
+    assert metrics.registry.get_sample_value("to_notification_deadline_misses_total") == int(expected >= 10)
+    assert metrics.registry.get_sample_value("to_notification_local_latency_seconds_sum") == 25.5
+    assert metrics.registry.get_sample_value("to_notification_latency_sources_total", {"source": source}) == 1

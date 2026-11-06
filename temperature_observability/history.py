@@ -14,6 +14,32 @@ class HistorySnapshot:
 
     def __post_init__(self):
         object.__setattr__(self, "timestamps", [point["timestamp"] for point in self.points])
+        # A snapshot is immutable at its database version. Encode each point once,
+        # then answer arbitrary inclusive windows by slicing complete JSON values.
+        # This avoids Python JSON serialization on every public history request.
+        encoded = [
+            json.dumps(
+                {"timestamp": point["timestamp"], "temperature": point["temperature"]},
+                separators=(",", ":"),
+            ).encode()
+            for point in self.points
+        ]
+        outside = [i for i, point in enumerate(self.points) if point["out_of_range"]]
+        object.__setattr__(self, "series", self._encode_series(self.timestamps, encoded))
+        object.__setattr__(
+            self,
+            "outside_series",
+            self._encode_series(
+                [self.timestamps[i] for i in outside], [encoded[i] for i in outside]
+            ),
+        )
+
+    @staticmethod
+    def _encode_series(timestamps, encoded):
+        offsets = [1]
+        for point in encoded:
+            offsets.append(offsets[-1] + len(point) + 1)
+        return timestamps, b"[" + b",".join(encoded) + b"]", offsets
 
     def render(self, start=None, end=None, outside=False, intervals=False):
         if intervals:
@@ -28,13 +54,14 @@ class HistorySnapshot:
             if active is not None and self.ended is not None:
                 active["end_time"] = self.ended
         else:
-            left = bisect_left(self.timestamps, start) if start is not None else 0
-            right = bisect_right(self.timestamps, end) if end is not None else len(self.points)
-            result = [
-                {"timestamp": p["timestamp"], "temperature": p["temperature"]}
-                for p in self.points[left:right]
-                if not outside or p["out_of_range"]
-            ]
+            timestamps, body, offsets = self.outside_series if outside else self.series
+            left = bisect_left(timestamps, start) if start is not None else 0
+            right = bisect_right(timestamps, end) if end is not None else len(timestamps)
+            if left >= right:
+                return b"[]"
+            if left == 0 and right == len(timestamps):
+                return body
+            return b"[" + body[offsets[left] : offsets[right] - 1] + b"]"
         return json.dumps(result, separators=(",", ":"))
 
 

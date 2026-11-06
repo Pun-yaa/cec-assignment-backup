@@ -2,6 +2,11 @@
 
 Use the [5 November assessment pack](exam-2026-11-05/README.md) for the current submission and oral-exam preparation. It reconciles the recovered deployment, latest implementation, passing and failing workloads, and the official rubric.
 
+Read the [6 November live-test update](../benchmarks/2026-11-06/README.md) alongside
+that pack. The deployed architecture now separates public history reads from the
+Data writer, and notification metrics use the course receiver's reported latency.
+The November 5 PDFs and source appendix remain dated snapshots.
+
 - [Combined printable book](exam-2026-11-05/pdf/group-15-assessment.pdf)
 - [Submission report](exam-2026-11-05/08-submission-report.md)
 - [Oral exam handbook](exam-2026-11-05/04-oral-exam-handbook.md)

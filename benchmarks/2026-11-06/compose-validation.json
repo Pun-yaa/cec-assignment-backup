@@ -1,0 +1,14 @@
+{
+  "demo": {
+    "exit_code": 0,
+    "error": ""
+  },
+  "local": {
+    "exit_code": 0,
+    "error": ""
+  },
+  "course": {
+    "exit_code": 0,
+    "error": ""
+  }
+}

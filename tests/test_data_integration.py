@@ -36,6 +36,7 @@ async def data_client(request):
         **getattr(request, "param", {}),
     )
     app = create_app(settings)
+    app.state.test_settings = settings
     try:
         async with app.router.lifespan_context(app):
             async with httpx.AsyncClient(
@@ -452,3 +453,40 @@ async def test_large_history_falls_back_without_truncation_or_repeated_probes(da
     )
     metrics = (await client.get("/metrics")).text
     assert 'to_database_connection_seconds_count{operation="history_snapshot"} 1.0' in metrics
+
+
+async def test_read_replica_revalidates_active_histories_after_external_commit(data_client):
+    client, writer = data_client
+    await process(client, [
+        ("experiment_configured", config()),
+        ("experiment_started", {"experiment": "e", "timestamp": 1}),
+        measurement("a", 25, "first", 2), measurement("b", 26, "first", 2),
+    ])
+    reader = create_app(writer.state.test_settings.model_copy(update={"data_read_only": True}))
+    async with reader.router.lifespan_context(reader), httpx.AsyncClient(
+        transport=httpx.ASGITransport(app=reader), base_url="http://reader"
+    ) as reads:
+        params = {"experiment-id": "e", "start-time": 0, "end-time": 10}
+        first = [{"timestamp": 2, "temperature": 25.5}]
+        assert (await reads.get("/temperature", params=params)).json() == first
+        assert "e" not in reader.state.history_metadata
+        await process(client, [measurement("a", 27, "second", 3), measurement("b", 27, "second", 3)], start=4)
+        expected = first + [{"timestamp": 3, "temperature": 27}]
+        assert (await reads.get("/temperature", params=params)).json() == expected
+        assert (await reads.get("/temperature/out-of-range", params={"experiment-id": "e"})).json() == expected[1:]
+        await process(client, [("experiment_terminated", {"experiment": "e", "timestamp": 4})], start=6)
+        assert (await reads.get("/temperature", params=params)).json() == expected
+        assert float(reader.state.history_metadata["e"]["ended"]) == 4
+
+
+async def test_read_replica_blocks_internal_routes_and_database_writes(data_client):
+    _, writer = data_client
+    reader = create_app(writer.state.test_settings.model_copy(update={"data_read_only": True}))
+    async with reader.router.lifespan_context(reader), httpx.AsyncClient(
+        transport=httpx.ASGITransport(app=reader), base_url="http://reader"
+    ) as reads:
+        for path in ("/internal/tasks/load", "/internal/tasks/commit", "/internal/notifications/claim", "/internal/notifications/1/result"):
+            assert (await reads.post(path, json={})).status_code == 404
+        async with reader.state.pool.acquire() as conn:
+            with pytest.raises(asyncpg.ReadOnlySQLTransactionError):
+                await conn.execute("DELETE FROM experiments")

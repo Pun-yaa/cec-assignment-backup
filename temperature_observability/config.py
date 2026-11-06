@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_prefix="TO_", extra="ignore")
 
     database_url: str = "postgresql://observability:observability@postgres:5432/observability"
+    data_read_only: bool = False
     redis_url: str = "redis://redis:6379/0"
     data_url: str = "http://data:8000"
     executor_host: str = "executor"

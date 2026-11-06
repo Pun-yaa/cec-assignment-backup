@@ -1,0 +1,514 @@
+diff --git a/MONITORING.md b/MONITORING.md
+index 462a51d..fb7a208 100644
+--- a/MONITORING.md
++++ b/MONITORING.md
+@@ -33,6 +33,7 @@ test-only ciphertext is opaque to the implementation.
+ | Public REST API and OpenAPI UI | `http://localhost:3003`, `/docs` |
+ | Scheduler status | `http://localhost:8001/status` (loopback only) |
+ | Data service, local overlay only | `http://localhost:8002` (loopback only) |
++| History reader, local overlay only | `http://localhost:8003` (loopback only) |
+ | Local test notification records | `http://localhost:18080/test/notifications` |
+ | Local Kafka, host-side producer | `localhost:19092` |
+ 
+@@ -166,7 +167,10 @@ flowchart LR
+     S --> E[Stateless executor replicas]
+     U[Researcher] --> A[User REST: port 3003]
+     A -- configuration --> E
+-    A -- queries --> D[Data service]
++    A -- queries --> H[Read-only history service]
++    H --> P[(PostgreSQL)]
++    H --> R[(Redis query cache)]
++    D[Data writer]
+     E -- load / atomic commit --> D
+     D --> P[(PostgreSQL)]
+     D --> R[(Redis query cache)]
+@@ -183,8 +187,8 @@ flowchart LR
+ | --- | --- |
+ | `scheduler.py`, `codec.py` | Poll Kafka, decode Avro object containers, batch ordered events, discover executor replicas and dispatch to the least busy available one. |
+ | `executor.py`, `engine.py` | Validate lifecycle events, aggregate sensor groups, detect range transitions, and produce state/history/outbox changes. No local durable experiment state. |
+-| `data.py`, `schema.sql` | Own PostgreSQL and Redis; atomically commit state, history, deduplication progress, rejected events, and notification jobs; serve history queries. |
+-| `deploy/Caddyfile`, `api.py` | The User REST container forwards public queries to Data and configurations to an executor. Each destination validates its own inputs. `api.py` defines the OpenAPI contract and a Python development entry point. |
++| `data.py`, `schema.sql` | One `data` writer atomically commits experiment state, measurements, checkpoints and notification jobs. A separate `data-read` process serves public histories using the same database; it has no internal mutation endpoints and uses read-only PostgreSQL transactions. |
++| `deploy/Caddyfile`, `api.py` | The deployed User REST container forwards public queries to `data-read` and configurations to an executor. Each destination validates its inputs. `api.py` defines the OpenAPI contract and a Python development entry point. Caddy's reload endpoint is bound only to its container loopback address. |
+ | `notification.py` | Lease a bounded batch of jobs, send concurrently, and record delivery or schedule retries. |
+ | `autoscale.py` | Host-side control of executor replica count from scheduler load, with upper/lower bounds and cooldowns. |
+ 
+@@ -260,12 +264,14 @@ make an external HTTP side effect exactly once.
+ 
+ Redis cache keys include the database experiment version and query arguments.
+ Queries use a consistent PostgreSQL snapshot, so writes cannot leave an older
+-cached answer under the current version. The single Data process keeps a bounded
++cached answer under the current version. The single Data writer keeps a bounded
+ cache of experiment versions; every state transaction invalidates those entries
+ before and after the write, including rollback or cancellation. Concurrent reads
+ cannot refill that cache with stale versions. Keep Data at one process/replica;
+-adding Data writers requires shared metadata invalidation first. Executors and
+-notification dispatchers can scale independently.
++adding Data writers requires shared metadata invalidation first. The separate
++read-only process re-reads an active experiment's version from PostgreSQL on each
++request. It only retains metadata for terminated experiments, whose histories
++cannot change. Executors, read-only processes and dispatchers can scale independently.
+ 
+ Redis outages fall back to PostgreSQL. Cache operations have a short timeout, no
+ automatic retries, and a two-second circuit breaker. Redis I/O never holds a
+@@ -393,9 +399,18 @@ the existing indexed SQL/Redis path: a bounded 513-row probe detects them, and
+ a bounded marker avoids repeating the probe. No stored history is truncated or
+ deleted. Set `TO_HISTORY_CACHE_POINTS=0` to disable this optimization for comparison.
+ 
+-This cache, like the metadata cache, assumes a **single Data process** owns all
+-writes. Scale executors independently; do not add Data replicas or Uvicorn
+-workers without replacing the local invalidation protocol.
++Snapshots encode measurement JSON once per version, then answer time windows by
++slicing complete JSON values at precomputed offsets. This removes repeated JSON
++encoding on cache hits. Point and entry limits bound these encoded snapshots too.
++One Data writer owns mutations; read-only processes use the revalidation rule
++above rather than depending on another process's in-memory invalidation.
++
++The course notification receiver returns its own latency in the response body.
++The notifier uses a finite, nonnegative receiver value for its deadline metric;
++otherwise it falls back to the local-clock estimate. The local estimate and the
++chosen clock source are exported separately. This matters because the course
++receiver clock was about 25 seconds behind the VM on 6 November. Existing stored
++latencies are preserved. See the [live incident record](benchmarks/2026-11-06/README.md).
+ 
+ Local Kafka test retention is limited by both age and bytes per partition
+ (32 MiB, with 16 MiB segments). This does not change the instructor's Kafka
+diff --git a/README.md b/README.md
+index 2e36292..6f2fc05 100644
+--- a/README.md
++++ b/README.md
+@@ -9,6 +9,10 @@ The [5 November code and exam supplement](reports/code-improvements-2026-11-05/R
+ records the cache optimizations, strict deadline checks, variable-load evidence,
+ remaining capacity limits, and every subsequent code change.
+ 
++The [6 November live-test incident record](benchmarks/2026-11-06/README.md)
++documents the separate history reader, pre-encoded responses, and receiver-clock
++latency measurements added after the professor's first load test.
++
+ To run the supplied instructor validators against our implementation and view the
+ grading dashboard, use **`make course-test`**. See the
+ [independent course-test instructions](MONITORING.md#run-the-instructors-tests-and-grading-panel)
+diff --git a/compose.local.yml b/compose.local.yml
+index d98347a..c2ca8b0 100644
+--- a/compose.local.yml
++++ b/compose.local.yml
+@@ -73,6 +73,8 @@ services:
+       TO_NOTIFICATION_TOKEN_FILE: ""
+   data:
+     ports: [127.0.0.1:8002:8000]
++  data-read:
++    ports: [127.0.0.1:8003:8000]
+   postgres:
+     ports: [127.0.0.1:15432:5432]
+   redis:
+diff --git a/compose.yml b/compose.yml
+index d19d92f..be2c3fb 100644
+--- a/compose.yml
++++ b/compose.yml
+@@ -70,6 +70,16 @@ services:
+       replicas: ${TO_EXECUTOR_REPLICAS:-1}
+     depends_on:
+       data: {condition: service_healthy}
++  data-read:
++    <<: *python
++    command: [uvicorn, temperature_observability.data:app, --host, 0.0.0.0, --port, "8000", --no-access-log]
++    environment:
++      TO_DATABASE_URL: postgresql://observability:${TO_POSTGRES_PASSWORD:-observability}@postgres:5432/observability
++      TO_REDIS_URL: redis://redis:6379/0
++      TO_DATA_READ_ONLY: "true"
++      TO_HISTORY_CACHE_POINTS: ${TO_HISTORY_CACHE_POINTS:-16384}
++    depends_on:
++      data: {condition: service_healthy}
+   scheduler:
+     <<: *python
+     command: [uvicorn, temperature_observability.scheduler:app, --host, 0.0.0.0, --port, "8000", --no-access-log]
+@@ -103,6 +113,7 @@ services:
+       retries: 12
+     depends_on:
+       data: {condition: service_healthy}
++      data-read: {condition: service_healthy}
+       executor: {condition: service_healthy}
+   notification:
+     <<: *python
+diff --git a/deploy/Caddyfile b/deploy/Caddyfile
+index 2850513..a7c1082 100644
+--- a/deploy/Caddyfile
++++ b/deploy/Caddyfile
+@@ -1,5 +1,5 @@
+ {
+-	admin off
++	admin 127.0.0.1:2019
+ 	auto_https off
+ 	servers {
+ 		metrics
+@@ -12,7 +12,7 @@
+ 	}
+ 	@queries path /temperature /temperature/out-of-range /temperature/out-of-range/intervals /experiments/* /health
+ 	handle @queries {
+-		reverse_proxy data:8000 {
++		reverse_proxy data-read:8000 {
+ 			transport http {
+ 				dial_timeout 2s
+ 				response_header_timeout 10s
+diff --git a/deploy/prometheus.yml b/deploy/prometheus.yml
+index 2cedee8..1bb5f47 100644
+--- a/deploy/prometheus.yml
++++ b/deploy/prometheus.yml
+@@ -9,6 +9,14 @@ scrape_configs:
+   - job_name: data
+     static_configs:
+       - targets: [data:8000]
++  - job_name: data-read
++    static_configs:
++      - targets: [data-read:8000]
++    metric_relabel_configs:
++      # The writer owns these totals; avoid duplicate empty reader gauges.
++      - source_labels: [__name__]
++        regex: to_notification_jobs|to_notification_oldest_pending_seconds|to_rejected_events|to_database_bytes|to_estimated_hourly_cost_usd|to_cost_configured
++        action: drop
+   - job_name: scheduler
+     static_configs:
+       - targets: [scheduler:8000]
+diff --git a/loadtests/recovery.py b/loadtests/recovery.py
+index d3aaedb..05ebda0 100644
+--- a/loadtests/recovery.py
++++ b/loadtests/recovery.py
+@@ -104,6 +104,7 @@ async def main():
+                     # Clear the new process-local read snapshots too: a cached
+                     # response would not prove that PostgreSQL recovered its data.
+                     await docker("restart", "data")
++                    await docker("restart", "data-read")
+                 for _ in range(150):
+                     try:
+                         response = await client.get(
+diff --git a/reports/README.md b/reports/README.md
+index ad74feb..cd58dc9 100644
+--- a/reports/README.md
++++ b/reports/README.md
+@@ -2,6 +2,11 @@
+ 
+ Use the [5 November assessment pack](exam-2026-11-05/README.md) for the current submission and oral-exam preparation. It reconciles the recovered deployment, latest implementation, passing and failing workloads, and the official rubric.
+ 
++Read the [6 November live-test update](../benchmarks/2026-11-06/README.md) alongside
++that pack. The deployed architecture now separates public history reads from the
++Data writer, and notification metrics use the course receiver's reported latency.
++The November 5 PDFs and source appendix remain dated snapshots.
++
+ - [Combined printable book](exam-2026-11-05/pdf/group-15-assessment.pdf)
+ - [Submission report](exam-2026-11-05/08-submission-report.md)
+ - [Oral exam handbook](exam-2026-11-05/04-oral-exam-handbook.md)
+diff --git a/temperature_observability/config.py b/temperature_observability/config.py
+index 7fb2ea7..0836c30 100644
+--- a/temperature_observability/config.py
++++ b/temperature_observability/config.py
+@@ -8,6 +8,7 @@ class Settings(BaseSettings):
+     model_config = SettingsConfigDict(env_prefix="TO_", extra="ignore")
+ 
+     database_url: str = "postgresql://observability:observability@postgres:5432/observability"
++    data_read_only: bool = False
+     redis_url: str = "redis://redis:6379/0"
+     data_url: str = "http://data:8000"
+     executor_host: str = "executor"
+diff --git a/temperature_observability/data.py b/temperature_observability/data.py
+index 3be66d9..f67ccab 100644
+--- a/temperature_observability/data.py
++++ b/temperature_observability/data.py
+@@ -90,6 +90,11 @@ def create_app(settings: Settings | None = None):
+                 pool_connections.labels("open").set(pool.get_size())
+                 pool_connections.labels("idle").set(pool.get_idle_size())
+                 pool_connections.labels("limit").set(pool.get_max_size())
++                if settings.data_read_only:
++                    # The writer exports outbox/storage totals. Readers only
++                    # export their own request, cache, and connection metrics.
++                    await asyncio.sleep(5)
++                    continue
+                 async with connection("metrics") as conn:
+                     full_count = time.monotonic() >= next_full_count
+                     # Alerting needs current pending/failed counts. Historical
+@@ -142,10 +147,14 @@ def create_app(settings: Settings | None = None):
+             init=init_connection,
+             reset=reset_connection,
+             command_timeout=20,
++            server_settings=(
++                {"default_transaction_read_only": "on"} if settings.data_read_only else {}
++            ),
+         )
+-        async with app.state.pool.acquire() as conn, conn.transaction():
+-            await conn.execute("SELECT pg_advisory_xact_lock(151503)")
+-            await conn.execute(Path(__file__).with_name("schema.sql").read_text())
++        if not settings.data_read_only:
++            async with app.state.pool.acquire() as conn, conn.transaction():
++                await conn.execute("SELECT pg_advisory_xact_lock(151503)")
++                await conn.execute(Path(__file__).with_name("schema.sql").read_text())
+         app.state.cache = Redis.from_url(
+             settings.redis_url,
+             socket_connect_timeout=0.1,
+@@ -188,6 +197,11 @@ def create_app(settings: Settings | None = None):
+                     del app.state.metadata_generations[experiment]
+ 
+     def remember_metadata(experiment, row):
++        # A separate reader cannot observe the writer's in-process invalidation.
++        # Revalidate active experiments in PostgreSQL on every request. Only
++        # terminated histories are immutable and safe to retain across requests.
++        if settings.data_read_only and row["ended"] is None:
++            return
+         app.state.history_metadata[experiment] = row
+         app.state.history_metadata.move_to_end(experiment)
+         if len(app.state.history_metadata) > 4096:
+@@ -595,6 +609,12 @@ def create_app(settings: Settings | None = None):
+             raise HTTPException(409, "notification lease changed")
+         return {"status": "ok"}
+ 
++    if settings.data_read_only:
++        app.router.routes = [
++            route
++            for route in app.router.routes
++            if not getattr(route, "path", "").startswith("/internal/")
++        ]
+     return app
+ 
+ 
+diff --git a/temperature_observability/history.py b/temperature_observability/history.py
+index 06e328e..0b4d86a 100644
+--- a/temperature_observability/history.py
++++ b/temperature_observability/history.py
+@@ -14,6 +14,32 @@ class HistorySnapshot:
+ 
+     def __post_init__(self):
+         object.__setattr__(self, "timestamps", [point["timestamp"] for point in self.points])
++        # A snapshot is immutable at its database version. Encode each point once,
++        # then answer arbitrary inclusive windows by slicing complete JSON values.
++        # This avoids Python JSON serialization on every public history request.
++        encoded = [
++            json.dumps(
++                {"timestamp": point["timestamp"], "temperature": point["temperature"]},
++                separators=(",", ":"),
++            ).encode()
++            for point in self.points
++        ]
++        outside = [i for i, point in enumerate(self.points) if point["out_of_range"]]
++        object.__setattr__(self, "series", self._encode_series(self.timestamps, encoded))
++        object.__setattr__(
++            self,
++            "outside_series",
++            self._encode_series(
++                [self.timestamps[i] for i in outside], [encoded[i] for i in outside]
++            ),
++        )
++
++    @staticmethod
++    def _encode_series(timestamps, encoded):
++        offsets = [1]
++        for point in encoded:
++            offsets.append(offsets[-1] + len(point) + 1)
++        return timestamps, b"[" + b",".join(encoded) + b"]", offsets
+ 
+     def render(self, start=None, end=None, outside=False, intervals=False):
+         if intervals:
+@@ -28,13 +54,14 @@ class HistorySnapshot:
+             if active is not None and self.ended is not None:
+                 active["end_time"] = self.ended
+         else:
+-            left = bisect_left(self.timestamps, start) if start is not None else 0
+-            right = bisect_right(self.timestamps, end) if end is not None else len(self.points)
+-            result = [
+-                {"timestamp": p["timestamp"], "temperature": p["temperature"]}
+-                for p in self.points[left:right]
+-                if not outside or p["out_of_range"]
+-            ]
++            timestamps, body, offsets = self.outside_series if outside else self.series
++            left = bisect_left(timestamps, start) if start is not None else 0
++            right = bisect_right(timestamps, end) if end is not None else len(timestamps)
++            if left >= right:
++                return b"[]"
++            if left == 0 and right == len(timestamps):
++                return body
++            return b"[" + body[offsets[left] : offsets[right] - 1] + b"]"
+         return json.dumps(result, separators=(",", ":"))
+ 
+ 
+diff --git a/temperature_observability/notification.py b/temperature_observability/notification.py
+index b288813..ace72e9 100644
+--- a/temperature_observability/notification.py
++++ b/temperature_observability/notification.py
+@@ -2,6 +2,7 @@ import asyncio
+ import logging
+ import time
+ from contextlib import asynccontextmanager
++from math import isfinite
+ from pathlib import Path
+ 
+ import httpx
+@@ -29,6 +30,13 @@ class NotificationHandler:
+         self.latency = metrics.histogram(
+             "to_notification_latency_seconds", "Measurement to accepted notification"
+         )
++        self.local_latency = metrics.histogram(
++            "to_notification_local_latency_seconds",
++            "Local clock minus producer timestamp; may include clock skew",
++        )
++        self.latency_sources = metrics.counter(
++            "to_notification_latency_sources_total", "Accepted latency clock source", ["source"]
++        )
+         self.results = metrics.counter(
+             "to_notification_attempts_total", "Notification delivery outcomes", ["outcome"]
+         )
+@@ -64,7 +72,21 @@ class NotificationHandler:
+             result["status_code"] = response.status_code
+             if 200 <= response.status_code < 300:
+                 result["outcome"] = "sent"
+-                result["latency"] = max(0, time.time() - job["measured_at"])
++                local_latency = max(0, time.time() - job["measured_at"])
++                self.local_latency.observe(local_latency)
++                # The course receiver returns its measured latency as plain text.
++                # Its clock is the grading authority; our VM can have a different
++                # clock even when NTP is synchronized. Preserve the local estimate
++                # separately, and fall back for receivers without this contract.
++                source, latency = "local", local_latency
++                try:
++                    reported = float(response.text)
++                    if isfinite(reported) and reported >= 0:
++                        source, latency = "receiver", reported
++                except ValueError:
++                    pass
++                result["latency"] = latency
++                self.latency_sources.labels(source).inc()
+                 self.latency.observe(result["latency"])
+                 if result["latency"] >= 10:
+                     self.deadline_misses.inc()
+diff --git a/tests/test_data_integration.py b/tests/test_data_integration.py
+index 9cf3740..b1f0b9e 100644
+--- a/tests/test_data_integration.py
++++ b/tests/test_data_integration.py
+@@ -36,6 +36,7 @@ async def data_client(request):
+         **getattr(request, "param", {}),
+     )
+     app = create_app(settings)
++    app.state.test_settings = settings
+     try:
+         async with app.router.lifespan_context(app):
+             async with httpx.AsyncClient(
+@@ -452,3 +453,40 @@ async def test_large_history_falls_back_without_truncation_or_repeated_probes(da
+     )
+     metrics = (await client.get("/metrics")).text
+     assert 'to_database_connection_seconds_count{operation="history_snapshot"} 1.0' in metrics
++
++
++async def test_read_replica_revalidates_active_histories_after_external_commit(data_client):
++    client, writer = data_client
++    await process(client, [
++        ("experiment_configured", config()),
++        ("experiment_started", {"experiment": "e", "timestamp": 1}),
++        measurement("a", 25, "first", 2), measurement("b", 26, "first", 2),
++    ])
++    reader = create_app(writer.state.test_settings.model_copy(update={"data_read_only": True}))
++    async with reader.router.lifespan_context(reader), httpx.AsyncClient(
++        transport=httpx.ASGITransport(app=reader), base_url="http://reader"
++    ) as reads:
++        params = {"experiment-id": "e", "start-time": 0, "end-time": 10}
++        first = [{"timestamp": 2, "temperature": 25.5}]
++        assert (await reads.get("/temperature", params=params)).json() == first
++        assert "e" not in reader.state.history_metadata
++        await process(client, [measurement("a", 27, "second", 3), measurement("b", 27, "second", 3)], start=4)
++        expected = first + [{"timestamp": 3, "temperature": 27}]
++        assert (await reads.get("/temperature", params=params)).json() == expected
++        assert (await reads.get("/temperature/out-of-range", params={"experiment-id": "e"})).json() == expected[1:]
++        await process(client, [("experiment_terminated", {"experiment": "e", "timestamp": 4})], start=6)
++        assert (await reads.get("/temperature", params=params)).json() == expected
++        assert float(reader.state.history_metadata["e"]["ended"]) == 4
++
++
++async def test_read_replica_blocks_internal_routes_and_database_writes(data_client):
++    _, writer = data_client
++    reader = create_app(writer.state.test_settings.model_copy(update={"data_read_only": True}))
++    async with reader.router.lifespan_context(reader), httpx.AsyncClient(
++        transport=httpx.ASGITransport(app=reader), base_url="http://reader"
++    ) as reads:
++        for path in ("/internal/tasks/load", "/internal/tasks/commit", "/internal/notifications/claim", "/internal/notifications/1/result"):
++            assert (await reads.post(path, json={})).status_code == 404
++        async with reader.state.pool.acquire() as conn:
++            with pytest.raises(asyncpg.ReadOnlySQLTransactionError):
++                await conn.execute("DELETE FROM experiments")
+diff --git a/tests/test_history.py b/tests/test_history.py
+index 5f15c7b..aadcd2f 100644
+--- a/tests/test_history.py
++++ b/tests/test_history.py
+@@ -1,5 +1,7 @@
+ import json
+ 
++import pytest
++
+ from temperature_observability.history import HistoryCache, HistorySnapshot
+ 
+ 
+@@ -56,3 +58,33 @@ def test_empty_histories_and_large_markers_also_have_an_entry_bound():
+         cache.put(str(i), None if i % 2 else HistorySnapshot(0, None, []))
+     assert len(cache.entries) == 2
+     assert cache.points == 0
++
++
++@pytest.mark.parametrize("outside", [False, True])
++def test_encoded_windows_match_point_filter_for_all_boundaries(outside):
++    history = snapshot()
++    for start in (0, 2, 2.1, 3, 4, 5):
++        for end in (0, 2, 2.9, 3, 4, 5):
++            if start > end:
++                continue
++            expected = [
++                {"timestamp": point["timestamp"], "temperature": point["temperature"]}
++                for point in history.points
++                if start <= point["timestamp"] <= end
++                and (not outside or point["out_of_range"])
++            ]
++            assert json.loads(history.render(start, end, outside=outside)) == expected
++
++
++def test_cached_point_queries_do_not_serialize_again(monkeypatch):
++    history = snapshot()
++
++    def unexpected_serialization(*args, **kwargs):
++        raise AssertionError("cached point queries must not serialize JSON again")
++
++    monkeypatch.setattr("temperature_observability.history.json.dumps", unexpected_serialization)
++    assert len(json.loads(history.render())) == 4
++    assert len(json.loads(history.render(outside=True))) == 3
++    assert json.loads(history.render(3, 3)) == [{"timestamp": 3, "temperature": 25.5}]
++    assert json.loads(history.render(3, 3, outside=True)) == []
++    assert json.loads(HistorySnapshot(1, None, []).render()) == []
+diff --git a/tests/test_notification.py b/tests/test_notification.py
+index f65a0a5..c60c6ff 100644
+--- a/tests/test_notification.py
++++ b/tests/test_notification.py
+@@ -87,3 +87,32 @@ async def test_deadline_metric_counts_every_late_delivery(monkeypatch, latency,
+             }
+         )
+     assert metrics.registry.get_sample_value("to_notification_deadline_misses_total") == misses
++
++
++@pytest.mark.parametrize(
++    "body,expected,source",
++    [("0.25", 0.25, "receiver"), ("10.1", 10.1, "receiver"),
++     ("nan", 25.5, "local"), ("inf", 25.5, "local"),
++     ("-1", 25.5, "local"), ("not a latency", 25.5, "local"), ("", 25.5, "local")],
++)
++async def test_receiver_latency_avoids_local_clock_skew(monkeypatch, body, expected, source):
++    monkeypatch.setattr("temperature_observability.notification.time.time", lambda: 100)
++    acknowledgements = []
++
++    def transport(request):
++        if request.url.path == "/notify":
++            return httpx.Response(200, text=body)
++        acknowledgements.append(json.loads(request.content))
++        return httpx.Response(200, json={})
++
++    metrics = Metrics()
++    async with httpx.AsyncClient(transport=httpx.MockTransport(transport)) as client:
++        handler = NotificationHandler(Settings(notification_url="http://sink/notify"), client, metrics)
++        await handler.deliver({
++            "id": 1, "measured_at": 74.5, "attempts": 1, "lease_token": "lease",
++            "payload": {"experiment_id": "e", "measurement_id": "m", "notification_type": "OutOfRange"},
++        })
++    assert acknowledgements[0]["latency"] == expected
++    assert metrics.registry.get_sample_value("to_notification_deadline_misses_total") == int(expected >= 10)
++    assert metrics.registry.get_sample_value("to_notification_local_latency_seconds_sum") == 25.5
++    assert metrics.registry.get_sample_value("to_notification_latency_sources_total", {"source": source}) == 1

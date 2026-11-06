@@ -1,0 +1,9 @@
+{
+  "before_cpu_seconds": 0.3982670050000001,
+  "after_cpu_seconds": 0.005519056000000022,
+  "queries": 2000,
+  "points": 512,
+  "equal_outputs": true,
+  "scope": "single-process rendering microbenchmark, not end-to-end latency",
+  "speedup": 72.16216052165416
+}

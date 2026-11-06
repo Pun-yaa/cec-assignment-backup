@@ -1,0 +1,299 @@
+{
+  "checked_at": "2026-11-06T09:37:36.636516+00:00",
+  "course_ground_truth_since": "2026-11-06 09:00:00 UTC",
+  "course": {
+    "required": 248,
+    "received": 248,
+    "late": 0,
+    "max_latency": 1.210507869720459,
+    "first_event": 1793957120342,
+    "last_event": 1793957695597
+  },
+  "scheduler": {
+    "queued_events": 0,
+    "assigned_partitions": 16,
+    "executors": 1,
+    "active_tasks": 0,
+    "capacity": 8,
+    "paused_partitions": [],
+    "partition_queues": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 0,
+      "6": 0,
+      "7": 0,
+      "8": 0,
+      "9": 0,
+      "10": 0,
+      "11": 0,
+      "12": 0,
+      "13": 0,
+      "14": 0,
+      "15": 0
+    }
+  },
+  "peak_sampled_history_rps": 955.8192768406784,
+  "peak_sampled_scheduler_queue": 805,
+  "sampled_history_http_errors": [],
+  "local_metrics": {
+    "up": {
+      "query": "up",
+      "result": [
+        {
+          "metric": {
+            "__name__": "up",
+            "instance": "api:8000",
+            "job": "api"
+          },
+          "value": [
+            1793957856.974,
+            "1"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "up",
+            "instance": "data:8000",
+            "job": "data"
+          },
+          "value": [
+            1793957856.974,
+            "1"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "up",
+            "instance": "scheduler:8000",
+            "job": "scheduler"
+          },
+          "value": [
+            1793957856.974,
+            "1"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "up",
+            "instance": "notification:8000",
+            "job": "notification"
+          },
+          "value": [
+            1793957856.974,
+            "1"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "up",
+            "instance": "node-exporter:9100",
+            "job": "node"
+          },
+          "value": [
+            1793957856.974,
+            "1"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "up",
+            "instance": "172.18.0.10:8000",
+            "job": "executor"
+          },
+          "value": [
+            1793957856.974,
+            "1"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "up",
+            "instance": "data-read:8000",
+            "job": "data-read"
+          },
+          "value": [
+            1793957856.974,
+            "1"
+          ]
+        }
+      ]
+    },
+    "outbox": {
+      "query": "to_notification_jobs",
+      "result": [
+        {
+          "metric": {
+            "__name__": "to_notification_jobs",
+            "instance": "data:8000",
+            "job": "data",
+            "status": "pending"
+          },
+          "value": [
+            1793957856.977,
+            "0"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "to_notification_jobs",
+            "instance": "data:8000",
+            "job": "data",
+            "status": "sent"
+          },
+          "value": [
+            1793957856.977,
+            "191252"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "to_notification_jobs",
+            "instance": "data:8000",
+            "job": "data",
+            "status": "failed"
+          },
+          "value": [
+            1793957856.977,
+            "0"
+          ]
+        }
+      ]
+    },
+    "reader_history_p99_seconds": {
+      "query": "histogram_quantile(0.99, sum by (job,le) (rate(to_http_request_seconds_bucket{job=\"data-read\",route=~\"/temperature.*\"}[5m])))",
+      "result": [
+        {
+          "metric": {
+            "job": "data-read"
+          },
+          "value": [
+            1793957856.979,
+            "0.004985602202579841"
+          ]
+        }
+      ]
+    },
+    "writer_claim_mean_seconds": {
+      "query": "sum(rate(to_http_request_seconds_sum{job=\"data\",route=~\".*claim.*\"}[1m]))/sum(rate(to_http_request_seconds_count{job=\"data\",route=~\".*claim.*\"}[1m]))",
+      "result": [
+        {
+          "metric": {},
+          "value": [
+            1793957856.982,
+            "0.0035832001158269127"
+          ]
+        }
+      ]
+    },
+    "notification_source": {
+      "query": "to_notification_latency_sources_total",
+      "result": [
+        {
+          "metric": {
+            "__name__": "to_notification_latency_sources_total",
+            "instance": "notification:8000",
+            "job": "notification",
+            "source": "receiver"
+          },
+          "value": [
+            1793957856.986,
+            "248"
+          ]
+        }
+      ]
+    },
+    "notification_deadline_misses": {
+      "query": "to_notification_deadline_misses_total",
+      "result": [
+        {
+          "metric": {
+            "__name__": "to_notification_deadline_misses_total",
+            "instance": "notification:8000",
+            "job": "notification"
+          },
+          "value": [
+            1793957856.99,
+            "0"
+          ]
+        }
+      ]
+    },
+    "process_cpu_cores": {
+      "query": "sum by(job) (rate(process_cpu_seconds_total[1m]))",
+      "result": [
+        {
+          "metric": {
+            "job": "api"
+          },
+          "value": [
+            1793957856.997,
+            "0.525555555555555"
+          ]
+        },
+        {
+          "metric": {
+            "job": "data"
+          },
+          "value": [
+            1793957856.997,
+            "0.018444444444442827"
+          ]
+        },
+        {
+          "metric": {
+            "job": "notification"
+          },
+          "value": [
+            1793957856.997,
+            "0.013555555555555541"
+          ]
+        },
+        {
+          "metric": {
+            "job": "node"
+          },
+          "value": [
+            1793957856.997,
+            "0.02778395198933096"
+          ]
+        },
+        {
+          "metric": {
+            "job": "scheduler"
+          },
+          "value": [
+            1793957856.997,
+            "0.026901442895574296"
+          ]
+        },
+        {
+          "metric": {
+            "job": "executor"
+          },
+          "value": [
+            1793957856.997,
+            "0.003111111111108281"
+          ]
+        },
+        {
+          "metric": {
+            "job": "data-read"
+          },
+          "value": [
+            1793957856.997,
+            "0.5655555555555553"
+          ]
+        }
+      ]
+    }
+  },
+  "observation_notes": [
+    "This is a snapshot of a live professor round, not a guarantee that the round has ended.",
+    "All local load generators and pytest were stopped during the observed round.",
+    "Local HTTP duration measures the application and excludes network/gateway latency.",
+    "Before and after are different professor runs, not a controlled A/B benchmark."
+  ]
+}

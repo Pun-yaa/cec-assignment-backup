@@ -9,6 +9,14 @@ scrape_configs:
   - job_name: data
     static_configs:
       - targets: [data:8000]
+  - job_name: data-read
+    static_configs:
+      - targets: [data-read:8000]
+    metric_relabel_configs:
+      # The writer owns these totals; avoid duplicate empty reader gauges.
+      - source_labels: [__name__]
+        regex: to_notification_jobs|to_notification_oldest_pending_seconds|to_rejected_events|to_database_bytes|to_estimated_hourly_cost_usd|to_cost_configured
+        action: drop
   - job_name: scheduler
     static_configs:
       - targets: [scheduler:8000]

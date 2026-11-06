@@ -104,6 +104,7 @@ async def main():
                     # Clear the new process-local read snapshots too: a cached
                     # response would not prove that PostgreSQL recovered its data.
                     await docker("restart", "data")
+                    await docker("restart", "data-read")
                 for _ in range(150):
                     try:
                         response = await client.get(

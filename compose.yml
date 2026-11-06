@@ -70,6 +70,16 @@ services:
       replicas: ${TO_EXECUTOR_REPLICAS:-1}
     depends_on:
       data: {condition: service_healthy}
+  data-read:
+    <<: *python
+    command: [uvicorn, temperature_observability.data:app, --host, 0.0.0.0, --port, "8000", --no-access-log]
+    environment:
+      TO_DATABASE_URL: postgresql://observability:${TO_POSTGRES_PASSWORD:-observability}@postgres:5432/observability
+      TO_REDIS_URL: redis://redis:6379/0
+      TO_DATA_READ_ONLY: "true"
+      TO_HISTORY_CACHE_POINTS: ${TO_HISTORY_CACHE_POINTS:-16384}
+    depends_on:
+      data: {condition: service_healthy}
   scheduler:
     <<: *python
     command: [uvicorn, temperature_observability.scheduler:app, --host, 0.0.0.0, --port, "8000", --no-access-log]
@@ -103,6 +113,7 @@ services:
       retries: 12
     depends_on:
       data: {condition: service_healthy}
+      data-read: {condition: service_healthy}
       executor: {condition: service_healthy}
   notification:
     <<: *python

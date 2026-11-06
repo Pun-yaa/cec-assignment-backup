@@ -1,0 +1,66 @@
+{
+  "baseline_commit": "3ed052986b8e470d9d63c23d54b331152f5c661b",
+  "recorded_at": 1793957082.689208,
+  "files": [
+    {
+      "path": "MONITORING.md",
+      "sha256": "369f06c9a6fb8195efe58713f895532ba070912ceb3ffe53cd4096eb91c534c6"
+    },
+    {
+      "path": "README.md",
+      "sha256": "f307ab7a421c6622cbfdd01cd08fd92af6e15b0f41ccc6da77c65757546963eb"
+    },
+    {
+      "path": "compose.local.yml",
+      "sha256": "7c6c22a6685efd76d3911c4a994d9c9a88e3bac2672e392a9e9e209d063371ce"
+    },
+    {
+      "path": "compose.yml",
+      "sha256": "9ea5db42d3f42b6585bc4441c6643a7673b1b5f5d3a7c626905dc0fecc20ee5e"
+    },
+    {
+      "path": "deploy/Caddyfile",
+      "sha256": "06235fe7ecd3d2dfbb8f29cda85dd323b37781202df398c0c4ea6f6c2a72ec5d"
+    },
+    {
+      "path": "deploy/prometheus.yml",
+      "sha256": "777f6d44bd5a45036035752b551a847fd8905d936956e5725d2479827c98b1e6"
+    },
+    {
+      "path": "loadtests/recovery.py",
+      "sha256": "d7d8368c8183f445353467c8755a2f6ea03c5b3d437f82c0e2b35d66d2064079"
+    },
+    {
+      "path": "reports/README.md",
+      "sha256": "3a1509b90bacf54d78fb37c7178579df8127f5f31a028db592f066af49a447e1"
+    },
+    {
+      "path": "temperature_observability/config.py",
+      "sha256": "95b9f4348a8f2a13fa234d3032418001d8ff4e44ffc38452cdb7ed3b98b0f7b7"
+    },
+    {
+      "path": "temperature_observability/data.py",
+      "sha256": "738b82d1363cb8453f4269077faedfbc3bca224e5bd210a233e9857c986b0144"
+    },
+    {
+      "path": "temperature_observability/history.py",
+      "sha256": "7ef77ca412e1dd1cfd8ed1c325aa4d8b9f31c80c9d433472cce6b7e74eba73d4"
+    },
+    {
+      "path": "temperature_observability/notification.py",
+      "sha256": "da801039c684fc88b89bb7b32d5d0a5538f154d8547dd5715b2c93c49608011b"
+    },
+    {
+      "path": "tests/test_data_integration.py",
+      "sha256": "94f7e22f2e51f53d49f24c6704c13c303a6b79370d68057b9bc8a752361821ba"
+    },
+    {
+      "path": "tests/test_history.py",
+      "sha256": "18e379795ce3dc25f10d752757a4746780ba7300b82234fb70e5dcdcf0f68dd6"
+    },
+    {
+      "path": "tests/test_notification.py",
+      "sha256": "e175f0e5c7190fc4e04c446a3c4c0e91cc6a097a6d2ddee8daef7724f1af61e4"
+    }
+  ]
+}

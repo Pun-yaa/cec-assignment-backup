@@ -1,0 +1,92 @@
+{
+  "checked_at": "2026-11-06T09:36:43.410862+00:00",
+  "queries": {
+    "http_outcomes": {
+      "query": "sum by(endpoint,response_type) (increase(http_load_generator_response_count_total{host_name=\"group15\"}[20m]))",
+      "response": {
+        "status": "success",
+        "data": {
+          "resultType": "vector",
+          "result": [
+            {
+              "metric": {
+                "endpoint": "/temperature/out-of-bounds",
+                "response_type": "Ok"
+              },
+              "value": [
+                1793957826.984,
+                "177176.00277533042"
+              ]
+            },
+            {
+              "metric": {
+                "endpoint": "/temperature",
+                "response_type": "Ok"
+              },
+              "value": [
+                1793957826.984,
+                "176976.55699779736"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "http_target": {
+      "query": "http_load_generator_target_request_rate{host_name=\"group15\"}",
+      "response": {
+        "status": "success",
+        "data": {
+          "resultType": "vector",
+          "result": [
+            {
+              "metric": {
+                "__name__": "http_load_generator_target_request_rate",
+                "host_name": "group15",
+                "instance": "10.42.5.19:3002",
+                "job": "http-load-generator"
+              },
+              "value": [
+                1793957827.024,
+                "1000"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "http_effective": {
+      "query": "http_load_generator_effective_request_rate{host_name=\"group15\"}",
+      "response": {
+        "status": "success",
+        "data": {
+          "resultType": "vector",
+          "result": [
+            {
+              "metric": {
+                "__name__": "http_load_generator_effective_request_rate",
+                "host_name": "group15",
+                "instance": "10.42.5.19:3002",
+                "job": "http-load-generator"
+              },
+              "value": [
+                1793957827.059,
+                "1000"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "notification_errors": {
+      "query": "sum by(response_type) (increase(notifications_service_response_count_total{group=\"group15\",response_type!~\"Ok\"}[20m]))",
+      "response": {
+        "status": "success",
+        "data": {
+          "resultType": "vector",
+          "result": []
+        }
+      }
+    }
+  }
+}

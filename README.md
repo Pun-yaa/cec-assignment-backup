@@ -9,6 +9,10 @@ The [5 November code and exam supplement](reports/code-improvements-2026-11-05/R
 records the cache optimizations, strict deadline checks, variable-load evidence,
 remaining capacity limits, and every subsequent code change.
 
+The [6 November live-test incident record](benchmarks/2026-11-06/README.md)
+documents the separate history reader, pre-encoded responses, and receiver-clock
+latency measurements added after the professor's first load test.
+
 To run the supplied instructor validators against our implementation and view the
 grading dashboard, use **`make course-test`**. See the
 [independent course-test instructions](MONITORING.md#run-the-instructors-tests-and-grading-panel)

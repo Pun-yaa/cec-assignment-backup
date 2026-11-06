@@ -1,0 +1,135 @@
+{
+  "observed_at": 1793955559.6181073,
+  "notifications": {
+    "results": {
+      "A": {
+        "status": 200,
+        "frames": [
+          {
+            "schema": {
+              "refId": "A",
+              "meta": {
+                "typeVersion": [
+                  0,
+                  0
+                ],
+                "executedQueryString": "SELECT date_trunc('minute',gt.insert_timestamp) AS minute, count(*) AS required, count(n.measurement_id) AS received, count(*) FILTER (WHERE n.latency>=10) AS late, max(n.latency) AS max_latency FROM demo.notification_ground_truth gt LEFT JOIN demo.notification n ON n.experiment_id=gt.experiment_id AND n.measurement_id=gt.measurement_id AND n.group_id='group15' WHERE gt.insert_timestamp > now() - interval '45 minutes' GROUP BY 1 ORDER BY 1"
+              },
+              "fields": [
+                {
+                  "name": "minute",
+                  "type": "time",
+                  "typeInfo": {
+                    "frame": "time.Time",
+                    "nullable": true
+                  }
+                },
+                {
+                  "name": "required",
+                  "type": "number",
+                  "typeInfo": {
+                    "frame": "int64",
+                    "nullable": true
+                  }
+                },
+                {
+                  "name": "received",
+                  "type": "number",
+                  "typeInfo": {
+                    "frame": "int64",
+                    "nullable": true
+                  }
+                },
+                {
+                  "name": "late",
+                  "type": "number",
+                  "typeInfo": {
+                    "frame": "int64",
+                    "nullable": true
+                  }
+                },
+                {
+                  "name": "max_latency",
+                  "type": "number",
+                  "typeInfo": {
+                    "frame": "float64",
+                    "nullable": true
+                  }
+                }
+              ]
+            },
+            "data": {
+              "values": [
+                [
+                  1793953860000,
+                  1793953920000,
+                  1793953980000,
+                  1793954040000,
+                  1793954100000,
+                  1793954160000,
+                  1793954220000,
+                  1793954280000,
+                  1793954340000,
+                  1793954400000,
+                  1793954460000
+                ],
+                [
+                  10,
+                  69,
+                  35,
+                  23,
+                  9,
+                  13,
+                  6,
+                  53,
+                  27,
+                  3,
+                  6
+                ],
+                [
+                  10,
+                  69,
+                  35,
+                  23,
+                  9,
+                  13,
+                  6,
+                  53,
+                  27,
+                  3,
+                  6
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  2,
+                  4,
+                  0,
+                  11,
+                  14,
+                  0,
+                  0
+                ],
+                [
+                  0.2587435245513916,
+                  0.4003443717956543,
+                  0.4431912899017334,
+                  0.4077434539794922,
+                  17.00741219520569,
+                  28.070142030715942,
+                  1.4394495487213135,
+                  15.757730722427368,
+                  26.16767907142639,
+                  1.386216163635254,
+                  0.701392412185669
+                ]
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

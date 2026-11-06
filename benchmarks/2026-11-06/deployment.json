@@ -1,0 +1,38 @@
+[
+  {
+    "name": "cec-temperature-data-1",
+    "image_id": "sha256:d42bea0e644667e73db518abd8a7e134d48be01c869d37168e6fe3b7e7199c88",
+    "started_at": "2026-11-05T04:05:09.354140955Z",
+    "health": "healthy"
+  },
+  {
+    "name": "cec-temperature-data-read-1",
+    "image_id": "sha256:d39d64955271038b57fb02f1c8133099caca8fd6b92190f85b9ba79d4db4f277",
+    "started_at": "2026-11-06T09:01:39.343381492Z",
+    "health": "healthy"
+  },
+  {
+    "name": "cec-temperature-notification-1",
+    "image_id": "sha256:7370bcdd77274b35ad49bab6be8e817f84de067ec2f38acc2fedd5217d882085",
+    "started_at": "2026-11-06T09:14:09.804532049Z",
+    "health": "healthy"
+  },
+  {
+    "name": "cec-temperature-scheduler-1",
+    "image_id": "sha256:d44236d84f5045e515147d5f60da92c87d1a07f78cfcdf5e5b11708e08d9defa",
+    "started_at": "2026-11-05T04:16:50.183414266Z",
+    "health": "healthy"
+  },
+  {
+    "name": "cec-temperature-executor-1",
+    "image_id": "sha256:d42bea0e644667e73db518abd8a7e134d48be01c869d37168e6fe3b7e7199c88",
+    "started_at": "2026-11-05T03:58:29.300695949Z",
+    "health": "healthy"
+  },
+  {
+    "name": "cec-temperature-api-1",
+    "image_id": "sha256:2b7f86f3419fbc3017dc06066fa3b882c105b3bee36db54f7203d40eda5748c9",
+    "started_at": "2026-11-06T09:03:07.555620442Z",
+    "health": "healthy"
+  }
+]

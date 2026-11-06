@@ -1,0 +1,406 @@
+{
+  "checked_at": 1793956084.222546,
+  "up": [
+    {
+      "metric": {
+        "__name__": "up",
+        "instance": "api:8000",
+        "job": "api"
+      },
+      "value": [
+        1793956084.284,
+        "1"
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "up",
+        "instance": "data:8000",
+        "job": "data"
+      },
+      "value": [
+        1793956084.284,
+        "1"
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "up",
+        "instance": "scheduler:8000",
+        "job": "scheduler"
+      },
+      "value": [
+        1793956084.284,
+        "1"
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "up",
+        "instance": "notification:8000",
+        "job": "notification"
+      },
+      "value": [
+        1793956084.284,
+        "1"
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "up",
+        "instance": "node-exporter:9100",
+        "job": "node"
+      },
+      "value": [
+        1793956084.284,
+        "1"
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "up",
+        "instance": "172.18.0.10:8000",
+        "job": "executor"
+      },
+      "value": [
+        1793956084.284,
+        "1"
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "up",
+        "instance": "data-read:8000",
+        "job": "data-read"
+      },
+      "value": [
+        1793956084.284,
+        "1"
+      ]
+    }
+  ],
+  "requests": [
+    {
+      "metric": {
+        "job": "data",
+        "route": "/internal/notifications/claim",
+        "status": "200"
+      },
+      "value": [
+        1793956084.286,
+        "9.666666666666666"
+      ]
+    },
+    {
+      "metric": {
+        "job": "data",
+        "route": "/health",
+        "status": "200"
+      },
+      "value": [
+        1793956084.286,
+        "0.04444444444444444"
+      ]
+    },
+    {
+      "metric": {
+        "job": "data",
+        "route": "/internal/tasks/load",
+        "status": "200"
+      },
+      "value": [
+        1793956084.286,
+        "0"
+      ]
+    },
+    {
+      "metric": {
+        "job": "data",
+        "route": "/internal/tasks/commit",
+        "status": "200"
+      },
+      "value": [
+        1793956084.286,
+        "0"
+      ]
+    },
+    {
+      "metric": {
+        "job": "data",
+        "route": "/internal/notifications/{job_id}/result",
+        "status": "200"
+      },
+      "value": [
+        1793956084.286,
+        "0"
+      ]
+    },
+    {
+      "metric": {
+        "job": "data",
+        "route": "/temperature",
+        "status": "200"
+      },
+      "value": [
+        1793956084.286,
+        "0"
+      ]
+    },
+    {
+      "metric": {
+        "job": "data",
+        "route": "/temperature/out-of-range",
+        "status": "200"
+      },
+      "value": [
+        1793956084.286,
+        "0"
+      ]
+    },
+    {
+      "metric": {
+        "job": "notification",
+        "route": "/health",
+        "status": "200"
+      },
+      "value": [
+        1793956084.286,
+        "0.04444444444444444"
+      ]
+    },
+    {
+      "metric": {
+        "job": "scheduler",
+        "route": "/health",
+        "status": "200"
+      },
+      "value": [
+        1793956084.286,
+        "0.02222222222222222"
+      ]
+    },
+    {
+      "metric": {
+        "job": "data",
+        "route": "/experiments/{experiment_id}",
+        "status": "200"
+      },
+      "value": [
+        1793956084.286,
+        "0"
+      ]
+    },
+    {
+      "metric": {
+        "job": "scheduler",
+        "route": "/status",
+        "status": "200"
+      },
+      "value": [
+        1793956084.286,
+        "0"
+      ]
+    },
+    {
+      "metric": {
+        "job": "data",
+        "route": "/temperature",
+        "status": "404"
+      },
+      "value": [
+        1793956084.286,
+        "0"
+      ]
+    },
+    {
+      "metric": {
+        "job": "data",
+        "route": "/temperature/out-of-range",
+        "status": "404"
+      },
+      "value": [
+        1793956084.286,
+        "0"
+      ]
+    },
+    {
+      "metric": {
+        "job": "data",
+        "route": "/temperature",
+        "status": "422"
+      },
+      "value": [
+        1793956084.286,
+        "0"
+      ]
+    },
+    {
+      "metric": {
+        "job": "executor",
+        "route": "/health",
+        "status": "200"
+      },
+      "value": [
+        1793956084.286,
+        "0.044446419840881816"
+      ]
+    },
+    {
+      "metric": {
+        "job": "executor",
+        "route": "/load",
+        "status": "200"
+      },
+      "value": [
+        1793956084.286,
+        "1.977865682919241"
+      ]
+    },
+    {
+      "metric": {
+        "job": "executor",
+        "route": "/tasks",
+        "status": "200"
+      },
+      "value": [
+        1793956084.286,
+        "0"
+      ]
+    },
+    {
+      "metric": {
+        "job": "executor",
+        "route": "/configure",
+        "status": "200"
+      },
+      "value": [
+        1793956084.286,
+        "0"
+      ]
+    },
+    {
+      "metric": {
+        "job": "executor",
+        "route": "/configure",
+        "status": "409"
+      },
+      "value": [
+        1793956084.286,
+        "0"
+      ]
+    },
+    {
+      "metric": {
+        "job": "data-read",
+        "route": "/health",
+        "status": "200"
+      },
+      "value": [
+        1793956084.286,
+        "0.2444444444444444"
+      ]
+    },
+    {
+      "metric": {
+        "job": "data-read",
+        "route": "/temperature",
+        "status": "200"
+      },
+      "value": [
+        1793956084.286,
+        "0"
+      ]
+    },
+    {
+      "metric": {
+        "job": "data-read",
+        "route": "/temperature/out-of-range",
+        "status": "200"
+      },
+      "value": [
+        1793956084.286,
+        "0"
+      ]
+    }
+  ],
+  "cpu": [
+    {
+      "metric": {
+        "job": "api"
+      },
+      "value": [
+        1793956084.289,
+        "0.0006666666666666672"
+      ]
+    },
+    {
+      "metric": {
+        "job": "data"
+      },
+      "value": [
+        1793956084.289,
+        "0.017555555555574955"
+      ]
+    },
+    {
+      "metric": {
+        "job": "notification"
+      },
+      "value": [
+        1793956084.289,
+        "0.013777777777785456"
+      ]
+    },
+    {
+      "metric": {
+        "job": "node"
+      },
+      "value": [
+        1793956084.289,
+        "0.027333333333333733"
+      ]
+    },
+    {
+      "metric": {
+        "job": "scheduler"
+      },
+      "value": [
+        1793956084.289,
+        "0.02822222222221171"
+      ]
+    },
+    {
+      "metric": {
+        "job": "executor"
+      },
+      "value": [
+        1793956084.289,
+        "0.0035557135872673114"
+      ]
+    },
+    {
+      "metric": {
+        "job": "data-read"
+      },
+      "value": [
+        1793956084.289,
+        "0.002222222222222224"
+      ]
+    }
+  ],
+  "claim_mean": [
+    {
+      "metric": {
+        "instance": "data:8000",
+        "job": "data",
+        "method": "POST",
+        "route": "/internal/notifications/claim",
+        "status": "200"
+      },
+      "value": [
+        1793956084.291,
+        "0.001820284837385875"
+      ]
+    }
+  ]
+}
